@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using McStructureNbtEditor.ViewModels;
 
-namespace McStructureNbtEditor
+namespace McStructureNbtEditor.Views
 {
     public partial class MainWindow : Window
     {

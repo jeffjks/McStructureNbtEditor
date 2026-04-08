@@ -67,8 +67,6 @@ namespace McStructureNbtEditor.ViewModels.Converters
 
             int index = c - 'A';
 
-            // A일 때 빨간색(0도), Z로 갈수록 300도 부근까지 이동
-            // 0 ~ 300 범위로 매핑
             double hue = 300.0 * index / 25.0;
 
             Color color = ColorFromHsv(hue, Saturation, Value);

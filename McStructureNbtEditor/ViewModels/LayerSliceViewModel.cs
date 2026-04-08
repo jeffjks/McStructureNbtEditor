@@ -18,9 +18,47 @@ namespace McStructureNbtEditor.ViewModels
         private string _currentYText = "0";
         private string _statusText = "";
 
+        private BlockCellModel? _dragStartCell;
+        private BlockCellModel? _dragCurrentCell;
+        private bool _isDragging;
+
+        private readonly HashSet<BlockCellModel> _selectionSnapshot = new();
+        private bool _dragSelectionStarted;
+        private bool _dragCtrlMode;
+        private bool _dragShiftMode;
+
         public ObservableCollection<BlockCellModel> SliceCells { get; } = new();
-        public string MinLayerLabel { get; set; } = "-";
-        public string MaxLayerLabel { get; set; } = "-";
+        public ObservableCollection<BlockCellModel> SelectedCells { get; } = new();
+
+        private BlockCellModel? _selectedCell;
+        public BlockCellModel? SelectedCell
+        {
+            get => _selectedCell;
+            set
+            {
+                if (_selectedCell == value)
+                    return;
+
+                _selectedCell = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsDragging
+        {
+            get => _isDragging;
+            private set
+            {
+                if (_isDragging == value)
+                    return;
+
+                _isDragging = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string MinLayerLabel { get; set; } = "0";
+        public string MaxLayerLabel { get; set; } = "0";
 
         public int MinY
         {
@@ -31,6 +69,7 @@ namespace McStructureNbtEditor.ViewModels
                 _minY = value;
                 MinLayerLabel = value.ToString();
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(MinLayerLabel));
             }
         }
 
@@ -43,6 +82,7 @@ namespace McStructureNbtEditor.ViewModels
                 _maxY = value;
                 MaxLayerLabel = value.ToString();
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(MaxLayerLabel));
             }
         }
 
@@ -107,10 +147,10 @@ namespace McStructureNbtEditor.ViewModels
         {
             _structure = structure;
 
-            SliceCells.Clear();
-
             if (_structure == null || _structure.SizeY <= 0)
             {
+                SliceCells.Clear();
+                ClearSelection();
                 MinY = 0;
                 MaxY = 0;
                 _currentY = 0;
@@ -165,6 +205,7 @@ namespace McStructureNbtEditor.ViewModels
         private void RebuildSlice()
         {
             SliceCells.Clear();
+            ClearSelection();
 
             if (_structure != null)
             {
@@ -176,6 +217,218 @@ namespace McStructureNbtEditor.ViewModels
             OnPropertyChanged(nameof(SliceInfoText));
             RaiseCommands();
         }
+
+        // Selection ==========================================================================
+        private void AddToSelection(BlockCellModel cell)
+        {
+            if (cell == null || cell.IsSelected)
+                return;
+
+            cell.IsSelected = true;
+            if (!SelectedCells.Contains(cell))
+                SelectedCells.Add(cell);
+
+            SelectedCell = cell;
+        }
+
+        private void RemoveFromSelection(BlockCellModel cell)
+        {
+            if (cell == null || !cell.IsSelected)
+                return;
+
+            cell.IsSelected = false;
+            SelectedCells.Remove(cell);
+
+            if (SelectedCell == cell)
+                SelectedCell = SelectedCells.LastOrDefault();
+        }
+
+        public void SelectSingle(BlockCellModel cell)
+        {
+            if (cell == null)
+                return;
+
+            ClearSelectionInternal();
+            AddToSelection(cell);
+        }
+
+        public void ToggleSelection(BlockCellModel cell)
+        {
+            if (cell == null)
+                return;
+
+            if (cell.IsSelected)
+                RemoveFromSelection(cell);
+            else
+                AddToSelection(cell);
+        }
+
+        private List<BlockCellModel> GetRectangleCells(BlockCellModel start, BlockCellModel end)
+        {
+            int minX = Math.Min(start.X, end.X);
+            int maxX = Math.Max(start.X, end.X);
+            int minZ = Math.Min(start.Z, end.Z);
+            int maxZ = Math.Max(start.Z, end.Z);
+
+            return SliceCells
+                .Where(cell =>
+                    cell.X >= minX && cell.X <= maxX &&
+                    cell.Z >= minZ && cell.Z <= maxZ)
+                .ToList();
+        }
+
+        public void SelectRectangle(BlockCellModel start, BlockCellModel end)
+        {
+            if (start == null || end == null)
+                return;
+
+            var rectCells = GetRectangleCells(start, end);
+
+            ClearSelectionInternal();
+
+            foreach (var cell in rectCells)
+                AddToSelection(cell);
+
+            SelectedCell = end;
+        }
+
+        public void AddRectangleSelection(BlockCellModel start, BlockCellModel end)
+        {
+            if (start == null || end == null)
+                return;
+
+            var rectCells = GetRectangleCells(start, end);
+
+            foreach (var cell in rectCells)
+                AddToSelection(cell);
+
+            SelectedCell = end;
+        }
+
+        public void ToggleRectangleSelection(BlockCellModel start, BlockCellModel end)
+        {
+            if (start == null || end == null)
+                return;
+
+            var rectCells = GetRectangleCells(start, end);
+            var rectSet = rectCells.ToHashSet();
+
+            foreach (var cell in SliceCells)
+            {
+                bool wasSelected = _selectionSnapshot.Contains(cell);
+                bool inRect = rectSet.Contains(cell);
+
+                bool shouldSelect = wasSelected;
+
+                if (inRect)
+                    shouldSelect = !wasSelected;
+
+                if (shouldSelect)
+                    AddToSelection(cell);
+                else
+                    RemoveFromSelection(cell);
+            }
+
+            SelectedCell = end;
+        }
+
+        public void BeginSelection(BlockCellModel cell, bool isCtrlPressed, bool isShiftPressed)
+        {
+            if (cell == null)
+                return;
+
+            _dragStartCell = cell;
+            _dragCurrentCell = cell;
+
+            _dragSelectionStarted = false;
+            _dragCtrlMode = isCtrlPressed;
+            _dragShiftMode = isShiftPressed;
+
+            _selectionSnapshot.Clear();
+            foreach (var selected in SelectedCells)
+                _selectionSnapshot.Add(selected);
+
+            IsDragging = true;
+        }
+
+        public void UpdateSelectionDrag(BlockCellModel cell, bool isCtrlPressed, bool isShiftPressed)
+        {
+            if (!IsDragging || cell == null || _dragStartCell == null)
+                return;
+
+            if (ReferenceEquals(_dragCurrentCell, cell))
+                return;
+
+            _dragCurrentCell = cell;
+            _dragSelectionStarted = true;
+
+            if (_dragCtrlMode)
+            {
+                ToggleRectangleSelection(_dragStartCell, cell);
+            }
+            else if (_dragShiftMode)
+            {
+                ClearSelectionInternal();
+
+                foreach (var selected in _selectionSnapshot)
+                    AddToSelection(selected);
+
+                AddRectangleSelection(_dragStartCell, cell);
+            }
+            else
+            {
+                SelectRectangle(_dragStartCell, cell);
+            }
+        }
+
+        public void EndSelection()
+        {
+            if (!IsDragging || _dragStartCell == null)
+            {
+                IsDragging = false;
+                _dragStartCell = null;
+                _dragCurrentCell = null;
+                _selectionSnapshot.Clear();
+                return;
+            }
+
+            // 드래그 없이 클릭만 한 경우 처리
+            if (!_dragSelectionStarted)
+            {
+                if (_dragCtrlMode)
+                {
+                    ToggleSelection(_dragStartCell);
+                }
+                else if (_dragShiftMode)
+                {
+                    AddToSelection(_dragStartCell);
+                }
+                else
+                {
+                    SelectSingle(_dragStartCell);
+                }
+            }
+
+            IsDragging = false;
+            _dragStartCell = null;
+            _dragCurrentCell = null;
+            _selectionSnapshot.Clear();
+        }
+
+        public void ClearSelection()
+        {
+            ClearSelectionInternal();
+            SelectedCell = null;
+        }
+
+        private void ClearSelectionInternal()
+        {
+            foreach (var cell in SelectedCells.ToList())
+                cell.IsSelected = false;
+
+            SelectedCells.Clear();
+        }
+        // ======================================================================================
 
         private void NotifyLayoutChanged()
         {
