@@ -1,0 +1,101 @@
+﻿using McStructureNbtEditor.Models;
+using System.Collections.ObjectModel;
+
+namespace McStructureNbtEditor.Services
+{
+    public class SliceBuilder
+    {
+        private const string AIR_BLOCK = "minecraft:air";
+        private const string VOID_BLOCK = "minecraft:structure_void";
+
+        public ObservableCollection<BlockCellModel> BuildSlice(StructureFileModel structure, int y)
+        {
+            var result = new ObservableCollection<BlockCellModel>();
+
+            if (structure == null || structure.SizeX <= 0 || structure.SizeZ <= 0)
+                return result;
+
+            // (x, z) -> block
+            var map = new Dictionary<(int X, int Z), StructureBlock>();
+
+            foreach (var block in structure.Blocks.Where(b => b.Y == y))
+            {
+                map[(block.X, block.Z)] = block;
+            }
+
+            for (int z = 0; z < structure.SizeZ; z++)
+            {
+                for (int x = 0; x < structure.SizeX; x++)
+                {
+                    if (map.TryGetValue((x, z), out var block))
+                    {
+                        var palette = structure.GetPaletteEntry(block.State);
+                        var blockName = palette?.Name ?? $"<state:{block.State}>";
+
+                        result.Add(new BlockCellModel
+                        {
+                            X = x,
+                            Y = y,
+                            Z = z,
+                            BlockName = blockName,
+                            PaletteIndex = block.State,
+                            IsOccupied = (blockName != VOID_BLOCK),
+                            DisplayText = ToShortBlockText(blockName)
+                        });
+                    }
+                    else
+                    {
+                        result.Add(new BlockCellModel
+                        {
+                            X = x,
+                            Y = y,
+                            Z = z,
+                            BlockName = string.Empty,
+                            PaletteIndex = -1,
+                            IsOccupied = false,
+                            DisplayText = "no block"
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private string ToShortBlockText(string blockName)
+        {
+            if (string.IsNullOrWhiteSpace(blockName) || blockName == AIR_BLOCK)
+                return "";
+
+            const string prefix = "minecraft:";
+            if (blockName.StartsWith(prefix))
+                blockName = blockName.Substring(prefix.Length);
+
+            return GetRepresentativeString(blockName);
+        }
+
+        private string GetRepresentativeString(string rawBlockName)
+        {
+            if (rawBlockName.Contains("_"))
+            {
+                string[] parts = rawBlockName.Split('_');
+
+                char first = parts[0][0];
+                char last = parts[^1][0];
+
+                return ToCustomTitleCase(first, last);
+            }
+            else
+            {
+                if (rawBlockName.Length < 2) return rawBlockName.ToUpper();
+
+                return ToCustomTitleCase(rawBlockName[0], rawBlockName[1]);
+            }
+        }
+
+        private string ToCustomTitleCase(char c1, char c2)
+        {
+            return char.ToUpper(c1).ToString() + char.ToLower(c2).ToString();
+        }
+    }
+}
