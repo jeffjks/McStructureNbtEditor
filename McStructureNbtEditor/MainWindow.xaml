@@ -135,7 +135,7 @@
                                                 <Border.ToolTip>
                                                     <StackPanel>
                                                         <TextBlock
-                                                            Text="{Binding BlockName, TargetNullValue=(empty)}" />
+                                                            Text="{Binding TooltipBlockNameText, TargetNullValue=(empty)}" />
                                                         <TextBlock
                                                             Text="{Binding PaletteIndex, StringFormat=Palette: {0}}" />
                                                         <TextBlock

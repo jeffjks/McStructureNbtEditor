@@ -7,6 +7,7 @@ namespace McStructureNbtEditor.Models
     {
         private string _blockName = "";
         private string _displayText = "";
+        private string _tooltipBlockNameText = "";
         private bool _isOccupied;
         private int _paletteIndex = -1;
 
@@ -30,6 +31,16 @@ namespace McStructureNbtEditor.Models
             set
             {
                 _displayText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string TooltipBlockNameText
+        {
+            get => _tooltipBlockNameText;
+            set
+            {
+                _tooltipBlockNameText = value;
                 OnPropertyChanged();
             }
         }

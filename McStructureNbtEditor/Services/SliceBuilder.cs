@@ -40,7 +40,8 @@ namespace McStructureNbtEditor.Services
                             BlockName = blockName,
                             PaletteIndex = block.State,
                             IsOccupied = (blockName != VOID_BLOCK),
-                            DisplayText = ToShortBlockText(blockName)
+                            DisplayText = ToShortBlockText(blockName),
+                            TooltipBlockNameText = blockName
                         });
                     }
                     else
@@ -53,7 +54,8 @@ namespace McStructureNbtEditor.Services
                             BlockName = string.Empty,
                             PaletteIndex = -1,
                             IsOccupied = false,
-                            DisplayText = "no block"
+                            DisplayText = "",
+                            TooltipBlockNameText = "(No Block)"
                         });
                     }
                 }
@@ -80,10 +82,10 @@ namespace McStructureNbtEditor.Services
             {
                 string[] parts = rawBlockName.Split('_');
 
-                char first = parts[0][0];
-                char last = parts[^1][0];
+                char first = char.ToUpper(parts[0][0]);
+                char last = char.ToUpper(parts[^1][0]);
 
-                return ToCustomTitleCase(first, last);
+                return string.Concat(first, last);
             }
             else
             {
