@@ -114,9 +114,9 @@
                         Padding="8"
                         Background="#FFF8F8F8">
                         <ScrollViewer HorizontalScrollBarVisibility="Auto"
-              VerticalScrollBarVisibility="Auto"
-              FocusVisualStyle="{x:Null}"
-              CanContentScroll="False">
+                            VerticalScrollBarVisibility="Auto"
+                            FocusVisualStyle="{x:Null}"
+                            CanContentScroll="False">
                             <views:LayerSliceView DataContext="{Binding LayerSlice}" />
                         </ScrollViewer>
                     </Border>
@@ -128,93 +128,7 @@
             </Border>
 
             <Border Grid.Column="2" BorderBrush="Gray" BorderThickness="1" Padding="8">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8">
-                    </ScrollViewer>
-
-                    <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,1,0,0"
-                        Padding="0,8,0,0">
-                        <Grid Grid.Column="2" Margin="0,8,0,8" Width="220">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0"
-                                Text="Y 층"
-                                FontSize="14"
-                                HorizontalAlignment="Center"
-                                FontWeight="SemiBold"
-                                Margin="0,0,0,8" />
-
-                            <Slider Grid.Row="1"
-                                Minimum="{Binding LayerSlice.MinY}"
-                                Maximum="{Binding LayerSlice.MaxY}"
-                                Value="{Binding LayerSlice.CurrentY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TickFrequency="1"
-                                IsSnapToTickEnabled="True" />
-
-                            <Grid Grid.Row="2" Margin="0,6,0,0" Height="16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0"
-                                    Text="{Binding LayerSlice.MinLayerLabel}"
-                                    HorizontalAlignment="Left"
-                                    FontSize="12"
-                                    Foreground="Gray" />
-
-                                <TextBlock Grid.Column="1"
-                                    Text="{Binding LayerSlice.MaxLayerLabel}"
-                                    HorizontalAlignment="Right"
-                                    FontSize="12"
-                                    Foreground="Gray" />
-                            </Grid>
-                            <Grid Grid.Row="3" Margin="0,10,0,0" HorizontalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Button Grid.Column="0"
-                                    Content="-"
-                                    Width="32"
-                                    Height="28"
-                                    Command="{Binding LayerSlice.DecreaseYCommand}" />
-
-                                <TextBox Grid.Column="1"
-                                    Width="70"
-                                    Height="28"
-                                    Margin="8,0"
-                                    Text="{Binding LayerSlice.CurrentYText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    VerticalContentAlignment="Center"
-                                    HorizontalContentAlignment="Center" />
-
-                                <Button Grid.Column="2"
-                                    Content="+"
-                                    Width="32"
-                                    Height="28"
-                                    Command="{Binding LayerSlice.IncreaseYCommand}" />
-                            </Grid>
-                            <Button Grid.Row="4"
-                                Margin="0,8,0,0"
-                                Height="30"
-                                Content="Y 적용"
-                                Command="{Binding LayerSlice.ApplyYTextCommand}" />
-                        </Grid>
-                    </Border>
-                </Grid>
+                <views:EditPanelView/>
             </Border>
         </Grid>
 
