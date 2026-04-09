@@ -29,7 +29,8 @@ namespace McStructureNbtEditor.Views
             if (ViewModel == null)
                 return;
 
-            Focus();
+            Keyboard.ClearFocus();
+            // Focus();
 
             bool isCtrlPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
             bool isShiftPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
