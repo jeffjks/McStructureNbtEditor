@@ -218,6 +218,21 @@ namespace McStructureNbtEditor.ViewModels
             RaiseCommands();
         }
 
+        public bool TrySelectCellAt(int x, int y, int z)
+        {
+            if (_structure == null)
+                return false;
+
+            CurrentY = y;
+
+            var cell = SliceCells.FirstOrDefault(c => c.X == x && c.Y == y && c.Z == z);
+            if (cell == null)
+                return false;
+
+            SelectSingle(cell);
+            return true;
+        }
+
         // Selection ==========================================================================
         private void AddToSelection(BlockCellModel cell)
         {

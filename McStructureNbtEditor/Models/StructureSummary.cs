@@ -15,10 +15,10 @@ namespace McStructureNbtEditor.Models
         public int EntitiesCount { get; set; }
 
         public string Description =>
-            $"File: {FilePath}\n" +
             $"Structure Size: {SizeX} x {SizeY} x {SizeZ}\n" +
             $"Total Palettes: {PaletteCount}\n" +
             $"Total Blocks: {BlocksCount}\n" +
-            $"Total Entities: {EntitiesCount}";
+            $"Total Entities: {EntitiesCount}\n" +
+            $"File: {FilePath}";
     }
 }

@@ -5,9 +5,16 @@
              xmlns:converters="clr-namespace:McStructureNbtEditor.ViewModels.Converters"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        <converters:BlockToBrushConverter x:Key="BlockToBrushConverter"
-            AirBrush="WhiteSmoke"
-            Saturation="0.3"
-            Value="0.90" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Lang/en-US.xaml"/>
+                <ResourceDictionary Source="Resources/Lang/ko-KR.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BlockToBrushConverter x:Key="BlockToBrushConverter"
+                                              AirBrush="WhiteSmoke"
+                                              Saturation="0.3"
+                                              Value="0.90" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

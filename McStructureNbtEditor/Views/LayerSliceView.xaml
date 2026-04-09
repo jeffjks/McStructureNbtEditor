@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             PreviewMouseLeftButtonUp="Root_PreviewMouseLeftButtonUp">
+             mc:Ignorable="d">
 
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto"
@@ -12,7 +11,10 @@
                   CanContentScroll="False">
         <Grid HorizontalAlignment="Center"
               VerticalAlignment="Center">
-            <ItemsControl ItemsSource="{Binding SliceCells}">
+            <ItemsControl x:Name="CellItemsControl"
+                          ItemsSource="{Binding SliceCells}"
+                          PreviewMouseMove="CellItemsControl_PreviewMouseMove"
+                          PreviewMouseLeftButtonUp="CellItemsControl_PreviewMouseLeftButtonUp">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding SliceWidth}"
@@ -29,8 +31,7 @@
                                 Tag="{Binding}"
                                 SnapsToDevicePixels="True"
                                 Background="{Binding BlockName, Converter={StaticResource BlockToBrushConverter}}"
-                                PreviewMouseLeftButtonDown="Cell_PreviewMouseLeftButtonDown"
-                                MouseEnter="Cell_MouseEnter">
+                                PreviewMouseLeftButtonDown="Cell_PreviewMouseLeftButtonDown">
                             <Border.Style>
                                 <Style TargetType="Border">
                                     <Setter Property="BorderBrush" Value="#FFAAAAAA" />
@@ -49,7 +50,8 @@
                                            FontSize="10"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
-                                           TextAlignment="Center" />
+                                           TextAlignment="Center"
+                                           IsHitTestVisible="False" />
                             </Grid>
 
                             <Border.ToolTip>

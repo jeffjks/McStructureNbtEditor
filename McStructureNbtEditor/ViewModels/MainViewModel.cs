@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Microsoft.Win32;
+﻿using fNbt;
 using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services;
-using fNbt;
+using Microsoft.Win32;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 // 열기/저장 명령, 현재 파일 상태, 트리 노드, 요약 정보
 
@@ -51,6 +52,7 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand SaveFileCommand { get; }
         public RelayCommand SaveAsFileCommand { get; }
         public RelayCommand ExitCommand { get; }
+        public RelayCommand JumpToTreeSelectedBlockCommand { get; }
 
         public MainViewModel()
         {
@@ -58,6 +60,9 @@ namespace McStructureNbtEditor.ViewModels
             SaveFileCommand = new RelayCommand(SaveFile);
             SaveAsFileCommand = new RelayCommand(SaveAsFile);
             ExitCommand = new RelayCommand(Exit);
+            JumpToTreeSelectedBlockCommand = new RelayCommand(
+                JumpToTreeSelectedBlock,
+                () => CanJumpToTreeSelectedBlock);
         }
 
         private void OpenFile()
@@ -106,6 +111,86 @@ namespace McStructureNbtEditor.ViewModels
         {
             // TODO. 저장 여부 묻기
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void ChangeLanguage(AppLanguage lang)
+        {
+            string fileName = lang switch
+            {
+                AppLanguage.English => "en_US",
+                AppLanguage.Korean => "ko-KR",
+                _ => "en_US.xaml"
+            };
+
+            var dict = new ResourceDictionary();
+            dict.Source = new Uri($"Lang/{fileName}.xaml", UriKind.Relative);
+
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(dict);
+        }
+
+
+        private NbtTreeNode? _selectedTreeNode;
+        public NbtTreeNode? SelectedTreeNode
+        {
+            get => _selectedTreeNode;
+            set
+            {
+                if (_selectedTreeNode == value)
+                    return;
+
+                _selectedTreeNode = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanJumpToTreeSelectedBlock));
+                JumpToTreeSelectedBlockCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private void JumpToTreeSelectedBlock()
+        {
+            if (!TryGetBlockPositionFromTreeNode(SelectedTreeNode, out int x, out int y, out int z))
+                return;
+
+            bool ok = LayerSlice.TrySelectCellAt(x, y, z);
+
+            StatusText = ok
+                ? $"블록으로 이동: ({x}, {y}, {z})"
+                : $"블록을 찾을 수 없음: ({x}, {y}, {z})";
+        }
+
+        public bool CanJumpToTreeSelectedBlock =>
+            TryGetBlockPositionFromTreeNode(SelectedTreeNode, out _, out _, out _);
+
+        private bool TryGetBlockPositionFromTreeNode(NbtTreeNode? node, out int x, out int y, out int z)
+        {
+            x = y = z = 0;
+
+            if (node?.Tag is not NbtCompound compound)
+                return false;
+
+            if (node?.IsBlockNode == false)
+                return false;
+
+            if (!compound.Contains("pos"))
+                return false;
+
+            if (compound["pos"] is not NbtList posList)
+                return false;
+
+            if (posList.Count < 3)
+                return false;
+
+            try
+            {
+                x = ((NbtInt)posList[0]).Value;
+                y = ((NbtInt)posList[1]).Value;
+                z = ((NbtInt)posList[2]).Value;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

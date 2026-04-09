@@ -60,18 +60,37 @@
 
             <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="8"
                 Margin="0,0,8,0">
-                <TreeView ItemsSource="{Binding RootNodes}">
-                    <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type models:NbtTreeNode}"
-                            ItemsSource="{Binding Children}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                                <TextBlock Text=": " />
-                                <TextBlock Text="{Binding ValuePreview}" Foreground="DarkBlue" />
-                            </StackPanel>
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
-                </TreeView>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Grid.Row="0" LastChildFill="True">
+                        <Button DockPanel.Dock="Bottom"
+                            Content="{DynamicResource L_JumpToBlock}"
+                            Margin="0,5,0,20"
+                            Padding="20,5"
+                            HorizontalAlignment="Center"
+                            Command="{Binding JumpToTreeSelectedBlockCommand}"/>
+                        <TreeView Grid.Row="0" ItemsSource="{Binding RootNodes}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type models:NbtTreeNode}"
+                                ItemsSource="{Binding Children}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                        <TextBlock Text=": " />
+                                        <TextBlock Text="{Binding ValuePreview}" Foreground="DarkBlue" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </DockPanel>
+                    <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1">
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="4,0,0,0">
+                            <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" Padding="0,0,4,0" FontSize="14" />
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
             </Border>
 
             <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="8">
@@ -116,7 +135,6 @@
                     </Grid.RowDefinitions>
 
                     <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8">
-                        <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" FontSize="14" />
                     </ScrollViewer>
 
                     <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,1,0,0"

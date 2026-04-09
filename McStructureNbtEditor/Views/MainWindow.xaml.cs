@@ -1,5 +1,6 @@
-﻿using System.Windows;
+﻿using McStructureNbtEditor.Models;
 using McStructureNbtEditor.ViewModels;
+using System.Windows;
 
 namespace McStructureNbtEditor.Views
 {
@@ -9,6 +10,14 @@ namespace McStructureNbtEditor.Views
         {
             InitializeComponent();
             DataContext = new MainViewModel();
+        }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.SelectedTreeNode = e.NewValue as NbtTreeNode;
+            }
         }
     }
 }

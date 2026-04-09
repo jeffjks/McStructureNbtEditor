@@ -13,7 +13,8 @@ namespace McStructureNbtEditor.Services
             {
                 Name = string.IsNullOrEmpty(tag.Name) ? "<unnamed>" : tag.Name,
                 Type = tag.TagType.ToString(),
-                ValuePreview = GetValuePreview(tag)
+                ValuePreview = GetValuePreview(tag),
+                Tag = tag
             };
 
             switch (tag)
@@ -26,11 +27,18 @@ namespace McStructureNbtEditor.Services
                     break;
 
                 case NbtList list:
+                    bool isBlocksList = string.Equals(tag.Name, "blocks", StringComparison.Ordinal);
+
                     for (int i = 0; i < list.Count; i++)
                     {
                         var child = list[i];
                         var childNode = Build(child);
                         childNode.Name = $"[{i}]";
+
+                        if (isBlocksList && child is NbtCompound)
+                        {
+                            childNode.IsBlockNode = true;
+                        }
                         node.Children.Add(childNode);
                     }
                     break;
@@ -44,6 +52,11 @@ namespace McStructureNbtEditor.Services
             var rootNode = Build(rootTag);
             rootNode.Name = fileName;
             return rootNode;
+        }
+
+        private void CheckIfBlockNode()
+        {
+
         }
 
         private string GetValuePreview(NbtTag tag)
