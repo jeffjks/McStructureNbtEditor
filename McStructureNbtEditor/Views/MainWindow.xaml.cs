@@ -14,9 +14,9 @@ namespace McStructureNbtEditor.Views
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (DataContext is MainViewModel viewModel)
+            if (DataContext is MainViewModel mainVM)
             {
-                viewModel.SelectedTreeNode = e.NewValue as NbtTreeNode;
+                mainVM.NbtTree.SelectedTreeNode = e.NewValue as NbtTreeNode;
             }
         }
     }

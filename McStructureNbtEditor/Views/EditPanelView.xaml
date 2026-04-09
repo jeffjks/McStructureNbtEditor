@@ -9,13 +9,25 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8">
-        </ScrollViewer>
+        <TextBox Grid.Row="0" 
+             Margin="0,0,0,8"
+             Text="{Binding NbtTree.SelectedSnbt, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+             IsReadOnly="True"
+             AcceptsReturn="True"
+             VerticalScrollBarVisibility="Auto"
+             HorizontalScrollBarVisibility="Auto"
+             VerticalContentAlignment="Top"
+             Padding="5"
+             SpellCheck.IsEnabled="False"
+             FontFamily="Consolas"/>
 
-        <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,1,0,0"
-                        Padding="0,8,0,0">
+        <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="0,1,0,0" Padding="0,8,0,0">
+        </Border>
+
+        <Border Grid.Row="2" BorderBrush="LightGray" BorderThickness="0,1,0,0" Padding="0,8,0,0">
             <Grid Grid.Column="2" Margin="12,8,12,8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

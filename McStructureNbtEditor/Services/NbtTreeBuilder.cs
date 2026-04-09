@@ -54,11 +54,6 @@ namespace McStructureNbtEditor.Services
             return rootNode;
         }
 
-        private void CheckIfBlockNode()
-        {
-
-        }
-
         private string GetValuePreview(NbtTag tag)
         {
             return tag switch
