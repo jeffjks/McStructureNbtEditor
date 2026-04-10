@@ -1,7 +1,7 @@
 ﻿using McStructureNbtEditor.Models;
 using fNbt;
 
-// / 읽은 NBT를 “마인크래프트 구조물” 관점으로 해석 (size, palletes, block개수, 좌표 해석 등)
+// / 읽은 NBT를 “마인크래프트 구조물” 관점으로 해석 (size, paletes, block개수, 좌표 해석 등)
 
 namespace McStructureNbtEditor.Services
 {

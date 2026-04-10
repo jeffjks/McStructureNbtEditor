@@ -11,15 +11,17 @@ namespace McStructureNbtEditor.Services
 
     public sealed class EditorSession : INotifyPropertyChanged
     {
-        private StructureFileModel? _structure;
-        public StructureFileModel? Structure
+        private StructureFileModel? _currentStructure;
+        public StructureFileModel? CurrentStructure
         {
-            get => _structure;
+            get => _currentStructure;
             set
             {
-                if (_structure == value) return;
-                _structure = value;
-                OnPropertyChanged(nameof(Structure));
+                if (_currentStructure == value)
+                    return;
+                _currentStructure = value;
+                OnPropertyChanged(nameof(CurrentStructure));
+                SelectedPaletteEntry = CurrentStructure?.GetPaletteEntry(0);
             }
         }
 
@@ -46,6 +48,19 @@ namespace McStructureNbtEditor.Services
                     return;
                 _selectedInspectable = value;
                 OnPropertyChanged(nameof(SelectedInspectable));
+            }
+        }
+
+        private PaletteEntry? _selectedPaletteEntry;
+        public PaletteEntry? SelectedPaletteEntry
+        {
+            get => _selectedPaletteEntry;
+            set
+            {
+                if (_selectedPaletteEntry == value)
+                    return;
+                _selectedPaletteEntry = value;
+                OnPropertyChanged();
             }
         }
 

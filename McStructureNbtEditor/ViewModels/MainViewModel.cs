@@ -19,7 +19,6 @@ namespace McStructureNbtEditor.ViewModels
 
         private StructureSummary? _summary;
         private NbtFile? _currentFile;
-        private StructureFileModel? _currentStructure;
 
         public ObservableCollection<NbtTreeNode> RootNodes { get; } = new();
         public EditorSession Session { get; }
@@ -73,7 +72,7 @@ namespace McStructureNbtEditor.ViewModels
             try
             {
                 _currentFile = _nbtFileService.Load(dialog.FileName);
-                _currentStructure = _structureParser.ParseStructure(_currentFile, dialog.FileName);
+                Session.CurrentStructure = _structureParser.ParseStructure(_currentFile, dialog.FileName);
 
                 RootNodes.Clear();
                 var fileName = dialog.SafeFileName;
@@ -81,7 +80,7 @@ namespace McStructureNbtEditor.ViewModels
                 RootNodes.Add(rootNode);
 
                 Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
-                LayerSlice.LoadStructure(_currentStructure);
+                LayerSlice.LoadStructure(Session.CurrentStructure);
 
                 Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
                 Session.StatusMessage = "파일 로드 완료";

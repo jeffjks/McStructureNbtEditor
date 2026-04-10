@@ -102,11 +102,6 @@ namespace McStructureNbtEditor.ViewModels
         public int SliceWidth => _structure?.SizeX ?? 0;
         public int SliceHeight => _structure?.SizeZ ?? 0;
 
-        public string SliceInfoText =>
-            _structure == null
-                ? "단면 정보 없음"
-                : $"Y={CurrentY} / 범위 {MinY}~{MaxY} / Size X={SliceWidth}, Z={SliceHeight}";
-
         public RelayCommand ApplyYTextCommand { get; }
         public RelayCommand IncreaseYCommand { get; }
         public RelayCommand DecreaseYCommand { get; }
@@ -168,7 +163,7 @@ namespace McStructureNbtEditor.ViewModels
             }
 
             CurrentY = parsed;
-            _session.StatusMessage = $"Y 층 변경: {CurrentY}";
+            _session.StatusMessage = $"Y 높이 변경: {CurrentY}";
         }
 
         private int ClampY(int y)
@@ -193,7 +188,6 @@ namespace McStructureNbtEditor.ViewModels
                     SliceCells.Add(cell);
             }
 
-            OnPropertyChanged(nameof(SliceInfoText));
             RaiseCommands();
         }
 
@@ -427,7 +421,6 @@ namespace McStructureNbtEditor.ViewModels
         {
             OnPropertyChanged(nameof(SliceWidth));
             OnPropertyChanged(nameof(SliceHeight));
-            OnPropertyChanged(nameof(SliceInfoText));
         }
 
         private void RaiseCommands()

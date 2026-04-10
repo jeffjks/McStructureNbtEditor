@@ -38,7 +38,7 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                    Text="Y 층"
+                    Text="Y 높이"
                     FontSize="14"
                     HorizontalAlignment="Center"
                     FontWeight="SemiBold"
