@@ -58,9 +58,9 @@
                                 <StackPanel>
                                     <TextBlock Text="{Binding TooltipBlockNameText, TargetNullValue=(empty)}" />
                                     <TextBlock Text="{Binding PaletteIndex, StringFormat=Palette: {0}}" />
-                                    <TextBlock Text="{Binding X, StringFormat=X: {0}}" />
-                                    <TextBlock Text="{Binding Y, StringFormat=Y: {0}}" />
-                                    <TextBlock Text="{Binding Z, StringFormat=Z: {0}}" />
+                                    <TextBlock Text="{Binding BlockPos.X, StringFormat=X: {0}}" />
+                                    <TextBlock Text="{Binding BlockPos.Y, StringFormat=Y: {0}}" />
+                                    <TextBlock Text="{Binding BlockPos.Z, StringFormat=Z: {0}}" />
                                 </StackPanel>
                             </Border.ToolTip>
                         </Border>

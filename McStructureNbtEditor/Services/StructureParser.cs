@@ -98,11 +98,13 @@ namespace McStructureNbtEditor.Services
 
                     var block = new StructureBlock
                     {
-                        X = GetIntTagValue(posList[0]),
-                        Y = GetIntTagValue(posList[1]),
-                        Z = GetIntTagValue(posList[2]),
+                        BlockPos = new BlockPosition(
+                            GetIntTagValue(posList[0]),
+                            GetIntTagValue(posList[1]),
+                            GetIntTagValue(posList[2])
+                        ),
                         State = GetIntFromCompound(blockCompound, "state"),
-                        HasBlockEntityData = blockCompound.Contains("nbt")
+                        Tag = blocksList[i]
                     };
 
                     model.Blocks.Add(block);

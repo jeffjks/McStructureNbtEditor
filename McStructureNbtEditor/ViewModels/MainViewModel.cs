@@ -17,24 +17,15 @@ namespace McStructureNbtEditor.ViewModels
         private readonly StructureParser _structureParser = new();
         private readonly NbtTreeBuilder _treeBuilder = new();
 
-        private string _statusText = "파일을 열어주세요.";
         private StructureSummary? _summary;
         private NbtFile? _currentFile;
         private StructureFileModel? _currentStructure;
 
         public ObservableCollection<NbtTreeNode> RootNodes { get; } = new();
+        public EditorSession Session { get; }
         public LayerSliceViewModel LayerSlice { get; }
         public NbtTreeViewModel NbtTree { get; }
-
-        public string StatusText
-        {
-            get => _statusText;
-            set
-            {
-                _statusText = value;
-                OnPropertyChanged();
-            }
-        }
+        public SnbtFieldViewModel SnbtField { get; }
 
         public StructureSummary? Summary
         {
@@ -56,8 +47,10 @@ namespace McStructureNbtEditor.ViewModels
 
         public MainViewModel()
         {
-            NbtTree = new NbtTreeViewModel(this);
-            LayerSlice = new LayerSliceViewModel();
+            Session = new EditorSession();
+            NbtTree = new NbtTreeViewModel(Session);
+            LayerSlice = new LayerSliceViewModel(Session);
+            SnbtField = new SnbtFieldViewModel(Session);
 
             OpenFileCommand = new RelayCommand(OpenFile);
             SaveFileCommand = new RelayCommand(SaveFile);
@@ -89,11 +82,11 @@ namespace McStructureNbtEditor.ViewModels
                 LayerSlice.LoadStructure(_currentStructure);
 
                 Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
-                StatusText = "파일 로드 완료";
+                Session.StatusMessage = "파일 로드 완료";
             }
             catch (Exception ex)
             {
-                StatusText = $"파일을 로드하는 중 오류가 발생했습니다: {ex.Message}";
+                Session.StatusMessage = $"파일을 로드하는 중 오류가 발생했습니다: {ex.Message}";
             }
         }
 

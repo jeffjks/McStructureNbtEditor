@@ -1,5 +1,6 @@
 ﻿using fNbt;
 using McStructureNbtEditor.Models;
+using McStructureNbtEditor.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -7,16 +8,9 @@ namespace McStructureNbtEditor.ViewModels
 {
     public class NbtTreeViewModel : INotifyPropertyChanged
     {
-        private MainViewModel _mainViewModel;
+        private readonly EditorSession _session;
 
         public RelayCommand JumpToTreeSelectedBlockCommand { get; }
-
-        private string _selectedSnbt = string.Empty;
-        public string SelectedSnbt
-        {
-            get => _selectedSnbt;
-            set { _selectedSnbt = value; OnPropertyChanged(); }
-        }
 
         private NbtTreeNode? _selectedTreeNode;
         public NbtTreeNode? SelectedTreeNode
@@ -31,13 +25,13 @@ namespace McStructureNbtEditor.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanJumpToTreeSelectedBlock));
                 JumpToTreeSelectedBlockCommand.RaiseCanExecuteChanged();
-                UpdateSnbtText(_selectedTreeNode);
+                _session.SelectedInspectable = _selectedTreeNode;
             }
         }
 
-        public NbtTreeViewModel(MainViewModel mainViewModel)
+        public NbtTreeViewModel(EditorSession session)
         {
-            _mainViewModel = mainViewModel;
+            _session = session;
 
             JumpToTreeSelectedBlockCommand = new RelayCommand(
                 JumpToTreeSelectedBlock,
@@ -49,11 +43,7 @@ namespace McStructureNbtEditor.ViewModels
             if (!TryGetBlockPositionFromTreeNode(SelectedTreeNode, out int x, out int y, out int z))
                 return;
 
-            bool ok = _mainViewModel.LayerSlice.TrySelectCellAt(x, y, z);
-
-            _mainViewModel.StatusText = ok
-                ? $"블록으로 이동: ({x}, {y}, {z})"
-                : $"블록을 찾을 수 없음: ({x}, {y}, {z})";
+            _session.RequestedCellSelection = new BlockPosition(x, y, z);
         }
 
         public bool CanJumpToTreeSelectedBlock =>
@@ -89,17 +79,6 @@ namespace McStructureNbtEditor.ViewModels
             {
                 return false;
             }
-        }
-
-        private void UpdateSnbtText(NbtTreeNode? node)
-        {
-            if (node == null)
-            {
-                SelectedSnbt = string.Empty;
-                return;
-            }
-
-            SelectedSnbt = node.ToSnbtString();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

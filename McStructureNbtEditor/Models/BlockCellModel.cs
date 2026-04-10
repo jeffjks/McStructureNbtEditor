@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
+﻿using fNbt;
+using McStructureNbtEditor.Services;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace McStructureNbtEditor.Models
 {
-    public class BlockCellModel : INotifyPropertyChanged
+    public class BlockCellModel : INotifyPropertyChanged, ISnbtInspectable
     {
         private string _blockName = "";
         private string _displayText = "";
@@ -12,9 +14,9 @@ namespace McStructureNbtEditor.Models
         private int _paletteIndex = -1;
         private bool _isSelected = false;
 
-        public int X { get; set; }
-        public int Z { get; set; }
-        public int Y { get; set; }
+        public BlockPosition BlockPos { get; set; }
+        public NbtTag? Tag { get; set; }
+
 
         public string BlockName
         {
@@ -74,6 +76,13 @@ namespace McStructureNbtEditor.Models
                 _isSelected = value;
                 OnPropertyChanged();
             }
+        }
+
+        public string GetSnbtText()
+        {
+            if (Tag == null)
+                return string.Empty;
+            return NbtSnbtConverter.ToSnbt(Tag);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

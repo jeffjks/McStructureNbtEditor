@@ -7,6 +7,7 @@ namespace McStructureNbtEditor.Services
     {
         private const string AIR_BLOCK = "minecraft:air";
         private const string VOID_BLOCK = "minecraft:structure_void";
+        private readonly Dictionary<(int, int), StructureBlock> _structureBlockMap = new();
 
         public ObservableCollection<BlockCellModel> BuildSlice(StructureFileModel structure, int y)
         {
@@ -15,28 +16,26 @@ namespace McStructureNbtEditor.Services
             if (structure == null || structure.SizeX <= 0 || structure.SizeZ <= 0)
                 return result;
 
-            // (x, z) -> block
-            var map = new Dictionary<(int X, int Z), StructureBlock>();
+            _structureBlockMap.Clear();
 
-            foreach (var block in structure.Blocks.Where(b => b.Y == y))
+            foreach (var block in structure.Blocks.Where(b => b.BlockPos.Y == y))
             {
-                map[(block.X, block.Z)] = block;
+                _structureBlockMap[(block.BlockPos.X, block.BlockPos.Z)] = block;
             }
 
             for (int z = 0; z < structure.SizeZ; z++)
             {
                 for (int x = 0; x < structure.SizeX; x++)
                 {
-                    if (map.TryGetValue((x, z), out var block))
+                    if (_structureBlockMap.TryGetValue((x, z), out var block))
                     {
                         var palette = structure.GetPaletteEntry(block.State);
                         var blockName = palette?.Name ?? $"<state:{block.State}>";
 
                         result.Add(new BlockCellModel
                         {
-                            X = x,
-                            Y = y,
-                            Z = z,
+                            BlockPos = new BlockPosition(x, y, z),
+                            Tag = block.Tag,
                             BlockName = blockName,
                             PaletteIndex = block.State,
                             IsOccupied = (blockName != VOID_BLOCK),
@@ -48,9 +47,7 @@ namespace McStructureNbtEditor.Services
                     {
                         result.Add(new BlockCellModel
                         {
-                            X = x,
-                            Y = y,
-                            Z = z,
+                            BlockPos = new BlockPosition(x, y, z),
                             BlockName = string.Empty,
                             PaletteIndex = -1,
                             IsOccupied = false,

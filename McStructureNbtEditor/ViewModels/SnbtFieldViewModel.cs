@@ -1,37 +1,35 @@
-﻿using McStructureNbtEditor.Models;
-using System;
-using System.Collections.Generic;
+﻿using McStructureNbtEditor.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace McStructureNbtEditor.ViewModels
 {
     public class SnbtFieldViewModel : INotifyPropertyChanged
     {
-        private readonly MainViewModel _mainViewModel;
-        private string _selectedSnbt = string.Empty;
-        public string SelectedSnbt
+        private readonly EditorSession _session;
+        private string _displayedSnbt = string.Empty;
+        public string DisplayedSnbt
         {
-            get => _selectedSnbt;
-            set { _selectedSnbt = value; OnPropertyChanged(); }
+            get => _displayedSnbt;
+            set { _displayedSnbt = value; OnPropertyChanged(); }
         }
 
-        public SnbtFieldViewModel(MainViewModel mainViewModel)
+        public SnbtFieldViewModel(EditorSession session)
         {
-            _mainViewModel = mainViewModel;
-            _mainViewModel.OnSnbtUpdated += UpdateSnbtText;
+            _session = session;
+            _session.PropertyChanged += OnSessionPropertyChanged;
+            RefreshFromSelection();
         }
 
-        public void UpdateSnbtText(NbtTreeNode? node)
+        private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (node == null)
-            {
-                SelectedSnbt = string.Empty;
-                return;
-            }
+            if (e.PropertyName == nameof(EditorSession.SelectedInspectable))
+                RefreshFromSelection();
+        }
 
-            SelectedSnbt = node.ToSnbtString();
+        private void RefreshFromSelection()
+        {
+            DisplayedSnbt = _session.SelectedInspectable?.GetSnbtText() ?? string.Empty;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

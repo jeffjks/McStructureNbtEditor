@@ -1,13 +1,13 @@
 ﻿using fNbt;
+using McStructureNbtEditor.Services;
 using System.Collections.ObjectModel;
-using System.Text;
 
 // WPF TreeView에 표시하기 위한 뷰 모델용 노드
 // fNbt 태그를 UI에 바로 바인딩하지 않고 한 번 감싸는 용도
 
 namespace McStructureNbtEditor.Models
 {
-    public class NbtTreeNode
+    public class NbtTreeNode : ISnbtInspectable
     {
         public string Name { get; set; } = "";
         public string Type { get; set; } = "";
@@ -30,7 +30,7 @@ namespace McStructureNbtEditor.Models
         }
 
 
-        public string ToSnbtString()
+        public string GetSnbtText()
         {
             if (Tag == null)
                 return "{}";

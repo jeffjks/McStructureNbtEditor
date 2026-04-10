@@ -134,7 +134,7 @@
         </Grid>
 
         <StatusBar Grid.Row="2">
-            <TextBlock Text="{Binding StatusText}" />
+            <TextBlock Text="{Binding Session.StatusMessage}" />
         </StatusBar>
     </Grid>
 </Window>

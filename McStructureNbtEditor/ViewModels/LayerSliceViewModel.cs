@@ -9,6 +9,7 @@ namespace McStructureNbtEditor.ViewModels
 {
     public class LayerSliceViewModel : INotifyPropertyChanged
     {
+        private readonly EditorSession _session;
         private readonly SliceBuilder _sliceBuilder = new();
 
         private StructureFileModel? _structure;
@@ -16,7 +17,6 @@ namespace McStructureNbtEditor.ViewModels
         private int _maxY;
         private int _currentY;
         private string _currentYText = "0";
-        private string _statusText = "";
 
         private BlockCellModel? _dragStartCell;
         private BlockCellModel? _dragCurrentCell;
@@ -29,20 +29,6 @@ namespace McStructureNbtEditor.ViewModels
 
         public ObservableCollection<BlockCellModel> SliceCells { get; } = new();
         public ObservableCollection<BlockCellModel> SelectedCells { get; } = new();
-
-        private BlockCellModel? _selectedCell;
-        public BlockCellModel? SelectedCell
-        {
-            get => _selectedCell;
-            set
-            {
-                if (_selectedCell == value)
-                    return;
-
-                _selectedCell = value;
-                OnPropertyChanged();
-            }
-        }
 
         public bool IsDragging
         {
@@ -113,17 +99,6 @@ namespace McStructureNbtEditor.ViewModels
             }
         }
 
-        public string StatusText
-        {
-            get => _statusText;
-            set
-            {
-                if (_statusText == value) return;
-                _statusText = value;
-                OnPropertyChanged();
-            }
-        }
-
         public int SliceWidth => _structure?.SizeX ?? 0;
         public int SliceHeight => _structure?.SizeZ ?? 0;
 
@@ -136,11 +111,15 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand IncreaseYCommand { get; }
         public RelayCommand DecreaseYCommand { get; }
 
-        public LayerSliceViewModel()
+        public LayerSliceViewModel(EditorSession session)
         {
+            _session = session;
             ApplyYTextCommand = new RelayCommand(ApplyYFromText, () => _structure != null);
             IncreaseYCommand = new RelayCommand(() => CurrentY += 1, () => _structure != null && CurrentY < MaxY);
             DecreaseYCommand = new RelayCommand(() => CurrentY -= 1, () => _structure != null && CurrentY > MinY);
+
+            SelectedCells.CollectionChanged += (s, e) => UpdateSingleSelection();
+            _session.PropertyChanged += OnSessionPropertyChanged;
         }
 
         public void LoadStructure(StructureFileModel? structure)
@@ -156,7 +135,7 @@ namespace McStructureNbtEditor.ViewModels
                 _currentY = 0;
                 OnPropertyChanged(nameof(CurrentY));
                 CurrentYText = "0";
-                StatusText = "구조물 없음";
+                _session.StatusMessage = "구조물 없음";
                 NotifyLayoutChanged();
                 RaiseCommands();
                 return;
@@ -171,7 +150,7 @@ namespace McStructureNbtEditor.ViewModels
 
             RebuildSlice();
 
-            StatusText = $"구조물 로드됨. Y 범위: {MinY}~{MaxY}";
+            _session.StatusMessage = $"구조물 로드됨. Y 범위: {MinY}~{MaxY}";
             NotifyLayoutChanged();
             RaiseCommands();
         }
@@ -184,12 +163,12 @@ namespace McStructureNbtEditor.ViewModels
             if (!int.TryParse(CurrentYText, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
             {
                 CurrentYText = CurrentY.ToString(CultureInfo.InvariantCulture);
-                StatusText = "Y 값은 정수여야 합니다.";
+                _session.StatusMessage = "Y 값은 정수여야 합니다.";
                 return;
             }
 
             CurrentY = parsed;
-            StatusText = $"Y 층 변경: {CurrentY}";
+            _session.StatusMessage = $"Y 층 변경: {CurrentY}";
         }
 
         private int ClampY(int y)
@@ -218,14 +197,14 @@ namespace McStructureNbtEditor.ViewModels
             RaiseCommands();
         }
 
-        public bool TrySelectCellAt(int x, int y, int z)
+        public bool TrySelectCellAt(BlockPosition blockPosition)
         {
             if (_structure == null)
                 return false;
 
-            CurrentY = y;
+            CurrentY = blockPosition.Y;
 
-            var cell = SliceCells.FirstOrDefault(c => c.X == x && c.Y == y && c.Z == z);
+            var cell = SliceCells.FirstOrDefault(c => c.BlockPos == blockPosition);
             if (cell == null)
                 return false;
 
@@ -242,8 +221,17 @@ namespace McStructureNbtEditor.ViewModels
             cell.IsSelected = true;
             if (!SelectedCells.Contains(cell))
                 SelectedCells.Add(cell);
-
-            SelectedCell = cell;
+        }
+        private void UpdateSingleSelection()
+        {
+            if (SelectedCells.Count == 1)
+            {
+                _session.SelectedInspectable = SelectedCells[0];
+            }
+            else
+            {
+                _session.SelectedInspectable = null;
+            }
         }
 
         private void RemoveFromSelection(BlockCellModel cell)
@@ -253,9 +241,6 @@ namespace McStructureNbtEditor.ViewModels
 
             cell.IsSelected = false;
             SelectedCells.Remove(cell);
-
-            if (SelectedCell == cell)
-                SelectedCell = SelectedCells.LastOrDefault();
         }
 
         public void SelectSingle(BlockCellModel cell)
@@ -280,15 +265,15 @@ namespace McStructureNbtEditor.ViewModels
 
         private List<BlockCellModel> GetRectangleCells(BlockCellModel start, BlockCellModel end)
         {
-            int minX = Math.Min(start.X, end.X);
-            int maxX = Math.Max(start.X, end.X);
-            int minZ = Math.Min(start.Z, end.Z);
-            int maxZ = Math.Max(start.Z, end.Z);
+            int minX = Math.Min(start.BlockPos.X, end.BlockPos.X);
+            int maxX = Math.Max(start.BlockPos.X, end.BlockPos.X);
+            int minZ = Math.Min(start.BlockPos.Z, end.BlockPos.Z);
+            int maxZ = Math.Max(start.BlockPos.Z, end.BlockPos.Z);
 
             return SliceCells
                 .Where(cell =>
-                    cell.X >= minX && cell.X <= maxX &&
-                    cell.Z >= minZ && cell.Z <= maxZ)
+                    cell.BlockPos.X >= minX && cell.BlockPos.X <= maxX &&
+                    cell.BlockPos.Z >= minZ && cell.BlockPos.Z <= maxZ)
                 .ToList();
         }
 
@@ -303,8 +288,6 @@ namespace McStructureNbtEditor.ViewModels
 
             foreach (var cell in rectCells)
                 AddToSelection(cell);
-
-            SelectedCell = end;
         }
 
         public void AddRectangleSelection(BlockCellModel start, BlockCellModel end)
@@ -316,8 +299,6 @@ namespace McStructureNbtEditor.ViewModels
 
             foreach (var cell in rectCells)
                 AddToSelection(cell);
-
-            SelectedCell = end;
         }
 
         public void ToggleRectangleSelection(BlockCellModel start, BlockCellModel end)
@@ -343,8 +324,6 @@ namespace McStructureNbtEditor.ViewModels
                 else
                     RemoveFromSelection(cell);
             }
-
-            SelectedCell = end;
         }
 
         public void BeginSelection(BlockCellModel cell, bool isCtrlPressed, bool isShiftPressed)
@@ -433,7 +412,6 @@ namespace McStructureNbtEditor.ViewModels
         public void ClearSelection()
         {
             ClearSelectionInternal();
-            SelectedCell = null;
         }
 
         private void ClearSelectionInternal()
@@ -457,6 +435,20 @@ namespace McStructureNbtEditor.ViewModels
             ApplyYTextCommand.RaiseCanExecuteChanged();
             IncreaseYCommand.RaiseCanExecuteChanged();
             DecreaseYCommand.RaiseCanExecuteChanged();
+        }
+
+        private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(EditorSession.RequestedCellSelection))
+            {
+                var pos = _session.RequestedCellSelection;
+
+                bool ok = TrySelectCellAt(pos);
+
+                _session.StatusMessage = ok
+                    ? $"블록으로 이동: ({pos})"
+                    : $"블록을 찾을 수 없음: ({pos})";
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
