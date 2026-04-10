@@ -23,7 +23,7 @@ namespace McStructureNbtEditor.ViewModels
 
         private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(EditorSession.SelectedInspectable))
+            if (e.PropertyName == nameof(_session.SelectedInspectable))
                 RefreshFromSelection();
         }
 

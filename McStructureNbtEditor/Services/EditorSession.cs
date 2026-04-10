@@ -42,7 +42,8 @@ namespace McStructureNbtEditor.Services
             get => _selectedInspectable;
             set
             {
-                if (_selectedInspectable == value) return;
+                if (_selectedInspectable == value)
+                    return;
                 _selectedInspectable = value;
                 OnPropertyChanged(nameof(SelectedInspectable));
             }

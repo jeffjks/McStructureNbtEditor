@@ -56,6 +56,8 @@ namespace McStructureNbtEditor.ViewModels
             SaveFileCommand = new RelayCommand(SaveFile);
             SaveAsFileCommand = new RelayCommand(SaveAsFile);
             ExitCommand = new RelayCommand(Exit);
+
+            NbtTree.TreeViewSelectionChanged += OnTreeSelectedNodeChanged;
         }
 
         private void OpenFile()
@@ -120,6 +122,10 @@ namespace McStructureNbtEditor.ViewModels
 
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(dict);
+        }
+        private void OnTreeSelectedNodeChanged()
+        {
+            LayerSlice.ClearSelection();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

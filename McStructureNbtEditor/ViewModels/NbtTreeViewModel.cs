@@ -10,6 +10,8 @@ namespace McStructureNbtEditor.ViewModels
     {
         private readonly EditorSession _session;
 
+        public event Action? TreeViewSelectionChanged;
+
         public RelayCommand JumpToTreeSelectedBlockCommand { get; }
 
         private NbtTreeNode? _selectedTreeNode;
@@ -22,6 +24,7 @@ namespace McStructureNbtEditor.ViewModels
                     return;
 
                 _selectedTreeNode = value;
+                TreeViewSelectionChanged?.Invoke();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanJumpToTreeSelectedBlock));
                 JumpToTreeSelectedBlockCommand.RaiseCanExecuteChanged();

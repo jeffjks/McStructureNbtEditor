@@ -439,7 +439,7 @@ namespace McStructureNbtEditor.ViewModels
 
         private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(EditorSession.RequestedCellSelection))
+            if (e.PropertyName == nameof(_session.RequestedCellSelection))
             {
                 var pos = _session.RequestedCellSelection;
 
