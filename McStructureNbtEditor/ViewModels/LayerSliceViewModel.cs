@@ -120,7 +120,10 @@ namespace McStructureNbtEditor.ViewModels
 
         public void LoadStructure(StructureFileModel? structure)
         {
-            _structure = structure;
+            bool isNewStructure = _structure != structure;
+
+            if (isNewStructure)
+                _structure = structure;
 
             if (_structure == null || _structure.SizeY <= 0)
             {
@@ -137,14 +140,16 @@ namespace McStructureNbtEditor.ViewModels
                 return;
             }
 
-            MinY = 0;
-            MaxY = _structure.SizeY - 1;
+            if (isNewStructure) {
+                MinY = 0;
+                MaxY = _structure.SizeY - 1;
 
-            _currentY = 0;
-            OnPropertyChanged(nameof(CurrentY));
-            CurrentYText = "0";
+                _currentY = 0;
+                OnPropertyChanged(nameof(CurrentY));
+                CurrentYText = "0";
 
-            RebuildSlice();
+                RebuildSlice();
+            }
 
             _session.StatusMessage = $"구조물 로드됨. Y 범위: {MinY}~{MaxY}";
             NotifyLayoutChanged();
