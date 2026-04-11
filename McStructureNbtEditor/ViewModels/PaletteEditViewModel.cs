@@ -71,7 +71,7 @@ namespace McStructureNbtEditor.ViewModels
                 return;
             }
 
-            var command = new AddPaletteEntryCommand(result.PaletteName);
+            var command = new AddPaletteEntryCommand(result.PaletteName, string.Empty);
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 추가에 실패했습니다.";
