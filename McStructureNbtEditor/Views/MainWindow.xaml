@@ -73,7 +73,7 @@
                             Padding="20,5"
                             HorizontalAlignment="Center"
                             Command="{Binding NbtTree.JumpToTreeSelectedBlockCommand}"/>
-                        <TreeView Grid.Row="0" ItemsSource="{Binding RootNodes}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                        <TreeView Grid.Row="0" ItemsSource="{Binding NbtTree.RootNodes}" SelectedItemChanged="TreeView_SelectedItemChanged">
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type models:NbtTreeNode}"
                                 ItemsSource="{Binding Children}">
@@ -116,13 +116,6 @@
 
                     <Border Grid.Row="1" Padding="0,8,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                            <StackPanel Orientation="Vertical" Margin="4,0,12,0">
-                                <TextBlock Text="현재 블록" FontSize="14" Margin="2,2,2,2"/>
-                                <ComboBox Width="192" Height="26"
-                                          ItemsSource="{Binding Session.CurrentStructure.Palette}"
-                                          DisplayMemberPath="Name"
-                                          SelectedItem="{Binding Session.SelectedPaletteEntry}"/>
-                            </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="12,0,4,0">
                                 <Button Content="변경" MinWidth="96" Height="28" Margin="5"/>
                                 <Button Content="스포이드" MinWidth="96" Height="28" Margin="5"/>

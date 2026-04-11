@@ -1,6 +1,7 @@
 ﻿using fNbt;
 using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -9,6 +10,11 @@ namespace McStructureNbtEditor.ViewModels
     public class NbtTreeViewModel : INotifyPropertyChanged
     {
         private readonly EditorSession _session;
+        private readonly IStructureNbtSerializer _serializer;
+        private readonly NbtTreeBuilder _treeBuilder;
+
+        public ObservableCollection<NbtTreeNode> RootNodes { get; } = new();
+
 
         public event Action? TreeViewSelectionChanged;
 
@@ -32,9 +38,13 @@ namespace McStructureNbtEditor.ViewModels
             }
         }
 
-        public NbtTreeViewModel(EditorSession session)
+        public NbtTreeViewModel(EditorSession session, IStructureNbtSerializer serializer, NbtTreeBuilder treeBuilder)
         {
             _session = session;
+            _serializer = serializer;
+            _treeBuilder = treeBuilder;
+
+            _session.DocumentChanged += OnDocumentChanged;
 
             JumpToTreeSelectedBlockCommand = new RelayCommand(
                 JumpToTreeSelectedBlock,
@@ -82,6 +92,24 @@ namespace McStructureNbtEditor.ViewModels
             {
                 return false;
             }
+        }
+
+        private void OnDocumentChanged(object? sender, EventArgs e)
+        {
+            RebuildTree();
+        }
+
+        public void RebuildTree()
+        {
+            RootNodes.Clear();
+
+            if (_session.CurrentStructure == null)
+                return;
+
+            var rootTag = _serializer.BuildRootTag(_session.CurrentStructure);
+            var fileName = _session.CurrentStructure.FileName;
+            var rootNode = _treeBuilder.BuildRoot(rootTag, fileName);
+            RootNodes.Add(rootNode);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

@@ -6,6 +6,8 @@
         public string Name { get; set; } = "";
         public Dictionary<string, string> Properties { get; set; } = new();
 
+        public string ItemTemplate => $"[{Index}] {Name}";
+
         public string DisplayName
         {
             get

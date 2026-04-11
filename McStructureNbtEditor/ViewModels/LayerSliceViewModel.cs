@@ -115,6 +115,7 @@ namespace McStructureNbtEditor.ViewModels
 
             SelectedCells.CollectionChanged += (s, e) => UpdateSingleSelection();
             _session.PropertyChanged += OnSessionPropertyChanged;
+            _session.DocumentChanged += OnDocumentChanged;
         }
 
         public void LoadStructure(StructureFileModel? structure)
@@ -428,6 +429,17 @@ namespace McStructureNbtEditor.ViewModels
             ApplyYTextCommand.RaiseCanExecuteChanged();
             IncreaseYCommand.RaiseCanExecuteChanged();
             DecreaseYCommand.RaiseCanExecuteChanged();
+        }
+
+        private void OnDocumentChanged(object? sender, EventArgs e)
+        {
+            Reload();
+        }
+
+        private void Reload()
+        {
+            var structure = _session.CurrentStructure;
+            LoadStructure(structure);
         }
 
         private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)

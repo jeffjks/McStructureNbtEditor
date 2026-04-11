@@ -36,10 +36,11 @@ namespace McStructureNbtEditor.Services
             return summary;
         }
 
-        public StructureFileModel ParseStructure(NbtFile file, string filePath)
+        public StructureFileModel ParseStructure(NbtFile file, string fileName, string filePath)
         {
             var model = new StructureFileModel
             {
+                FileName = fileName,
                 FilePath = filePath
             };
 
@@ -51,6 +52,17 @@ namespace McStructureNbtEditor.Services
                 model.SizeX = GetIntTagValue(sizeList[0]);
                 model.SizeY = GetIntTagValue(sizeList[1]);
                 model.SizeZ = GetIntTagValue(sizeList[2]);
+            }
+
+            if (TryGetList(root, "entities", out var entityList))
+            {
+                for (int i = 0; i < entityList.Count; i++)
+                {
+                    if (entityList[i] is not NbtCompound blockCompound)
+                        continue;
+
+                    model.Entities.Add(entityList[i]);
+                }
             }
 
             if (TryGetList(root, "palette", out var paletteList))
@@ -104,12 +116,15 @@ namespace McStructureNbtEditor.Services
                             GetIntTagValue(posList[2])
                         ),
                         State = GetIntFromCompound(blockCompound, "state"),
-                        Tag = blocksList[i]
+                        Tag = blocksList[i],
+                        Nbt = TryGetCompound(blockCompound, "nbt", out var nbt) ? new NbtCompound(nbt) : null
                     };
 
                     model.Blocks.Add(block);
                 }
             }
+
+            model.DataVersion = GetIntFromCompound(root, "DataVersion");
 
             return model;
         }

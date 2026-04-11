@@ -20,11 +20,11 @@ namespace McStructureNbtEditor.ViewModels
         private StructureSummary? _summary;
         private NbtFile? _currentFile;
 
-        public ObservableCollection<NbtTreeNode> RootNodes { get; } = new();
         public EditorSession Session { get; }
         public LayerSliceViewModel LayerSlice { get; }
         public NbtTreeViewModel NbtTree { get; }
         public SnbtFieldViewModel SnbtField { get; }
+        public PaletteEditViewModel PaletteEdit { get; }
 
         public StructureSummary? Summary
         {
@@ -46,10 +46,16 @@ namespace McStructureNbtEditor.ViewModels
 
         public MainViewModel()
         {
+            var dialogService = new DialogService();
+            var serializer = new StructureNbtSerializer();
+            var treeBuilder = new NbtTreeBuilder();
+
             Session = new EditorSession();
-            NbtTree = new NbtTreeViewModel(Session);
+
+            NbtTree = new NbtTreeViewModel(Session, serializer, treeBuilder);
             LayerSlice = new LayerSliceViewModel(Session);
             SnbtField = new SnbtFieldViewModel(Session);
+            PaletteEdit = new PaletteEditViewModel(Session, dialogService);
 
             OpenFileCommand = new RelayCommand(OpenFile);
             SaveFileCommand = new RelayCommand(SaveFile);
@@ -72,17 +78,8 @@ namespace McStructureNbtEditor.ViewModels
             try
             {
                 _currentFile = _nbtFileService.Load(dialog.FileName);
-                Session.CurrentStructure = _structureParser.ParseStructure(_currentFile, dialog.FileName);
-
-                RootNodes.Clear();
-                var fileName = dialog.SafeFileName;
-                var rootNode = _treeBuilder.BuildRoot(_currentFile.RootTag, fileName);
-                RootNodes.Add(rootNode);
-
-                Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
-                LayerSlice.LoadStructure(Session.CurrentStructure);
-
-                Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
+                Session.CurrentStructure = _structureParser.ParseStructure(_currentFile, dialog.SafeFileName, dialog.FileName);
+                //Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
                 Session.StatusMessage = "파일 로드 완료";
             }
             catch (Exception ex)

@@ -8,5 +8,6 @@ namespace McStructureNbtEditor.Models
 
         public int State { get; set; }
         public NbtTag? Tag { get; set; }
+        public NbtCompound? Nbt { get; set; }
     }
 }
