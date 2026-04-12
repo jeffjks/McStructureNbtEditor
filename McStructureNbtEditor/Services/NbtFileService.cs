@@ -10,13 +10,13 @@ namespace McStructureNbtEditor.Services
         public NbtFile Load(string path)
         {
             var file = new NbtFile();
-            file.LoadFromFile(path, NbtCompression.AutoDetect, null);
+            file.LoadFromFile(path, NbtCompression.GZip, null);
             return file;
         }
 
         public void Save(NbtFile file, string path)
         {
-            file.SaveToFile(path, NbtCompression.AutoDetect);
+            file.SaveToFile(path, NbtCompression.GZip);
         }
     }
 }

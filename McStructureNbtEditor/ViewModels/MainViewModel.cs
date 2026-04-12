@@ -2,7 +2,6 @@
 using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services;
 using Microsoft.Win32;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -18,6 +17,8 @@ namespace McStructureNbtEditor.ViewModels
 
         private StructureSummary? _summary;
         private NbtFile? _currentFile;
+        private string _currentFileName = "";
+        private string _currentFilePath = "";
 
         public EditorSession Session { get; }
         public LayerSliceViewModel LayerSlice { get; }
@@ -79,6 +80,8 @@ namespace McStructureNbtEditor.ViewModels
                 _currentFile = _nbtFileService.Load(dialog.FileName);
                 Session.CurrentStructure = _structureParser.ParseStructure(_currentFile, dialog.SafeFileName, dialog.FileName);
                 Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
+                _currentFilePath = dialog.FileName;
+                _currentFileName = dialog.SafeFileName;
                 Session.StatusMessage = "파일 로드 완료";
             }
             catch (Exception ex)
@@ -89,18 +92,58 @@ namespace McStructureNbtEditor.ViewModels
 
         private void SaveFile()
         {
+            if (!string.IsNullOrEmpty(_currentFilePath))
+            {
+                var nbtFile = GetNbtFile();
+                _nbtFileService.Save(nbtFile, _currentFilePath);
+                return;
+            }
 
+            SaveAsFile();
         }
 
         private void SaveAsFile()
         {
+            var dialog = new SaveFileDialog
+            {
+                Filter = "NBT Files (*.nbt)|*.nbt",
+                DefaultExt = ".nbt",
+                AddExtension = true,
+                FileName = $"{_currentFileName}.nbt"
+            };
 
+            bool? result = dialog.ShowDialog();
+            if (result != true)
+                return;
+
+            var path = dialog.FileName;
+
+            if (!path.EndsWith(".nbt", StringComparison.OrdinalIgnoreCase))
+            {
+                path += ".nbt";
+            }
+
+            var nbtFile = GetNbtFile();
+            _nbtFileService.Save(nbtFile, path);
+            _currentFilePath = path;
         }
 
         private void Exit()
         {
             // TODO. 저장 여부 묻기
             Application.Current.Shutdown();
+        }
+
+        private NbtFile GetNbtFile()
+        {
+            var tag = NbtTree.RootNodes.FirstOrDefault()?.Tag;
+            tag?.Name = "root";
+
+            if (tag is not NbtCompound root)
+                throw new InvalidOperationException("RootNode가 NbtCompound가 아닙니다.");
+
+            var nbtFile = new NbtFile(root);
+            return nbtFile;
         }
 
         private void ChangeLanguage(AppLanguage lang)
