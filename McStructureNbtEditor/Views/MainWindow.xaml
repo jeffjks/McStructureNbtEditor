@@ -102,11 +102,15 @@
             <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="8" Margin="4,0,4,0">
                 <Grid Grid.Column="1" Margin="4">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0"
+                    <TextBlock Grid.Row="0" Text="{Binding LayerSlice.SelectionText}"
+                               Margin="0,0,0,4"
+                               FontSize="14" />
+                    <Border Grid.Row="1"
                         BorderBrush="Gray"
                         BorderThickness="1"
                         Padding="8"
@@ -119,7 +123,7 @@
                         </ScrollViewer>
                     </Border>
 
-                    <Border Grid.Row="1" Padding="0,8,0,0">
+                    <Border Grid.Row="2" Padding="0,8,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="12,0,4,0">
                                 <Button Content="변경" MinWidth="96" Height="28" Margin="5"/>

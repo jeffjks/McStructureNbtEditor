@@ -17,6 +17,7 @@ namespace McStructureNbtEditor.ViewModels
         private int _maxY;
         private int _currentY;
         private string _currentYText = "0";
+        private string _selectionText = "";
 
         private BlockCellModel? _dragStartCell;
         private BlockCellModel? _dragCurrentCell;
@@ -95,6 +96,17 @@ namespace McStructureNbtEditor.ViewModels
             {
                 if (_currentYText == value) return;
                 _currentYText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectionText
+        {
+            get => _selectionText;
+            set
+            {
+                if (_selectionText == value) return;
+                _selectionText = value;
                 OnPropertyChanged();
             }
         }
@@ -222,15 +234,28 @@ namespace McStructureNbtEditor.ViewModels
             if (!SelectedCells.Contains(cell))
                 SelectedCells.Add(cell);
         }
+
         private void UpdateSingleSelection()
         {
-            if (SelectedCells.Count == 1)
+            var selectionCount = SelectedCells.Count;
+            if (selectionCount == 1)
             {
-                _session.SelectedInspectable = SelectedCells[0];
+                var cell = SelectedCells[0];
+                _session.SelectedInspectable = cell;
+                
+                if (cell.PaletteIndex == -1)
+                    SelectionText = $"현재 선택: 없음";
+                else
+                    SelectionText = $"현재 선택: [{cell.PaletteIndex}] {cell.BlockName}";
             }
             else
             {
                 _session.SelectedInspectable = null;
+
+                if (selectionCount == 0)
+                    SelectionText = $"현재 선택: 없음";
+                else
+                    SelectionText = $"현재 선택: {selectionCount}개 셀 선택함";
             }
         }
 
