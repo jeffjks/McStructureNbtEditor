@@ -30,10 +30,11 @@
 
         <TextBlock Grid.Row="0" Grid.Column="0"
                    VerticalAlignment="Center"
-                   Text="블록 이름"/>
+                   Text="블록 이름: "/>
 
         <TextBox Grid.Row="0" Grid.Column="2"
                  MinWidth="220"
+                 Height="24"
                  Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock Grid.Row="2" Grid.Column="0"
@@ -62,11 +63,13 @@
         <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
                     Orientation="Horizontal">
             <Button Content="속성 추가"
-                    Width="90"
+                    Width="96"
+                    Height="24"
                     Margin="0,0,8,0"
                     Command="{Binding AddPropertyCommand}" />
             <Button Content="선택 삭제"
-                    Width="90"
+                    Width="96"
+                    Height="24"
                     Command="{Binding RemovePropertyCommand}" />
         </StackPanel>
 
@@ -80,12 +83,14 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Content="확인"
-                    Width="80"
+                    Width="96"
+                    Height="24"
                     Margin="0,0,8,0"
                     IsDefault="True"
                     Command="{Binding ConfirmCommand}" />
             <Button Content="취소"
-                    Width="80"
+                    Width="96"
+                    Height="24"
                     IsCancel="True"
                     Command="{Binding CancelCommand}" />
         </StackPanel>

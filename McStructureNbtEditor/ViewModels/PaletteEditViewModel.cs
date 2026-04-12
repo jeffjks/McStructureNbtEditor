@@ -87,6 +87,7 @@ namespace McStructureNbtEditor.ViewModels
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 추가에 실패했습니다.";
+                return;
             }
 
             _session.StatusMessage = $"팔레트 '{entry.Name}' 추가됨.";
@@ -114,21 +115,24 @@ namespace McStructureNbtEditor.ViewModels
 
         private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(EditorSession.CurrentStructure))
+            if (e.PropertyName == nameof(_session.CurrentStructure))
             {
                 OnPropertyChanged(nameof(PaletteEntries));
                 OnPropertyChanged(nameof(SelectedPaletteEntry));
                 AddPaletteCommand.RaiseCanExecuteChanged();
             }
-            else if (e.PropertyName == nameof(EditorSession.SelectedPaletteEntry))
+            else if (e.PropertyName == nameof(_session.SelectedPaletteEntry))
             {
                 OnPropertyChanged(nameof(SelectedPaletteEntry));
+                RemovePaletteCommand.RaiseCanExecuteChanged();
+                ModifyPaletteCommand.RaiseCanExecuteChanged();
+                DuplicatePaletteCommand.RaiseCanExecuteChanged();
             }
-            else if (e.PropertyName == nameof(EditorSession.CanUndo))
+            else if (e.PropertyName == nameof(_session.CanUndo))
             {
                 UndoCommand.RaiseCanExecuteChanged();
             }
-            else if (e.PropertyName == nameof(EditorSession.CanRedo))
+            else if (e.PropertyName == nameof(_session.CanRedo))
             {
                 RedoCommand.RaiseCanExecuteChanged();
             }

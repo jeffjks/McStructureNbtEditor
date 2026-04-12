@@ -119,6 +119,7 @@ namespace McStructureNbtEditor.ViewModels
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(dict);
         }
+
         private void OnTreeSelectedNodeChanged()
         {
             LayerSlice.ClearSelection();

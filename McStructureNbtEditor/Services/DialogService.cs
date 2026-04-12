@@ -1,6 +1,8 @@
-﻿using McStructureNbtEditor.Services.DialogResults;
+﻿using McStructureNbtEditor.Models;
+using McStructureNbtEditor.Services.DialogResults;
 using McStructureNbtEditor.ViewModels;
 using McStructureNbtEditor.Views;
+using System.Windows;
 
 
 namespace McStructureNbtEditor.Services
@@ -20,6 +22,17 @@ namespace McStructureNbtEditor.Services
                 Confirmed = result == true,
                 Draft = vm.Result
             };
+        }
+
+        public bool ShowCommonDialog(string title, string message)
+        {
+            var vm = new CommonDialogViewModel(title, message);
+
+            var view = new CommonDialogView(vm);
+
+            var result = view.ShowDialog();
+
+            return result ?? false;
         }
     }
 }
