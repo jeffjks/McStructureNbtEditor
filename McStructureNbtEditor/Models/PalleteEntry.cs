@@ -1,10 +1,54 @@
-﻿namespace McStructureNbtEditor.Models
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace McStructureNbtEditor.Models
 {
-    public class PaletteEntry
+    public class PaletteEntry : INotifyPropertyChanged
     {
-        public int Index { get; set; }
-        public string Name { get; set; } = "";
-        public Dictionary<string, string> Properties { get; set; } = new();
+        private int _index;
+        private string _name = "";
+        private Dictionary<string, string> _properties = new();
+
+        public int Index
+        {
+            get => _index;
+            set
+            {
+                if (_index == value)
+                    return;
+
+                _index = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ItemTemplate));
+            }
+        }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (_name == value)
+                    return;
+
+                _name = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ItemTemplate));
+            }
+        }
+
+        public Dictionary<string, string> Properties
+        {
+            get => _properties;
+            set
+            {
+                if (_properties == value)
+                    return;
+
+                _properties = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string ItemTemplate => $"[{Index}] {Name}";
 
@@ -17,6 +61,13 @@
 
                 return $"{Name} [{string.Join(", ", Properties.Select(kv => $"{kv.Key}={kv.Value}"))}]";
             }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
