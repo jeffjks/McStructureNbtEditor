@@ -4,7 +4,7 @@ namespace McStructureNbtEditor.Commands
 {
     public interface IEditorCommand
     {
-        string Description { get; }
+        string CommandStatusMessage { get; }
         bool Execute(EditorSession session);
         void Undo(EditorSession session);
         ReloadScope ChangeType { get; }

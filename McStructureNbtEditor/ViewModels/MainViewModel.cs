@@ -78,7 +78,7 @@ namespace McStructureNbtEditor.ViewModels
             {
                 _currentFile = _nbtFileService.Load(dialog.FileName);
                 Session.CurrentStructure = _structureParser.ParseStructure(_currentFile, dialog.SafeFileName, dialog.FileName);
-                //Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
+                Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
                 Session.StatusMessage = "파일 로드 완료";
             }
             catch (Exception ex)

@@ -9,11 +9,11 @@ namespace McStructureNbtEditor.Commands
     {
         private readonly List<IEditorCommand> _commands = new();
         public ReloadScope ChangeType { get; }
-        public string Description { get; }
+        public string CommandStatusMessage { get; }
 
-        public CompositeCommand(string description, ReloadScope changeType)
+        public CompositeCommand(string commandStatusMessage, ReloadScope changeType)
         {
-            Description = description;
+            CommandStatusMessage = commandStatusMessage;
             ChangeType = changeType;
         }
 

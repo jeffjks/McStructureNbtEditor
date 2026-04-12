@@ -9,7 +9,7 @@ namespace McStructureNbtEditor.Commands
         private PaletteEntry? _removedEntry;
         private List<(StructureBlock Block, int Index)> _removedBlocks = new();
 
-        public string Description => $"팔레트 삭제됨: {_removedEntry?.Name}. 제거된 블록 {_removedBlocks.Count}개.";
+        public string CommandStatusMessage => $"팔레트 삭제됨: {_removedEntry?.Name}. 제거된 블록 {_removedBlocks.Count}개.";
         public ReloadScope ChangeType => ReloadScope.ReloadAll;
 
         public RemovePaletteEntryCommand(int paletteIndex)

@@ -120,7 +120,7 @@ namespace McStructureNbtEditor.Services
 
             _commandHistory.Add(command);
             _currentIndex++;
-            StatusMessage = command.Description;
+            StatusMessage = command.CommandStatusMessage;
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
@@ -141,7 +141,7 @@ namespace McStructureNbtEditor.Services
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 
-            StatusMessage = $"실행 취소: {command.Description}";
+            StatusMessage = $"실행 취소: {command.CommandStatusMessage}";
         }
 
         public void Redo()
@@ -155,7 +155,7 @@ namespace McStructureNbtEditor.Services
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 
-            StatusMessage = $"다시 실행: {command.Description}";
+            StatusMessage = $"다시 실행: {command.CommandStatusMessage}";
         }
 
         public void RaiseDocumentChanged(ReloadScope type)
