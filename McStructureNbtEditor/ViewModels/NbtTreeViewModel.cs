@@ -34,7 +34,7 @@ namespace McStructureNbtEditor.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CanJumpToTreeSelectedBlock));
                 JumpToTreeSelectedBlockCommand.RaiseCanExecuteChanged();
-                _session.SelectedInspectable = _selectedTreeNode;
+                _session.SelectedInspectable = value;
             }
         }
 

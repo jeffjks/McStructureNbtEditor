@@ -66,6 +66,10 @@ namespace McStructureNbtEditor.Services
             {
                 if (_selectedInspectable == value)
                     return;
+
+                if (value is not NbtTreeNode && _selectedInspectable is NbtTreeNode oldTreeNode)
+                    oldTreeNode.IsSelected = false;
+
                 _selectedInspectable = value;
                 OnPropertyChanged(nameof(SelectedInspectable));
             }

@@ -74,6 +74,11 @@
                             HorizontalAlignment="Center"
                             Command="{Binding NbtTree.JumpToTreeSelectedBlockCommand}"/>
                         <TreeView Grid.Row="0" ItemsSource="{Binding NbtTree.RootNodes}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                </Style>
+                            </TreeView.ItemContainerStyle>
                             <TreeView.Resources>
                                 <HierarchicalDataTemplate DataType="{x:Type models:NbtTreeNode}"
                                 ItemsSource="{Binding Children}">
