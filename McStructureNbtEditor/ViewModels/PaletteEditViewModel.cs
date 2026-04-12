@@ -93,11 +93,7 @@ namespace McStructureNbtEditor.ViewModels
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 추가에 실패했습니다.";
-                return;
             }
-
-            _session.StatusMessage = $"팔레트 '{entry.Name}' 추가됨.";
-            _session.RaiseDocumentChanged(ChangeType.EditorCommand);
         }
 
         private void RemovePalette()
@@ -130,11 +126,7 @@ namespace McStructureNbtEditor.ViewModels
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 삭제에 실패했습니다.";
-                return;
             }
-
-            _session.StatusMessage = $"팔레트 '{selectedEntry.Name}' 삭제됨. 제거된 블록 {removedBlockCount}개.";
-            _session.RaiseDocumentChanged(ChangeType.EditorCommand);
         }
 
         private void ModifyPalette() { }
@@ -152,8 +144,11 @@ namespace McStructureNbtEditor.ViewModels
 
         private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(PaletteEntries));
-            OnPropertyChanged(nameof(SelectedPaletteEntry));
+            if (e.ChangeType == ReloadScope.ReloadAll)
+            {
+                OnPropertyChanged(nameof(PaletteEntries));
+                OnPropertyChanged(nameof(SelectedPaletteEntry));
+            }
         }
 
         private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)

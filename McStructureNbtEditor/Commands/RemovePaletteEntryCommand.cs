@@ -9,7 +9,8 @@ namespace McStructureNbtEditor.Commands
         private PaletteEntry? _removedEntry;
         private List<(StructureBlock Block, int Index)> _removedBlocks = new();
 
-        public string Description => $"팔레트 삭제: {_removedEntry?.Name}";
+        public string Description => $"팔레트 삭제됨: {_removedEntry?.Name}. 제거된 블록 {_removedBlocks.Count}개.";
+        public ReloadScope ChangeType => ReloadScope.ReloadAll;
 
         public RemovePaletteEntryCommand(int paletteIndex)
         {
@@ -45,6 +46,11 @@ namespace McStructureNbtEditor.Commands
                 if (block.State > _paletteIndex)
                     block.State--;
             }
+            foreach (var palette in structure.Palette)
+            {
+                if (palette.Index > _paletteIndex)
+                    palette.Index--;
+            }
 
             // 삭제 후 SelectedPaletteEntry 처리
             if (structure.Palette.Count > 0)
@@ -67,7 +73,11 @@ namespace McStructureNbtEditor.Commands
                 return;
 
             structure.Palette.Insert(_paletteIndex, _removedEntry);
-
+            foreach (var palette in structure.Palette)
+            {
+                if (palette.Index >= _paletteIndex)
+                    palette.Index++;
+            }
             foreach (var block in structure.Blocks)
             {
                 if (block.State >= _paletteIndex)

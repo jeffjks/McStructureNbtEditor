@@ -469,7 +469,7 @@ namespace McStructureNbtEditor.ViewModels
 
         private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
-            if (e.ChangeType == ChangeType.FullReload)
+            if (e.ChangeType == ReloadScope.ReloadFile)
                 Reload();
             else
                 Refresh();

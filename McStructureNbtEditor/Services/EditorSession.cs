@@ -40,7 +40,7 @@ namespace McStructureNbtEditor.Services
 
                 OnPropertyChanged(nameof(CurrentStructure));
                 SelectedPaletteEntry = CurrentStructure?.GetPaletteEntry(0);
-                RaiseDocumentChanged(ChangeType.FullReload);
+                RaiseDocumentChanged(ReloadScope.ReloadFile);
             }
         }
         public bool HasStructure => CurrentStructure != null;
@@ -104,9 +104,6 @@ namespace McStructureNbtEditor.Services
 
         public bool ExecuteCommand(IEditorCommand command)
         {
-            if (!command.Execute(this))
-                return false;
-
             if (_currentIndex < _commandHistory.Count)
             {
                 _commandHistory.RemoveRange(_currentIndex, _commandHistory.Count - _currentIndex);
@@ -118,14 +115,16 @@ namespace McStructureNbtEditor.Services
                 _currentIndex--;
             }
 
+            if (!command.Execute(this))
+                return false;
+
             _commandHistory.Add(command);
             _currentIndex++;
+            StatusMessage = command.Description;
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
-            RaiseDocumentChanged(ChangeType.EditorCommand);
-
-            StatusMessage = command.Description;
+            RaiseDocumentChanged(command.ChangeType);
             return true;
         }
 
@@ -159,7 +158,7 @@ namespace McStructureNbtEditor.Services
             StatusMessage = $"다시 실행: {command.Description}";
         }
 
-        public void RaiseDocumentChanged(ChangeType type)
+        public void RaiseDocumentChanged(ReloadScope type)
         {
             DocumentChanged?.Invoke(this, new DocumentChangedEventArgs { ChangeType = type });
         }

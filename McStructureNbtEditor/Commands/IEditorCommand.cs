@@ -7,5 +7,6 @@ namespace McStructureNbtEditor.Commands
         string Description { get; }
         bool Execute(EditorSession session);
         void Undo(EditorSession session);
+        ReloadScope ChangeType { get; }
     }
 }

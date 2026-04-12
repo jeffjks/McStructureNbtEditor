@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace McStructureNbtEditor.Models
+﻿namespace McStructureNbtEditor.Models
 {
     public class PaletteEntry
     {

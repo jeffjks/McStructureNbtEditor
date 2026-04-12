@@ -4,14 +4,16 @@ using System.Text;
 
 namespace McStructureNbtEditor.Services
 {
-    public enum ChangeType
+    [Flags]
+    public enum ReloadScope
     {
-        FullReload,
-        EditorCommand
+        ReloadFile,
+        ReloadAll,
+        ReloadBlock
     }
 
     public class DocumentChangedEventArgs : EventArgs
     {
-        public ChangeType ChangeType { get; set; }
+        public ReloadScope ChangeType { get; set; }
     }
 }

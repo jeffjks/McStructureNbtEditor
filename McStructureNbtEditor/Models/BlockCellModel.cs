@@ -90,8 +90,6 @@ namespace McStructureNbtEditor.Models
         {
             _compound = new NbtCompound("");
 
-            _compoundState = new NbtInt("state", 0);
-
             _compoundPosX = new NbtInt(0);
             _compoundPosY = new NbtInt(0);
             _compoundPosZ = new NbtInt(0);
@@ -102,6 +100,8 @@ namespace McStructureNbtEditor.Models
                 _compoundPosY,
                 _compoundPosZ
             };
+
+            _compoundState = new NbtInt("state", 0);
 
             _compound.Add(_compoundState);
             _compound.Add(_compoundPosList);

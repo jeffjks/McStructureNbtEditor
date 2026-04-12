@@ -8,12 +8,13 @@ namespace McStructureNbtEditor.Commands
     public class CompositeCommand : IEditorCommand
     {
         private readonly List<IEditorCommand> _commands = new();
-
+        public ReloadScope ChangeType { get; }
         public string Description { get; }
 
-        public CompositeCommand(string description)
+        public CompositeCommand(string description, ReloadScope changeType)
         {
             Description = description;
+            ChangeType = changeType;
         }
 
         public void Add(IEditorCommand command)
