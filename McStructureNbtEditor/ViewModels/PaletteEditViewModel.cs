@@ -4,6 +4,7 @@ using McStructureNbtEditor.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace McStructureNbtEditor.ViewModels
 {
@@ -29,7 +30,7 @@ namespace McStructureNbtEditor.ViewModels
         }
 
         public RelayCommand AddPaletteCommand { get; }
-        public RelayCommand DeletePaletteCommand { get; }
+        public RelayCommand RemovePaletteCommand { get; }
         public RelayCommand ModifyPaletteCommand { get; }
         public RelayCommand DuplicatePaletteCommand { get; }
         public RelayCommand UndoCommand { get; }
@@ -42,11 +43,10 @@ namespace McStructureNbtEditor.ViewModels
             _session.PropertyChanged += OnSessionPropertyChanged;
             _session.DocumentChanged += OnSessionDocumentChanged;
 
-
             AddPaletteCommand = new RelayCommand(AddPalette, CanAddPalette);
-            DeletePaletteCommand = new RelayCommand(DeletePalette);
-            ModifyPaletteCommand = new RelayCommand(ModifyPalette);
-            DuplicatePaletteCommand = new RelayCommand(DuplicatePalette);
+            RemovePaletteCommand = new RelayCommand(RemovePalette, HasSelectedPaletteEntry);
+            ModifyPaletteCommand = new RelayCommand(ModifyPalette, HasSelectedPaletteEntry);
+            DuplicatePaletteCommand = new RelayCommand(DuplicatePalette, HasSelectedPaletteEntry);
 
             UndoCommand = new RelayCommand(Undo, () => _session.CanUndo);
             RedoCommand = new RelayCommand(Redo, () => _session.CanRedo);
@@ -57,11 +57,17 @@ namespace McStructureNbtEditor.ViewModels
             return _session.CurrentStructure != null;
         }
 
+        private bool HasSelectedPaletteEntry()
+        {
+            return (_session.CurrentStructure != null) && (SelectedPaletteEntry != null);
+        }
+
         private void AddPalette()
         {
+            var structure = _session.CurrentStructure;
             var result = _dialogService.ShowAddPaletteDialog();
 
-            if (!result.Confirmed || result.Draft == null)
+            if (!result.Confirmed || result.Draft == null || structure == null)
                 return;
 
             if (string.IsNullOrWhiteSpace(result.Draft.Name))
@@ -75,7 +81,7 @@ namespace McStructureNbtEditor.ViewModels
             {
                 entry = PaletteEntryFactory.CreateFromDraft(
                     result.Draft,
-                    _session.CurrentStructure!.Palette.Count);
+                    structure!.Palette.Count);
             }
             catch (Exception ex)
             {
@@ -91,9 +97,46 @@ namespace McStructureNbtEditor.ViewModels
             }
 
             _session.StatusMessage = $"팔레트 '{entry.Name}' 추가됨.";
+            _session.RaiseDocumentChanged();
         }
 
-        private void DeletePalette() { }
+        private void RemovePalette()
+        {
+            var structure = _session.CurrentStructure;
+            var selectedEntry = SelectedPaletteEntry;
+
+            if (structure == null || selectedEntry == null)
+                return;
+
+            int paletteIndex = structure.Palette.IndexOf(selectedEntry);
+            if (paletteIndex < 0)
+            {
+                _session.StatusMessage = "삭제할 팔레트를 찾을 수 없습니다.";
+                return;
+            }
+
+            int removedBlockCount = structure.Blocks.Count(b => b.State == paletteIndex);
+
+            var title = "팔레트 삭제 확인";
+            var message =
+                $"팔레트 '{selectedEntry.Name}' 을(를) 삭제하시겠습니까?\n" +
+                $"이 작업으로 해당 팔레트를 가진 블록 {removedBlockCount}개가 함께 삭제됩니다.";
+
+            bool confirmed = _dialogService.ShowCommonDialog(title, message);
+            if (!confirmed)
+                return;
+
+            var command = new RemovePaletteEntryCommand(paletteIndex);
+            if (!_session.ExecuteCommand(command))
+            {
+                _session.StatusMessage = "팔레트 삭제에 실패했습니다.";
+                return;
+            }
+
+            _session.StatusMessage = $"팔레트 '{selectedEntry.Name}' 삭제됨. 제거된 블록 {removedBlockCount}개.";
+            _session.RaiseDocumentChanged();
+        }
+
         private void ModifyPalette() { }
         private void DuplicatePalette() { }
 

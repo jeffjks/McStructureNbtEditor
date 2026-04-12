@@ -6,54 +6,38 @@ namespace McStructureNbtEditor.Commands
 {
     public sealed class AddPaletteEntryCommand : IEditorCommand
     {
-        private PaletteEntry _createdEntry;
-        private PaletteEntry? _previousSelection;
+        private PaletteEntry _addedEntry;
+
+        public string Description => $"팔레트 추가: {_addedEntry.Name}";
 
         public AddPaletteEntryCommand(PaletteEntry paletteEntry)
         {
-            _createdEntry = paletteEntry;
+            _addedEntry = paletteEntry;
         }
 
-        public string Description => $"팔레트 추가: {_createdEntry.Name}";
-
-        public bool CanExecute(EditorSession session)
-        {
-            if (session.CurrentStructure == null)
-                return false;
-
-            return !string.IsNullOrWhiteSpace(_createdEntry.Name);
-        }
-
-        public void Execute(EditorSession session)
+        public bool Execute(EditorSession session)
         {
             var structure = session.CurrentStructure!;
 
-            structure.Palette.Add(_createdEntry);
-            RefreshPaletteIndices(structure);
+            if (structure == null)
+                return false;
 
-            session.SelectedPaletteEntry = _createdEntry;
-            session.RaiseDocumentChanged();
+            if (string.IsNullOrWhiteSpace(_addedEntry.Name))
+                return false;
+
+            structure.Palette.Add(_addedEntry);
+
+            return true;
         }
 
         public void Undo(EditorSession session)
         {
-            if (_createdEntry == null || session.CurrentStructure == null)
+            var structure = session.CurrentStructure!;
+
+            if (_addedEntry == null || structure == null)
                 return;
 
-            var structure = session.CurrentStructure!;
-            session.CurrentStructure.Palette.Remove(_createdEntry);
-            RefreshPaletteIndices(structure);
-
-            session.SelectedPaletteEntry = _previousSelection;
-            session.RaiseDocumentChanged();
-        }
-
-        private static void RefreshPaletteIndices(StructureFileModel structure)
-        {
-            for (int i = 0; i < structure.Palette.Count; i++)
-            {
-                structure.Palette[i].Index = i;
-            }
+            structure.Palette.Remove(_addedEntry);
         }
     }
 }

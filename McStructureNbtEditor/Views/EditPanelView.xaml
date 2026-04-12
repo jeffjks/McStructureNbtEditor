@@ -46,7 +46,7 @@
                         MinWidth="96"
                         MaxWidth="120"
                         Content="삭제"
-                        Command="{Binding PaletteEdit.DeletePaletteCommand}" />
+                        Command="{Binding PaletteEdit.RemovePaletteCommand}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,4">
                     <Button

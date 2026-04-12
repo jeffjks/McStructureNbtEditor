@@ -12,14 +12,16 @@ namespace McStructureNbtEditor.Services
 
     public sealed class EditorSession : INotifyPropertyChanged
     {
-        // TODO. Linked List로 변경
-        private readonly Stack<IEditorCommand> _undoStack = new();
-        private readonly Stack<IEditorCommand> _redoStack = new();
+        private readonly List<IEditorCommand> _commandHistory = new(MaxHistory);
+        private int _currentIndex = 0;
+
+        private const int MaxHistory = 128;
+
+        public bool CanUndo => _currentIndex > 0;
+        public bool CanRedo => _currentIndex < _commandHistory.Count;
 
 
         public event EventHandler? DocumentChanged;
-        public bool CanUndo => _undoStack.Count > 0;
-        public bool CanRedo => _redoStack.Count > 0;
 
         private StructureFileModel? _currentStructure;
         public StructureFileModel? CurrentStructure
@@ -30,8 +32,7 @@ namespace McStructureNbtEditor.Services
                 if (_currentStructure == value)
                     return;
                 _currentStructure = value;
-                _undoStack.Clear();
-                _redoStack.Clear();
+                _commandHistory.Clear();
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasStructure));
                 OnPropertyChanged(nameof(CanUndo));
@@ -103,50 +104,59 @@ namespace McStructureNbtEditor.Services
 
         public bool ExecuteCommand(IEditorCommand command)
         {
-            if (!command.CanExecute(this))
+            if (!command.Execute(this))
                 return false;
 
-            command.Execute(this);
-            _undoStack.Push(command);
-            _redoStack.Clear();
+            if (_currentIndex < _commandHistory.Count)
+            {
+                _commandHistory.RemoveRange(_currentIndex, _commandHistory.Count - _currentIndex);
+            }
+
+            if (_commandHistory.Count >= MaxHistory)
+            {
+                _commandHistory.RemoveAt(0);
+                _currentIndex--;
+            }
+
+            _commandHistory.Add(command);
+            _currentIndex++;
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            RaiseDocumentChanged();
 
             StatusMessage = command.Description;
             return true;
         }
 
-        public bool Undo()
+        public void Undo()
         {
-            if (_undoStack.Count == 0)
-                return false;
+            if (!CanUndo)
+                return;
 
-            var command = _undoStack.Pop();
+            _currentIndex--;
+
+            var command = _commandHistory[_currentIndex];
             command.Undo(this);
-            _redoStack.Push(command);
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 
             StatusMessage = $"실행 취소: {command.Description}";
-            return true;
         }
 
-        public bool Redo()
+        public void Redo()
         {
-            if (_redoStack.Count == 0)
-                return false;
+            if (!CanRedo)
+                return;
 
-            var command = _redoStack.Pop(); 
+            var command = _commandHistory[_currentIndex];
             command.Execute(this);
-            _undoStack.Push(command);
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 
             StatusMessage = $"다시 실행: {command.Description}";
-            return true;
         }
 
         public void RaiseDocumentChanged()
