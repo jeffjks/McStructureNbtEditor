@@ -41,7 +41,7 @@ namespace McStructureNbtEditor.ViewModels
             _session = session;
             _dialogService = dialogService;
             _session.PropertyChanged += OnSessionPropertyChanged;
-            _session.DocumentChanged += OnSessionDocumentChanged;
+            _session.DocumentChanged += OnDocumentChanged;
 
             AddPaletteCommand = new RelayCommand(AddPalette, CanAddPalette);
             RemovePaletteCommand = new RelayCommand(RemovePalette, HasSelectedPaletteEntry);
@@ -97,7 +97,7 @@ namespace McStructureNbtEditor.ViewModels
             }
 
             _session.StatusMessage = $"팔레트 '{entry.Name}' 추가됨.";
-            _session.RaiseDocumentChanged();
+            _session.RaiseDocumentChanged(ChangeType.EditorCommand);
         }
 
         private void RemovePalette()
@@ -134,7 +134,7 @@ namespace McStructureNbtEditor.ViewModels
             }
 
             _session.StatusMessage = $"팔레트 '{selectedEntry.Name}' 삭제됨. 제거된 블록 {removedBlockCount}개.";
-            _session.RaiseDocumentChanged();
+            _session.RaiseDocumentChanged(ChangeType.EditorCommand);
         }
 
         private void ModifyPalette() { }
@@ -150,7 +150,7 @@ namespace McStructureNbtEditor.ViewModels
             _session.Redo();
         }
 
-        private void OnSessionDocumentChanged(object? sender, EventArgs e)
+        private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
             OnPropertyChanged(nameof(PaletteEntries));
             OnPropertyChanged(nameof(SelectedPaletteEntry));

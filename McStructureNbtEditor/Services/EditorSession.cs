@@ -21,7 +21,7 @@ namespace McStructureNbtEditor.Services
         public bool CanRedo => _currentIndex < _commandHistory.Count;
 
 
-        public event EventHandler? DocumentChanged;
+        public event EventHandler<DocumentChangedEventArgs>? DocumentChanged;
 
         private StructureFileModel? _currentStructure;
         public StructureFileModel? CurrentStructure
@@ -40,7 +40,7 @@ namespace McStructureNbtEditor.Services
 
                 OnPropertyChanged(nameof(CurrentStructure));
                 SelectedPaletteEntry = CurrentStructure?.GetPaletteEntry(0);
-                RaiseDocumentChanged();
+                RaiseDocumentChanged(ChangeType.FullReload);
             }
         }
         public bool HasStructure => CurrentStructure != null;
@@ -123,7 +123,7 @@ namespace McStructureNbtEditor.Services
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
-            RaiseDocumentChanged();
+            RaiseDocumentChanged(ChangeType.EditorCommand);
 
             StatusMessage = command.Description;
             return true;
@@ -159,9 +159,9 @@ namespace McStructureNbtEditor.Services
             StatusMessage = $"다시 실행: {command.Description}";
         }
 
-        public void RaiseDocumentChanged()
+        public void RaiseDocumentChanged(ChangeType type)
         {
-            DocumentChanged?.Invoke(this, EventArgs.Empty);
+            DocumentChanged?.Invoke(this, new DocumentChangedEventArgs { ChangeType = type });
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

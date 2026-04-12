@@ -11,8 +11,15 @@ namespace McStructureNbtEditor.Models
         private string _displayText = "";
         private string _tooltipBlockNameText = "";
         private bool _isOccupied;
-        private int _paletteIndex = -1;
+        private int _state = -1;
         private bool _isSelected = false;
+
+        private readonly NbtCompound _compound;
+        private readonly NbtInt _compoundState;
+        private readonly NbtList _compoundPosList;
+        private readonly NbtInt _compoundPosX;
+        private readonly NbtInt _compoundPosY;
+        private readonly NbtInt _compoundPosZ;
 
         public BlockPosition BlockPos { get; set; }
         public NbtTag? Tag { get; set; }
@@ -58,12 +65,13 @@ namespace McStructureNbtEditor.Models
             }
         }
 
-        public int PaletteIndex
+        // PaletteIndex
+        public int State
         {
-            get => _paletteIndex;
+            get => _state;
             set
             {
-                _paletteIndex = value;
+                _state = value;
                 OnPropertyChanged();
             }
         }
@@ -78,11 +86,46 @@ namespace McStructureNbtEditor.Models
             }
         }
 
+        public BlockCellModel()
+        {
+            _compound = new NbtCompound("");
+
+            _compoundState = new NbtInt("state", 0);
+
+            _compoundPosX = new NbtInt(0);
+            _compoundPosY = new NbtInt(0);
+            _compoundPosZ = new NbtInt(0);
+
+            _compoundPosList = new NbtList("pos")
+            {
+                _compoundPosX,
+                _compoundPosY,
+                _compoundPosZ
+            };
+
+            _compound.Add(_compoundState);
+            _compound.Add(_compoundPosList);
+        }
+
         public string GetSnbtText()
         {
-            if (Tag == null)
-                return string.Empty;
-            return NbtSnbtConverter.ToSnbt(Tag);
+            _compoundState.Value = _state;
+            _compoundPosX.Value = BlockPos.X;
+            _compoundPosY.Value = BlockPos.Y;
+            _compoundPosZ.Value = BlockPos.Z;
+
+            if (_compound.Contains("nbt"))
+            {
+                _compound.Remove("nbt");
+            }
+
+            if (Tag != null)
+            {
+                Tag.Name = "nbt";
+                _compound.Add(Tag);
+            }
+
+            return NbtSnbtConverter.ToSnbt(_compound);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

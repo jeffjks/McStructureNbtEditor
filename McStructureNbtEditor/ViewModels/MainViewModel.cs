@@ -15,7 +15,6 @@ namespace McStructureNbtEditor.ViewModels
     {
         private readonly NbtFileService _nbtFileService = new();
         private readonly StructureParser _structureParser = new();
-        private readonly NbtTreeBuilder _treeBuilder = new();
 
         private StructureSummary? _summary;
         private NbtFile? _currentFile;
@@ -52,8 +51,8 @@ namespace McStructureNbtEditor.ViewModels
 
             Session = new EditorSession();
 
-            NbtTree = new NbtTreeViewModel(Session, serializer, treeBuilder);
             LayerSlice = new LayerSliceViewModel(Session);
+            NbtTree = new NbtTreeViewModel(Session, serializer, treeBuilder);
             SnbtField = new SnbtFieldViewModel(Session);
             PaletteEdit = new PaletteEditViewModel(Session, dialogService);
 

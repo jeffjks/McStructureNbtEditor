@@ -35,9 +35,9 @@ namespace McStructureNbtEditor.Services
                         result.Add(new BlockCellModel
                         {
                             BlockPos = new BlockPosition(x, y, z),
-                            Tag = block.Tag,
+                            Tag = block.Nbt,
                             BlockName = blockName,
-                            PaletteIndex = block.State,
+                            State = block.State,
                             IsOccupied = (blockName != VOID_BLOCK),
                             DisplayText = ToShortBlockText(blockName),
                             TooltipBlockNameText = blockName
@@ -49,7 +49,7 @@ namespace McStructureNbtEditor.Services
                         {
                             BlockPos = new BlockPosition(x, y, z),
                             BlockName = string.Empty,
-                            PaletteIndex = -1,
+                            State = -1,
                             IsOccupied = false,
                             DisplayText = "",
                             TooltipBlockNameText = "(No Block)"

@@ -132,10 +132,7 @@ namespace McStructureNbtEditor.ViewModels
 
         public void LoadStructure(StructureFileModel? structure)
         {
-            bool isNewStructure = _structure != structure;
-
-            if (isNewStructure)
-                _structure = structure;
+            _structure = structure;
 
             if (_structure == null || _structure.SizeY <= 0)
             {
@@ -143,28 +140,37 @@ namespace McStructureNbtEditor.ViewModels
                 ClearSelection();
                 MinY = 0;
                 MaxY = 0;
+
                 _currentY = 0;
                 OnPropertyChanged(nameof(CurrentY));
                 CurrentYText = "0";
+
                 _session.StatusMessage = "구조물 없음";
                 NotifyLayoutChanged();
                 RaiseCommands();
                 return;
             }
 
-            if (isNewStructure) {
-                MinY = 0;
-                MaxY = _structure.SizeY - 1;
+            MinY = 0;
+            MaxY = _structure.SizeY - 1;
 
-                _currentY = 0;
-                OnPropertyChanged(nameof(CurrentY));
-                CurrentYText = "0";
+            _currentY = 0;
+            OnPropertyChanged(nameof(CurrentY));
+            CurrentYText = "0";
 
-                RebuildSlice();
-            }
+            RebuildSlice();
 
             _session.StatusMessage = $"구조물 로드됨. Y 범위: {MinY}~{MaxY}";
             NotifyLayoutChanged();
+            RaiseCommands();
+        }
+
+        public void Refresh()
+        {
+            SliceCells.Clear();
+            ClearSelection();
+
+            RebuildSlice();
             RaiseCommands();
         }
 
@@ -243,10 +249,10 @@ namespace McStructureNbtEditor.ViewModels
                 var cell = SelectedCells[0];
                 _session.SelectedInspectable = cell;
                 
-                if (cell.PaletteIndex == -1)
+                if (cell.State == -1)
                     SelectionText = $"현재 선택: 없음";
                 else
-                    SelectionText = $"현재 선택: [{cell.PaletteIndex}] {cell.BlockName}";
+                    SelectionText = $"현재 선택: [{cell.State}] {cell.BlockName}";
             }
             else
             {
@@ -461,9 +467,12 @@ namespace McStructureNbtEditor.ViewModels
             DecreaseYCommand.RaiseCanExecuteChanged();
         }
 
-        private void OnDocumentChanged(object? sender, EventArgs e)
+        private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
-            Reload();
+            if (e.ChangeType == ChangeType.FullReload)
+                Reload();
+            else
+                Refresh();
         }
 
         private void Reload()

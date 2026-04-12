@@ -94,7 +94,7 @@ namespace McStructureNbtEditor.ViewModels
             }
         }
 
-        private void OnDocumentChanged(object? sender, EventArgs e)
+        private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
             RebuildTree();
         }
