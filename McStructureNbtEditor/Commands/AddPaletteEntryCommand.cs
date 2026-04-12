@@ -6,51 +6,32 @@ namespace McStructureNbtEditor.Commands
 {
     public sealed class AddPaletteEntryCommand : IEditorCommand
     {
-        private readonly string _paletteName;
-        private readonly string _rawProperties;
-        private PaletteEntry? _createdEntry;
+        private PaletteEntry _createdEntry;
         private PaletteEntry? _previousSelection;
 
-        public AddPaletteEntryCommand(string paletteName, string rawProperties)
+        public AddPaletteEntryCommand(PaletteEntry paletteEntry)
         {
-            _paletteName = paletteName;
-            _rawProperties = rawProperties;
+            _createdEntry = paletteEntry;
         }
 
-        public string Description => $"팔레트 추가: {_paletteName}";
+        public string Description => $"팔레트 추가: {_createdEntry.Name}";
 
         public bool CanExecute(EditorSession session)
         {
             if (session.CurrentStructure == null)
                 return false;
 
-            return !string.IsNullOrWhiteSpace(_paletteName);
+            return !string.IsNullOrWhiteSpace(_createdEntry.Name);
         }
 
         public void Execute(EditorSession session)
         {
             var structure = session.CurrentStructure!;
 
-            if (_createdEntry == null)
-            {
-                var parsedProperties = _rawProperties
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(p => p.Split('='))
-                    .Where(p => p.Length == 2)
-                    .ToDictionary(
-                        p => p[0].Trim(),
-                        p => p[1].Trim()
-                    );
-
-                _createdEntry = new PaletteEntry
-                {
-                    Index = structure.Palette.Count,
-                    Name = _paletteName,
-                    Properties = new Dictionary<string, string>(parsedProperties)
-                };
-            }
-
             structure.Palette.Add(_createdEntry);
+            RefreshPaletteIndices(structure);
+
+            session.SelectedPaletteEntry = _createdEntry;
             session.RaiseDocumentChanged();
         }
 
@@ -59,47 +40,20 @@ namespace McStructureNbtEditor.Commands
             if (_createdEntry == null || session.CurrentStructure == null)
                 return;
 
+            var structure = session.CurrentStructure!;
             session.CurrentStructure.Palette.Remove(_createdEntry);
+            RefreshPaletteIndices(structure);
+
             session.SelectedPaletteEntry = _previousSelection;
             session.RaiseDocumentChanged();
         }
-        private Dictionary<string, string> ParsePropertiesFromSnbt(string raw)
+
+        private static void RefreshPaletteIndices(StructureFileModel structure)
         {
-            if (string.IsNullOrWhiteSpace(raw))
-                return new Dictionary<string, string>();
-            return new Dictionary<string, string>();
-            /*
-            try
+            for (int i = 0; i < structure.Palette.Count; i++)
             {
-                // SNBT는 {}로 감싸야 compound로 파싱됨
-                var wrapped = raw.Trim();
-
-                if (!wrapped.StartsWith("{"))
-                    wrapped = "{" + wrapped + "}";
-
-                var compound = (NbtCompound)NbtTag.Parse(wrapped);
-
-                return compound.Tags.ToDictionary(
-                    tag => tag.Name,
-                    tag => tag.ToString() // 값은 SNBT 문자열로 유지
-                );
+                structure.Palette[i].Index = i;
             }
-            catch
-            {
-                // 파싱 실패 시 fallback (간단 파서)
-                return ParseSimpleFallback(raw);
-            }*/
-        }
-        private Dictionary<string, string> ParseSimpleFallback(string raw)
-        {
-            return raw
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(p => p.Split('=', 2))
-                .Where(p => p.Length == 2)
-                .ToDictionary(
-                    p => p[0].Trim(),
-                    p => p[1].Trim()
-                );
         }
     }
 }

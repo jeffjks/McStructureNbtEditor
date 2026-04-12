@@ -59,23 +59,37 @@ namespace McStructureNbtEditor.ViewModels
 
         private void AddPalette()
         {
-            // TODO. 추가 Dialog 및 조건
             var result = _dialogService.ShowAddPaletteDialog();
 
-            if (!result.Confirmed)
+            if (!result.Confirmed || result.Draft == null)
                 return;
 
-            if (string.IsNullOrWhiteSpace(result.PaletteName))
+            if (string.IsNullOrWhiteSpace(result.Draft.Name))
             {
                 _session.StatusMessage = "팔레트 이름이 비어 있습니다.";
                 return;
             }
 
-            var command = new AddPaletteEntryCommand(result.PaletteName, string.Empty);
+            PaletteEntry entry;
+            try
+            {
+                entry = PaletteEntryFactory.CreateFromDraft(
+                    result.Draft,
+                    _session.CurrentStructure!.Palette.Count);
+            }
+            catch (Exception ex)
+            {
+                _session.StatusMessage = $"팔레트 데이터가 올바르지 않습니다: {ex.Message}";
+                return;
+            }
+
+            var command = new AddPaletteEntryCommand(entry);
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 추가에 실패했습니다.";
             }
+
+            _session.StatusMessage = $"팔레트 '{entry.Name}' 추가됨.";
         }
 
         private void DeletePalette() { }
