@@ -12,11 +12,22 @@ namespace McStructureNbtEditor.ViewModels.Converters
         public double Saturation { get; set; } = 0.3;
         public double Value { get; set; } = 0.90;
 
+        private static readonly DrawingBrush CachedEmptyBrush;
         private static readonly DrawingBrush CachedVoidBrush;
 
         private const string AIR_BLOCK = "minecraft:air";
+        private const string VOID_BLOCK = "minecraft:structure_void";
 
         static BlockToBrushConverter()
+        {
+            CachedEmptyBrush = DrawEmptyCell(Brushes.Red);
+            CachedVoidBrush = DrawEmptyCell(Brushes.Blue);
+
+            CachedEmptyBrush.Freeze();
+            CachedVoidBrush.Freeze();
+        }
+
+        private static DrawingBrush DrawEmptyCell(Brush color)
         {
             DrawingGroup drawingGroup = new DrawingGroup();
 
@@ -26,42 +37,42 @@ namespace McStructureNbtEditor.ViewModels.Converters
                 new RectangleGeometry(new Rect(0, 0, 32, 32))
             ));
 
-            Pen redPen = new Pen(Brushes.Red, 1);
+            Pen colorPen = new Pen(color, 1);
 
             drawingGroup.Children.Add(new GeometryDrawing(
                 null,
-                redPen,
+                colorPen,
                 new LineGeometry(new Point(0, 0), new Point(32, 32))
             ));
             drawingGroup.Children.Add(new GeometryDrawing(
                 null,
-                redPen,
+                colorPen,
                 new LineGeometry(new Point(32, 0), new Point(0, 32))
             ));
 
-            CachedVoidBrush = new DrawingBrush(drawingGroup)
+            return new DrawingBrush(drawingGroup)
             {
                 Stretch = Stretch.Fill
             };
-
-            CachedVoidBrush.Freeze();
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is not string blockName || string.IsNullOrWhiteSpace(blockName))
-                return CachedVoidBrush;
+                return CachedEmptyBrush;
             if (blockName == AIR_BLOCK)
                 return AirBrush;
+            if (blockName == VOID_BLOCK)
+                return CachedVoidBrush;
 
             var rawBlockName = GetRawBlockName(blockName);
 
             char c = GetFirstChar(rawBlockName);
             if (c == '\0')
-                return CachedVoidBrush;
+                return CachedEmptyBrush;
             c = char.ToUpper(c);
             if (c < 'A' || c > 'Z')
-                return CachedVoidBrush;
+                return CachedEmptyBrush;
 
             c = char.ToUpperInvariant(c);
 

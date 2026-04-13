@@ -12,7 +12,7 @@ namespace McStructureNbtEditor.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly NbtFileService _nbtFileService = new();
+        private readonly NbtFileService _nbtFileService;
         private readonly StructureParser _structureParser = new();
 
         private StructureSummary? _summary;
@@ -43,9 +43,13 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand SaveFileCommand { get; }
         public RelayCommand SaveAsFileCommand { get; }
         public RelayCommand ExitCommand { get; }
+        public RelayCommand UndoCommand { get; }
+        public RelayCommand RedoCommand { get; }
 
         public MainViewModel()
         {
+            _nbtFileService = new NbtFileService(new SettingsService());
+
             var dialogService = new DialogService();
             var serializer = new StructureNbtSerializer();
             var treeBuilder = new NbtTreeBuilder();
@@ -62,7 +66,11 @@ namespace McStructureNbtEditor.ViewModels
             SaveAsFileCommand = new RelayCommand(SaveAsFile);
             ExitCommand = new RelayCommand(Exit);
 
+            UndoCommand = new RelayCommand(Undo, () => Session.CanUndo);
+            RedoCommand = new RelayCommand(Redo, () => Session.CanRedo);
+
             NbtTree.TreeViewSelectionChanged += OnTreeSelectedNodeChanged;
+            Session.PropertyChanged += OnSessionPropertyChanged;
         }
 
         private void OpenFile()
@@ -134,6 +142,16 @@ namespace McStructureNbtEditor.ViewModels
             Application.Current.Shutdown();
         }
 
+        private void Undo()
+        {
+            Session.Undo();
+        }
+
+        private void Redo()
+        {
+            Session.Redo();
+        }
+
         private NbtFile GetNbtFile()
         {
             var tag = NbtTree.RootNodes.FirstOrDefault()?.Tag;
@@ -165,6 +183,18 @@ namespace McStructureNbtEditor.ViewModels
         private void OnTreeSelectedNodeChanged()
         {
             LayerSlice.ClearSelection();
+        }
+
+        private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Session.CanUndo))
+            {
+                UndoCommand.RaiseCanExecuteChanged();
+            }
+            else if (e.PropertyName == nameof(Session.CanRedo))
+            {
+                RedoCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

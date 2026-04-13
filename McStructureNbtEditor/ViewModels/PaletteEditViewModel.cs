@@ -33,8 +33,6 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand RemovePaletteCommand { get; }
         public RelayCommand ModifyPaletteCommand { get; }
         public RelayCommand DuplicatePaletteCommand { get; }
-        public RelayCommand UndoCommand { get; }
-        public RelayCommand RedoCommand { get; }
 
         public PaletteEditViewModel(EditorSession session, IDialogService dialogService)
         {
@@ -47,9 +45,6 @@ namespace McStructureNbtEditor.ViewModels
             RemovePaletteCommand = new RelayCommand(RemovePalette, HasSelectedPaletteEntry);
             ModifyPaletteCommand = new RelayCommand(ModifyPalette, HasSelectedPaletteEntry);
             DuplicatePaletteCommand = new RelayCommand(DuplicatePalette, HasSelectedPaletteEntry);
-
-            UndoCommand = new RelayCommand(Undo, () => _session.CanUndo);
-            RedoCommand = new RelayCommand(Redo, () => _session.CanRedo);
         }
 
         private bool CanAddPalette()
@@ -81,7 +76,8 @@ namespace McStructureNbtEditor.ViewModels
             {
                 entry = PaletteEntryFactory.CreateFromDraft(
                     result.Draft,
-                    structure!.Palette.Count);
+                    structure!.Palette.Count
+                );
             }
             catch (Exception ex)
             {
@@ -132,16 +128,6 @@ namespace McStructureNbtEditor.ViewModels
         private void ModifyPalette() { }
         private void DuplicatePalette() { }
 
-        private void Undo()
-        {
-            _session.Undo();
-        }
-
-        private void Redo()
-        {
-            _session.Redo();
-        }
-
         private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
         {
             if (e.ChangeType == ReloadScope.ReloadAll)
@@ -165,14 +151,6 @@ namespace McStructureNbtEditor.ViewModels
                 RemovePaletteCommand.RaiseCanExecuteChanged();
                 ModifyPaletteCommand.RaiseCanExecuteChanged();
                 DuplicatePaletteCommand.RaiseCanExecuteChanged();
-            }
-            else if (e.PropertyName == nameof(_session.CanUndo))
-            {
-                UndoCommand.RaiseCanExecuteChanged();
-            }
-            else if (e.PropertyName == nameof(_session.CanRedo))
-            {
-                RedoCommand.RaiseCanExecuteChanged();
             }
         }
 

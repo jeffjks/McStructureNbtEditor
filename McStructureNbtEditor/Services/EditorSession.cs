@@ -140,8 +140,9 @@ namespace McStructureNbtEditor.Services
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            RaiseDocumentChanged(command.ChangeType);
 
-            StatusMessage = $"실행 취소: {command.CommandStatusMessage}";
+            StatusMessage = $"다음 작업이 실행 취소됨: ({command.CommandStatusMessage})";
         }
 
         public void Redo()
@@ -154,8 +155,9 @@ namespace McStructureNbtEditor.Services
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            RaiseDocumentChanged(command.ChangeType);
 
-            StatusMessage = $"다시 실행: {command.CommandStatusMessage}";
+            StatusMessage = $"다음 작업이 다시 실행됨: ({command.CommandStatusMessage})";
         }
 
         public void RaiseDocumentChanged(ReloadScope type)
