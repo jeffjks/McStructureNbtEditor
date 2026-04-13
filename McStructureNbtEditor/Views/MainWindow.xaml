@@ -130,9 +130,9 @@
                     <Border Grid.Row="2" Padding="0,8,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="12,0,4,0">
-                                <Button Content="변경" MinWidth="96" Height="28" Margin="5"/>
-                                <Button Content="스포이드" MinWidth="96" Height="28" Margin="5"/>
-                                <Button Content="삭제" MinWidth="96" Height="28" Margin="5"/>
+                                <Button Content="블록 채우기" Command="{Binding BlockEdit.FillBlockCommand}" MinWidth="96" Height="28" Margin="5"/>
+                                <Button Content="블록 회전" Command="{Binding BlockEdit.RotateBlockCommand}" MinWidth="96" Height="28" Margin="5"/>
+                                <Button Content="블록 삭제" Command="{Binding BlockEdit.RemoveBlockCommand}" MinWidth="96" Height="28" Margin="5"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

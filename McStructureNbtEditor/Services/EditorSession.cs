@@ -1,5 +1,6 @@
 ﻿using McStructureNbtEditor.Commands;
 using McStructureNbtEditor.Models;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -75,6 +76,8 @@ namespace McStructureNbtEditor.Services
                 OnPropertyChanged(nameof(SelectedInspectable));
             }
         }
+
+        public ObservableCollection<int> SelectedBlockIndices { get; } = new();
 
         private PaletteEntry? _selectedPaletteEntry;
         public PaletteEntry? SelectedPaletteEntry

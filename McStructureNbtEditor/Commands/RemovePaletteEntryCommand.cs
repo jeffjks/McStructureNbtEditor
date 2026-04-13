@@ -23,7 +23,7 @@ namespace McStructureNbtEditor.Commands
 
             if (structure == null)
                 return false;
-            if (_paletteIndex < 0 || _paletteIndex >= structure.Palette.Count)
+            if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
                 return false;
 
             _removedEntry = structure.Palette[_paletteIndex];

@@ -230,6 +230,17 @@ namespace McStructureNbtEditor.ViewModels
             return true;
         }
 
+        private void UpdateSelectedBlockIndices()
+        {
+            _session.SelectedBlockIndices.Clear();
+
+            foreach (var cell in SelectedCells)
+            {
+                if (cell.BlockIndex >= 0)
+                    _session.SelectedBlockIndices.Add(cell.BlockIndex);
+            }
+        }
+
         // Selection ==========================================================================
         private void AddToSelection(BlockCellModel cell)
         {
@@ -250,19 +261,21 @@ namespace McStructureNbtEditor.ViewModels
                 _session.SelectedInspectable = cell;
                 
                 if (cell.State == -1)
-                    SelectionText = $"현재 선택: 없음";
+                    SelectionText = $"";
                 else
-                    SelectionText = $"현재 선택: [{cell.State}] {cell.BlockName}";
+                    SelectionText = $"Block Index: {cell.BlockIndex} | [{cell.State}] {cell.BlockName}";
             }
             else
             {
                 _session.SelectedInspectable = null;
 
                 if (selectionCount == 0)
-                    SelectionText = $"현재 선택: 없음";
+                    SelectionText = $"";
                 else
-                    SelectionText = $"현재 선택: {selectionCount}개 셀 선택함";
+                    SelectionText = $"{selectionCount}개 셀 선택함";
             }
+
+            UpdateSelectedBlockIndices();
         }
 
         private void RemoveFromSelection(BlockCellModel cell)

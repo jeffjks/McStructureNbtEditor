@@ -43,8 +43,8 @@ namespace McStructureNbtEditor.ViewModels
 
             AddPaletteCommand = new RelayCommand(AddPalette, CanAddPalette);
             RemovePaletteCommand = new RelayCommand(RemovePalette, HasSelectedPaletteEntry);
-            ModifyPaletteCommand = new RelayCommand(ModifyPalette, HasSelectedPaletteEntry);
-            DuplicatePaletteCommand = new RelayCommand(DuplicatePalette, HasSelectedPaletteEntry);
+            ModifyPaletteCommand = new RelayCommand(ModifyPalette, () => { return false; }); // HasSelectedPaletteEntry
+            DuplicatePaletteCommand = new RelayCommand(DuplicatePalette, () => {return false; }); // HasSelectedPaletteEntry
         }
 
         private bool CanAddPalette()
@@ -95,12 +95,11 @@ namespace McStructureNbtEditor.ViewModels
         private void RemovePalette()
         {
             var structure = _session.CurrentStructure;
-            var selectedEntry = SelectedPaletteEntry;
 
-            if (structure == null || selectedEntry == null)
+            if (structure == null || SelectedPaletteEntry == null)
                 return;
 
-            int paletteIndex = structure.Palette.IndexOf(selectedEntry);
+            int paletteIndex = SelectedPaletteEntry.Index;
             if (paletteIndex < 0)
             {
                 _session.StatusMessage = "삭제할 팔레트를 찾을 수 없습니다.";
@@ -111,7 +110,7 @@ namespace McStructureNbtEditor.ViewModels
 
             var title = "팔레트 삭제 확인";
             var message =
-                $"팔레트 '{selectedEntry.Name}' 을(를) 삭제하시겠습니까?\n" +
+                $"팔레트 '{SelectedPaletteEntry.Name}' 을(를) 삭제하시겠습니까?\n" +
                 $"이 작업으로 해당 팔레트를 가진 블록 {removedBlockCount}개가 함께 삭제됩니다.";
 
             bool confirmed = _dialogService.ShowCommonDialog(title, message);
