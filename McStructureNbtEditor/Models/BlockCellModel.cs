@@ -161,8 +161,9 @@ namespace McStructureNbtEditor.Models
 
             if (Tag != null)
             {
+                var clonedTag = (NbtTag)Tag.Clone();
                 Tag.Name = "nbt";
-                _compound.Add(Tag);
+                _compound.Add(clonedTag);
             }
 
             return NbtSnbtConverter.ToSnbt(_compound);
