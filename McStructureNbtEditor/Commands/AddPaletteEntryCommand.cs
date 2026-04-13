@@ -8,7 +8,7 @@ namespace McStructureNbtEditor.Commands
     {
         private PaletteEntry _addedEntry;
 
-        public string CommandStatusMessage => $"팔레트 추가됨: {_addedEntry.Name}.";
+        public string CommandStatusMessage => $"팔레트 추가: {_addedEntry.Name}.";
 
         public ReloadScope ChangeType => ReloadScope.ReloadAll;
 

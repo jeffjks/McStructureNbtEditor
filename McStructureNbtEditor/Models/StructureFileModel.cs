@@ -25,5 +25,21 @@ namespace McStructureNbtEditor.Models
 
             return Palette[index];
         }
+
+        public void ReindexPalette()
+        {
+            for (int i = 0; i < Palette.Count; i++)
+            {
+                Palette[i].Index = i;
+            }
+        }
+
+        public void ReindexBlocks()
+        {
+            for (int i = 0; i < Blocks.Count; i++)
+            {
+                Blocks[i].Index = i;
+            }
+        }
     }
 }

@@ -109,17 +109,15 @@ namespace McStructureNbtEditor.Services
                     if (!TryGetList(blockCompound, "pos", out var posList) || posList.Count < 3)
                         continue;
 
-                    var block = new StructureBlock
-                    {
-                        BlockPos = new BlockPosition(
-                            GetIntTagValue(posList[0]),
-                            GetIntTagValue(posList[1]),
-                            GetIntTagValue(posList[2])
-                        ),
-                        State = GetIntFromCompound(blockCompound, "state"),
-                        // Tag = blocksList[i],
-                        Nbt = TryGetCompound(blockCompound, "nbt", out var nbt) ? new NbtCompound(nbt) : null
-                    };
+                    var blockPos = new BlockPosition(
+                        GetIntTagValue(posList[0]),
+                        GetIntTagValue(posList[1]),
+                        GetIntTagValue(posList[2])
+                    );
+                    var state = GetIntFromCompound(blockCompound, "state");
+                    TryGetCompound(blockCompound, "nbt", out var nbtData);
+
+                    var block = new StructureBlock(i, blockPos, state, nbtData);
 
                     model.Blocks.Add(block);
                 }

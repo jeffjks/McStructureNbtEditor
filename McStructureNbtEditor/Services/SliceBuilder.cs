@@ -6,7 +6,6 @@ namespace McStructureNbtEditor.Services
     public class SliceBuilder
     {
         private const string AIR_BLOCK = "minecraft:air";
-        private const string VOID_BLOCK = "minecraft:structure_void";
         private readonly Dictionary<(int, int), StructureBlock> _structureBlockMap = new();
 
         public ObservableCollection<BlockCellModel> BuildSlice(StructureFileModel structure, int y)
@@ -34,25 +33,26 @@ namespace McStructureNbtEditor.Services
 
                         result.Add(new BlockCellModel
                         {
+                            BlockIndex = block.Index,
                             BlockPos = new BlockPosition(x, y, z),
                             Tag = block.Nbt,
                             BlockName = blockName,
                             State = block.State,
-                            IsOccupied = (blockName != VOID_BLOCK),
-                            DisplayText = ToShortBlockText(blockName),
-                            TooltipBlockNameText = blockName
+                            IsEmpty = false,
+                            CellText = ToShortBlockText(blockName)
                         });
                     }
                     else
                     {
                         result.Add(new BlockCellModel
                         {
+                            BlockIndex = -1,
                             BlockPos = new BlockPosition(x, y, z),
+                            Tag = null,
                             BlockName = string.Empty,
                             State = -1,
-                            IsOccupied = false,
-                            DisplayText = "",
-                            TooltipBlockNameText = "(No Block)"
+                            IsEmpty = true,
+                            CellText = "",
                         });
                     }
                 }

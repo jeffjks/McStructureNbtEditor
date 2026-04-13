@@ -7,10 +7,12 @@ namespace McStructureNbtEditor.Models
 {
     public class BlockCellModel : INotifyPropertyChanged, ISnbtInspectable
     {
+        private string? _tooltipCache;
+        private BlockPosition _blockPos;
         private string _blockName = "";
-        private string _displayText = "";
-        private string _tooltipBlockNameText = "";
-        private bool _isOccupied;
+        private string _cellText = "";
+        private bool _isEmpty;
+        private int _blockIndex = -1;
         private int _state = -1;
         private bool _isSelected = false;
 
@@ -21,9 +23,38 @@ namespace McStructureNbtEditor.Models
         private readonly NbtInt _compoundPosY;
         private readonly NbtInt _compoundPosZ;
 
-        public BlockPosition BlockPos { get; set; }
         public NbtTag? Tag { get; set; }
 
+        public string TooltipText
+        {
+            get
+            {
+                if (_tooltipCache == null)
+                {
+                    string blockname = _isEmpty ? "(No Block)" : _blockName;
+                    if (_isEmpty)
+                    {
+                        _tooltipCache = $"(No Block)\nBlock Index: {_blockIndex}\npos: {_blockPos}";
+                    }
+                    else
+                    {
+                        _tooltipCache = $"[{_state}] {blockname}\nBlock Index: {_blockIndex}\npos: {_blockPos}";
+                    }
+                }
+                return _tooltipCache;
+            }
+        }
+
+
+        public BlockPosition BlockPos {
+            get => _blockPos;
+            set
+            {
+                _blockPos = value;
+                OnPropertyChanged();
+                OnTooltipChanged();
+            }
+        }
 
         public string BlockName
         {
@@ -32,36 +63,38 @@ namespace McStructureNbtEditor.Models
             {
                 _blockName = value;
                 OnPropertyChanged();
+                OnTooltipChanged();
             }
         }
 
-        public string DisplayText
+        public string CellText
         {
-            get => _displayText;
+            get => _cellText;
             set
             {
-                _displayText = value;
+                _cellText = value;
                 OnPropertyChanged();
             }
         }
 
-        public string TooltipBlockNameText
+        public bool IsEmpty
         {
-            get => _tooltipBlockNameText;
+            get => _isEmpty;
             set
             {
-                _tooltipBlockNameText = value;
+                _isEmpty = value;
                 OnPropertyChanged();
+                OnTooltipChanged();
             }
         }
-
-        public bool IsOccupied
+        public int BlockIndex
         {
-            get => _isOccupied;
+            get => _blockIndex;
             set
             {
-                _isOccupied = value;
+                _blockIndex = value;
                 OnPropertyChanged();
+                OnTooltipChanged();
             }
         }
 
@@ -73,6 +106,7 @@ namespace McStructureNbtEditor.Models
             {
                 _state = value;
                 OnPropertyChanged();
+                OnTooltipChanged();
             }
         }
 
@@ -105,6 +139,12 @@ namespace McStructureNbtEditor.Models
 
             _compound.Add(_compoundState);
             _compound.Add(_compoundPosList);
+        }
+
+        private void OnTooltipChanged()
+        {
+            _tooltipCache = null;
+            OnPropertyChanged(nameof(TooltipText));
         }
 
         public string GetSnbtText()

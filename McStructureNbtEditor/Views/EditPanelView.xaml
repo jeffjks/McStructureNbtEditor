@@ -32,36 +32,36 @@
                           ItemsSource="{Binding PaletteEdit.PaletteEntries}"
                           DisplayMemberPath="ItemTemplate"
                           SelectedItem="{Binding PaletteEdit.SelectedPaletteEntry}"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,4">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,2">
                     <Button
-                        Margin="4,8,4,0"
+                        Margin="8,8,8,0"
                         Height="30"
                         MinWidth="96"
                         MaxWidth="120"
-                        Content="추가"
+                        Content="팔레트 추가"
                         Command="{Binding PaletteEdit.AddPaletteCommand}" />
                     <Button
-                        Margin="4,8,4,0"
+                        Margin="8,8,8,0"
                         Height="30"
                         MinWidth="96"
                         MaxWidth="120"
-                        Content="삭제"
+                        Content="팔레트 삭제"
                         Command="{Binding PaletteEdit.RemovePaletteCommand}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,4">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,2">
                     <Button
-                        Margin="4,8,4,0"
+                        Margin="8,8,8,0"
                         Height="30"
                         MinWidth="96"
                         MaxWidth="120"
-                        Content="수정"
+                        Content="팔레트 수정"
                         Command="{Binding PaletteEdit.ModifyPaletteCommand}" />
                     <Button
-                        Margin="4,8,4,0"
+                        Margin="8,8,8,0"
                         Height="30"
                         MinWidth="96"
                         MaxWidth="120"
-                        Content="복제"
+                        Content="팔레트 복제"
                         Command="{Binding PaletteEdit.DuplicatePaletteCommand}" />
                 </StackPanel>
             </StackPanel>
