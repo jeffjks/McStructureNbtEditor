@@ -25,6 +25,7 @@ namespace McStructureNbtEditor.ViewModels
         public NbtTreeViewModel NbtTree { get; }
         public SnbtFieldViewModel SnbtField { get; }
         public PaletteEditViewModel PaletteEdit { get; }
+        public BlockEditViewModel BlockEdit { get; }
 
         public StructureSummary? Summary
         {
@@ -60,6 +61,7 @@ namespace McStructureNbtEditor.ViewModels
             NbtTree = new NbtTreeViewModel(Session, serializer, treeBuilder);
             SnbtField = new SnbtFieldViewModel(Session);
             PaletteEdit = new PaletteEditViewModel(Session, dialogService);
+            BlockEdit = new BlockEditViewModel(Session);
 
             OpenFileCommand = new RelayCommand(OpenFile);
             SaveFileCommand = new RelayCommand(SaveFile);
