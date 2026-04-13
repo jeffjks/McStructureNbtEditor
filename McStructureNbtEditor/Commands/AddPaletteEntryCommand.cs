@@ -6,7 +6,7 @@ namespace McStructureNbtEditor.Commands
 {
     public sealed class AddPaletteEntryCommand : IEditorCommand
     {
-        private PaletteEntry _addedEntry;
+        private readonly PaletteEntry _addedEntry;
 
         public string CommandStatusMessage => $"팔레트 추가: {_addedEntry.Name}.";
 
@@ -19,7 +19,7 @@ namespace McStructureNbtEditor.Commands
 
         public bool Execute(EditorSession session)
         {
-            var structure = session.CurrentStructure!;
+            var structure = session.CurrentStructure;
 
             if (structure == null)
                 return false;
@@ -34,7 +34,7 @@ namespace McStructureNbtEditor.Commands
 
         public void Undo(EditorSession session)
         {
-            var structure = session.CurrentStructure!;
+            var structure = session.CurrentStructure;
 
             if (_addedEntry == null || structure == null)
                 return;

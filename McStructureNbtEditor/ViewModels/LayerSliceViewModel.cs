@@ -7,6 +7,26 @@ using System.Runtime.CompilerServices;
 
 namespace McStructureNbtEditor.ViewModels
 {
+    public readonly struct SelectedCell
+    {
+        public int? BlockIndex { get; }
+        public BlockPosition Position { get; }
+
+        public bool HasBlock => BlockIndex.HasValue;
+
+        public SelectedCell(int blockIndex, BlockPosition position)
+        {
+            BlockIndex = blockIndex;
+            Position = position;
+        }
+
+        public SelectedCell(BlockPosition position)
+        {
+            BlockIndex = null;
+            Position = position;
+        }
+    }
+
     public class LayerSliceViewModel : INotifyPropertyChanged
     {
         private readonly EditorSession _session;
@@ -232,13 +252,16 @@ namespace McStructureNbtEditor.ViewModels
 
         private void UpdateSelectedBlockIndices()
         {
-            _session.SelectedBlockIndices.Clear();
+            _session.SelectedCells.Clear();
 
             foreach (var cell in SelectedCells)
             {
                 if (cell.BlockIndex >= 0)
-                    _session.SelectedBlockIndices.Add(cell.BlockIndex);
+                    _session.SelectedCells.Add(new SelectedCell(cell.BlockIndex, cell.BlockPos));
+                else
+                    _session.SelectedCells.Add(new SelectedCell(cell.BlockPos));
             }
+            _session.NotifySelectedBlockIndicesChanged();
         }
 
         // Selection ==========================================================================
@@ -263,7 +286,7 @@ namespace McStructureNbtEditor.ViewModels
                 if (cell.State == -1)
                     SelectionText = $"";
                 else
-                    SelectionText = $"Block Index: {cell.BlockIndex} | [{cell.State}] {cell.BlockName}";
+                    SelectionText = $"Block Index: {cell.BlockIndex}\t/\tPalette: [{cell.State}] {cell.BlockName}";
             }
             else
             {

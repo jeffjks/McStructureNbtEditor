@@ -11,7 +11,7 @@ namespace McStructureNbtEditor.Models
         //public NbtTag? Tag { get; set; }
         public NbtCompound? Nbt { get; set; }
 
-        public StructureBlock(int index, BlockPosition blockPos, int state, NbtCompound? nbt)
+        public StructureBlock(int index, BlockPosition blockPos, int state, NbtCompound? nbt = null)
         {
             Index = index;
             BlockPos = blockPos;

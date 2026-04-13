@@ -100,7 +100,7 @@ namespace McStructureNbtEditor.ViewModels
                 return;
 
             int paletteIndex = SelectedPaletteEntry.Index;
-            if (paletteIndex < 0)
+            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
             {
                 _session.StatusMessage = "삭제할 팔레트를 찾을 수 없습니다.";
                 return;

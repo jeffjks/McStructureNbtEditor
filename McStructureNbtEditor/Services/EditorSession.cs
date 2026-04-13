@@ -1,6 +1,6 @@
 ﻿using McStructureNbtEditor.Commands;
 using McStructureNbtEditor.Models;
-using System.Collections.ObjectModel;
+using McStructureNbtEditor.ViewModels;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -46,6 +46,21 @@ namespace McStructureNbtEditor.Services
         }
         public bool HasStructure => CurrentStructure != null;
 
+        public HashSet<SelectedCell> SelectedCells { get; } = new();
+
+        private PaletteEntry? _selectedPaletteEntry;
+        public PaletteEntry? SelectedPaletteEntry
+        {
+            get => _selectedPaletteEntry;
+            set
+            {
+                if (_selectedPaletteEntry == value)
+                    return;
+                _selectedPaletteEntry = value;
+                OnPropertyChanged();
+            }
+        }
+
         private BlockPosition _requestedCellSelection;
         public BlockPosition RequestedCellSelection
         {
@@ -74,21 +89,6 @@ namespace McStructureNbtEditor.Services
 
                 _selectedInspectable = value;
                 OnPropertyChanged(nameof(SelectedInspectable));
-            }
-        }
-
-        public ObservableCollection<int> SelectedBlockIndices { get; } = new();
-
-        private PaletteEntry? _selectedPaletteEntry;
-        public PaletteEntry? SelectedPaletteEntry
-        {
-            get => _selectedPaletteEntry;
-            set
-            {
-                if (_selectedPaletteEntry == value)
-                    return;
-                _selectedPaletteEntry = value;
-                OnPropertyChanged();
             }
         }
 
@@ -163,6 +163,11 @@ namespace McStructureNbtEditor.Services
             RaiseDocumentChanged(command.ChangeType);
 
             StatusMessage = $"다음 작업이 다시 실행됨: ({command.CommandStatusMessage})";
+        }
+
+        public void NotifySelectedBlockIndicesChanged()
+        {
+            OnPropertyChanged(nameof(SelectedCells));
         }
 
         public void RaiseDocumentChanged(ReloadScope type)

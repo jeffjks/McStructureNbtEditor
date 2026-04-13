@@ -5,7 +5,7 @@ namespace McStructureNbtEditor.Commands
 {
     public class RemovePaletteEntryCommand : IEditorCommand
     {
-        private int _paletteIndex;
+        private readonly int _paletteIndex;
         private PaletteEntry? _removedEntry;
         private List<(StructureBlock Block, int Index)> _removedBlocks = new();
 
@@ -19,7 +19,7 @@ namespace McStructureNbtEditor.Commands
 
         public bool Execute(EditorSession session)
         {
-            var structure = session.CurrentStructure!;
+            var structure = session.CurrentStructure;
 
             if (structure == null)
                 return false;
@@ -29,9 +29,9 @@ namespace McStructureNbtEditor.Commands
             _removedEntry = structure.Palette[_paletteIndex];
 
             _removedBlocks = structure.Blocks
-                .Select((block, index) => new { block, index })
-                .Where(x => x.block.State == _paletteIndex)
-                .Select(x => (x.block, x.index))
+                .Select((block, index) => (Block: block, Index: index))
+                .Where(x => x.Block.State == _paletteIndex)
+                .Select(x => (x.Block, x.Index))
                 .ToList();
 
             foreach (var item in _removedBlocks.OrderByDescending(x => x.Index))
@@ -64,7 +64,7 @@ namespace McStructureNbtEditor.Commands
 
         public void Undo(EditorSession session)
         {
-            var structure = session.CurrentStructure!;
+            var structure = session.CurrentStructure;
 
             if (_removedEntry == null || structure == null)
                 return;
