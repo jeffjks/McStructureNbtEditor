@@ -153,6 +153,8 @@ namespace McStructureNbtEditor.Services
             var command = _commandHistory[_currentIndex];
             command.Execute(this);
 
+            _currentIndex++;
+
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
             RaiseDocumentChanged(command.ChangeType);
