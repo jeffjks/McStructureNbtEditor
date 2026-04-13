@@ -12,7 +12,7 @@ namespace McStructureNbtEditor.Commands
     {
         private readonly int _paletteIndex;
         private PaletteEntry? _paletteEntry;
-        private readonly Dictionary<int, int> _previousBlockState = new();
+        private readonly Dictionary<int, StructureBlock> _previousBlocks = new();
         private readonly IReadOnlySet<SelectedCell> _filledCells;
         private readonly List<StructureBlock> _createdBlocks = new();
 
@@ -51,8 +51,8 @@ namespace McStructureNbtEditor.Commands
                 if (cell.HasBlock)
                 {
                     int blockIndex = cell.BlockIndex!.Value;
-                    _previousBlockState.TryAdd(blockIndex, structure.Blocks[blockIndex].State);
-                    structure.Blocks[blockIndex].State = _paletteIndex;
+                    _previousBlocks.TryAdd(blockIndex, structure.Blocks[blockIndex]);
+                    structure.Blocks[blockIndex] = new StructureBlock(blockIndex, cell.Position, _paletteIndex);
                 }
                 else
                 {
@@ -74,11 +74,11 @@ namespace McStructureNbtEditor.Commands
             if (structure == null)
                 return;
 
-            foreach (var (blockIndex, previousState) in _previousBlockState)
+            foreach (var (blockIndex, previousBlock) in _previousBlocks)
             {
                 if (blockIndex >= 0 && blockIndex < structure.Blocks.Count)
                 {
-                    structure.Blocks[blockIndex].State = previousState;
+                    structure.Blocks[blockIndex] = previousBlock;
                 }
             }
 
