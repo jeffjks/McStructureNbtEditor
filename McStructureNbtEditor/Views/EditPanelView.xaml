@@ -34,15 +34,15 @@
                           SelectedItem="{Binding PaletteEdit.SelectedPaletteEntry}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,2">
                     <Button
-                        Margin="8,8,8,0"
-                        Height="30"
+                        Margin="6,8,6,0"
+                        Height="28"
                         MinWidth="96"
                         MaxWidth="120"
                         Content="팔레트 추가"
                         Command="{Binding PaletteEdit.AddPaletteCommand}" />
                     <Button
-                        Margin="8,8,8,0"
-                        Height="30"
+                        Margin="6,8,6,0"
+                        Height="28"
                         MinWidth="96"
                         MaxWidth="120"
                         Content="팔레트 삭제"
@@ -50,15 +50,15 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,2">
                     <Button
-                        Margin="8,8,8,0"
-                        Height="30"
+                        Margin="6,8,6,0"
+                        Height="28"
                         MinWidth="96"
                         MaxWidth="120"
                         Content="팔레트 수정"
                         Command="{Binding PaletteEdit.ModifyPaletteCommand}" />
                     <Button
-                        Margin="8,8,8,0"
-                        Height="30"
+                        Margin="6,8,6,0"
+                        Height="28"
                         MinWidth="96"
                         MaxWidth="120"
                         Content="팔레트 복제"
@@ -137,7 +137,7 @@
                 </Grid>
                 <Button Grid.Row="4"
                     Margin="0,8,0,0"
-                    Height="30"
+                    Height="28"
                     MaxWidth="120"
                     Content="Y 적용"
                     Command="{Binding LayerSlice.ApplyYTextCommand}" />
