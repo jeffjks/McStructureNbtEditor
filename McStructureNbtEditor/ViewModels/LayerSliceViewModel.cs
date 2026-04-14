@@ -105,7 +105,7 @@ namespace McStructureNbtEditor.ViewModels
                 OnPropertyChanged();
 
                 CurrentYText = _currentY.ToString(CultureInfo.InvariantCulture);
-                RebuildSlice();
+                UpdateSlice();
             }
         }
 
@@ -145,7 +145,7 @@ namespace McStructureNbtEditor.ViewModels
             IncreaseYCommand = new RelayCommand(() => CurrentY += 1, () => _structure != null && CurrentY < MaxY);
             DecreaseYCommand = new RelayCommand(() => CurrentY -= 1, () => _structure != null && CurrentY > MinY);
 
-            SelectedCells.CollectionChanged += (s, e) => UpdateSingleSelection();
+            SelectedCells.CollectionChanged += (s, e) => OnSelectionChanged();
             _session.PropertyChanged += OnSessionPropertyChanged;
             _session.DocumentChanged += OnDocumentChanged;
         }
@@ -187,10 +187,7 @@ namespace McStructureNbtEditor.ViewModels
 
         public void Refresh()
         {
-            SliceCells.Clear();
-            ClearSelection();
-
-            RebuildSlice();
+            UpdateSlice();
             RaiseCommands();
         }
 
@@ -225,13 +222,17 @@ namespace McStructureNbtEditor.ViewModels
             SliceCells.Clear();
             ClearSelection();
 
-            if (_structure != null)
-            {
-                var cells = _sliceBuilder.BuildSlice(_structure, CurrentY);
-                foreach (var cell in cells)
-                    SliceCells.Add(cell);
-            }
+            var cells = _sliceBuilder.BuildSlice(_structure, CurrentY);
+            foreach (var cell in cells)
+                SliceCells.Add(cell);
 
+            RaiseCommands();
+        }
+
+        private void UpdateSlice()
+        {
+            _sliceBuilder.UpdateSlice(_structure, SliceCells, CurrentY);
+            OnSelectionChanged();
             RaiseCommands();
         }
 
@@ -275,7 +276,7 @@ namespace McStructureNbtEditor.ViewModels
                 SelectedCells.Add(cell);
         }
 
-        private void UpdateSingleSelection()
+        private void OnSelectionChanged()
         {
             var selectionCount = SelectedCells.Count;
             if (selectionCount == 1)

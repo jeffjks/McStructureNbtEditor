@@ -8,7 +8,7 @@ namespace McStructureNbtEditor.Services
         private const string AIR_BLOCK = "minecraft:air";
         private readonly Dictionary<(int, int), StructureBlock> _structureBlockMap = new();
 
-        public ObservableCollection<BlockCellModel> BuildSlice(StructureFileModel structure, int y)
+        public ObservableCollection<BlockCellModel> BuildSlice(StructureFileModel? structure, int y)
         {
             var result = new ObservableCollection<BlockCellModel>();
 
@@ -59,6 +59,54 @@ namespace McStructureNbtEditor.Services
             }
 
             return result;
+        }
+
+        public void UpdateSlice(StructureFileModel? structure, ObservableCollection<BlockCellModel> cells, int y)
+        {
+            if (structure == null || structure.SizeX <= 0 || structure.SizeZ <= 0)
+                return;
+
+            _structureBlockMap.Clear();
+
+            foreach (var block in structure.Blocks.Where(b => b.BlockPos.Y == y))
+            {
+                _structureBlockMap[(block.BlockPos.X, block.BlockPos.Z)] = block;
+            }
+
+            var cellIndex = 0;
+            for (int z = 0; z < structure.SizeZ; z++)
+            {
+                for (int x = 0; x < structure.SizeX; x++)
+                {
+                    var curCell = cells[cellIndex];
+
+                    if (_structureBlockMap.TryGetValue((x, z), out var block))
+                    {
+                        var palette = structure.GetPaletteEntry(block.State);
+                        var blockName = palette?.Name ?? $"<state:{block.State}>";
+
+                        curCell.BlockIndex = block.Index;
+                        curCell.BlockPos = new BlockPosition(x, y, z);
+                        curCell.Tag = block.Nbt;
+                        curCell.BlockName = blockName;
+                        curCell.State = block.State;
+                        curCell.IsEmpty = false;
+                        curCell.CellText = ToShortBlockText(blockName);
+                    }
+                    else
+                    {
+                        curCell.BlockIndex = -1;
+                        curCell.BlockPos = new BlockPosition(x, y, z);
+                        curCell.Tag = null;
+                        curCell.BlockName = string.Empty;
+                        curCell.State = -1;
+                        curCell.IsEmpty = true;
+                        curCell.CellText = "";
+                    }
+
+                    cellIndex++;
+                }
+            }
         }
 
         private string ToShortBlockText(string blockName)
