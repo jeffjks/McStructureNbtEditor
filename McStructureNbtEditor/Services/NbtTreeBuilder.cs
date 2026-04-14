@@ -11,7 +11,7 @@ namespace McStructureNbtEditor.Services
         {
             var node = new NbtTreeNode
             {
-                Name = string.IsNullOrEmpty(tag.Name) ? "<unnamed>" : tag.Name,
+                Name = string.IsNullOrEmpty(tag.Name) ? "<noname>" : tag.Name,
                 Type = tag.TagType.ToString(),
                 ValuePreview = GetValuePreview(tag),
                 Tag = tag

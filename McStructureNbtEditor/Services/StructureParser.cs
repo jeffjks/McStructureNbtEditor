@@ -1,5 +1,6 @@
-﻿using McStructureNbtEditor.Models;
-using fNbt;
+﻿using fNbt;
+using McStructureNbtEditor.Models;
+using System.IO;
 
 // 읽은 NBT를 StructureFileModel 타입으로 변환 (size, paletes, block개수, 좌표 해석 등)
 // 파일 Open 시 최초 1회만 시행
@@ -39,21 +40,22 @@ namespace McStructureNbtEditor.Services
 
         public StructureFileModel ParseStructure(NbtFile file, string fileName, string filePath)
         {
-            var model = new StructureFileModel
-            {
-                FileName = fileName,
-                FilePath = filePath
-            };
-
             if (file.RootTag is not NbtCompound root)
-                return model;
+                throw new InvalidDataException($"잘못된 NBT 파일입니다. (잘못된 RootTag 타입: {file.RootTag?.GetType().Name ?? "null"})");
 
+            int sizeX, sizeY, sizeZ;
             if (TryGetList(root, "size", out var sizeList) && sizeList.Count >= 3)
             {
-                model.SizeX = GetIntTagValue(sizeList[0]);
-                model.SizeY = GetIntTagValue(sizeList[1]);
-                model.SizeZ = GetIntTagValue(sizeList[2]);
+                sizeX = GetIntTagValue(sizeList[0]);
+                sizeY = GetIntTagValue(sizeList[1]);
+                sizeZ = GetIntTagValue(sizeList[2]);
             }
+            else
+            {
+                throw new InvalidDataException($"잘못된 NBT 파일입니다. (잘못된 Size 데이터)");
+            }
+
+            var model = StructureFileModel.OpenFromFile(fileName, filePath, sizeX, sizeY, sizeZ);
 
             if (TryGetList(root, "entities", out var entityList))
             {
@@ -83,7 +85,7 @@ namespace McStructureNbtEditor.Services
                     {
                         foreach (var child in propsCompound.Tags)
                         {
-                            var childName = child.Name ?? "<unnamed>";
+                            var childName = child.Name ?? "<noname>";
                             if (child is NbtString str)
                             {
                                 entry.Properties[childName] = str.Value;

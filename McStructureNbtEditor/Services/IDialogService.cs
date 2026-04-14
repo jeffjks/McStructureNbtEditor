@@ -1,4 +1,5 @@
 ﻿using McStructureNbtEditor.Services.DialogResults;
+using McStructureNbtEditor.ViewModels;
 
 namespace McStructureNbtEditor.Services
 {
@@ -6,5 +7,6 @@ namespace McStructureNbtEditor.Services
     {
         AddPaletteDialogResult ShowAddPaletteDialog();
         bool ShowCommonDialog(string title, string message);
+        HasChangesDialogResult ShowHasChangesDialog();
     }
 }

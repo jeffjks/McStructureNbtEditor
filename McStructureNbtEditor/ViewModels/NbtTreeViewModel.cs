@@ -45,6 +45,7 @@ namespace McStructureNbtEditor.ViewModels
             _treeBuilder = treeBuilder;
 
             _session.DocumentChanged += OnDocumentChanged;
+            _session.PropertyChanged += OnSessionPropertyChanged;
 
             JumpToTreeSelectedBlockCommand = new RelayCommand(
                 JumpToTreeSelectedBlock,
@@ -107,9 +108,34 @@ namespace McStructureNbtEditor.ViewModels
                 return;
 
             var rootTag = _serializer.BuildRootTag(_session.CurrentStructure);
+
+            RootNodes.Add(_treeBuilder.BuildRoot(rootTag, GetRootName()));
+        }
+
+        private void RefreshRootName()
+        {
+            if (RootNodes.Count == 0)
+                return;
+            RootNodes[0].Name = GetRootName();
+        }
+
+        private string GetRootName()
+        {
+            if (_session.CurrentStructure == null)
+            {
+                return "<noname.nbt>";
+            }
+
             var fileName = _session.CurrentStructure.FileName;
-            var rootNode = _treeBuilder.BuildRoot(rootTag, fileName);
-            RootNodes.Add(rootNode);
+            return _session.HasChanges ? "* " + fileName : fileName;
+        }
+
+        private void OnSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_session.HasChanges))
+            {
+                RefreshRootName();
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

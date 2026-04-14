@@ -3,9 +3,9 @@ using System.Windows;
 
 namespace McStructureNbtEditor.Views
 {
-    public partial class AddPaletteDialog : Window
+    public partial class AddPaletteDialogView : Window
     {
-        public AddPaletteDialog(AddPaletteDialogViewModel viewModel)
+        public AddPaletteDialogView(AddPaletteDialogViewModel viewModel)
         {
             InitializeComponent();
 

@@ -14,12 +14,15 @@ namespace McStructureNbtEditor.Services
     public sealed class EditorSession : INotifyPropertyChanged
     {
         private readonly List<IEditorCommand> _commandHistory = new(MaxHistory);
-        private int _currentIndex = 0;
+        private int _currentHistoryIndex = 0;
+        private int _savedHistoryIndex = 0;
+        private bool _exceedMaxHistory = false;
 
         private const int MaxHistory = 128;
 
-        public bool CanUndo => _currentIndex > 0;
-        public bool CanRedo => _currentIndex < _commandHistory.Count;
+        public bool CanUndo => _currentHistoryIndex > 0;
+        public bool CanRedo => _currentHistoryIndex < _commandHistory.Count;
+        public bool HasChanges => (_currentHistoryIndex != _savedHistoryIndex) || _exceedMaxHistory;
 
 
         public event EventHandler<DocumentChangedEventArgs>? DocumentChanged;
@@ -107,26 +110,32 @@ namespace McStructureNbtEditor.Services
 
         public bool ExecuteCommand(IEditorCommand command)
         {
-            if (_currentIndex < _commandHistory.Count)
+            if (!command.Execute(this))
+                return false;
+
+            if (_currentHistoryIndex < _commandHistory.Count)
             {
-                _commandHistory.RemoveRange(_currentIndex, _commandHistory.Count - _currentIndex);
+                _commandHistory.RemoveRange(_currentHistoryIndex, _commandHistory.Count - _currentHistoryIndex);
             }
 
             if (_commandHistory.Count >= MaxHistory)
             {
+                _exceedMaxHistory = true;
                 _commandHistory.RemoveAt(0);
-                _currentIndex--;
+
+                if (_currentHistoryIndex > 0)
+                    _currentHistoryIndex--;
+                if (_savedHistoryIndex > 0)
+                    _savedHistoryIndex--;
             }
 
-            if (!command.Execute(this))
-                return false;
-
             _commandHistory.Add(command);
-            _currentIndex++;
+            _currentHistoryIndex++;
             StatusMessage = command.CommandStatusMessage;
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(HasChanges));
             RaiseDocumentChanged(command.ChangeType);
             return true;
         }
@@ -136,13 +145,14 @@ namespace McStructureNbtEditor.Services
             if (!CanUndo)
                 return;
 
-            _currentIndex--;
+            _currentHistoryIndex--;
 
-            var command = _commandHistory[_currentIndex];
+            var command = _commandHistory[_currentHistoryIndex];
             command.Undo(this);
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(HasChanges));
             RaiseDocumentChanged(command.ChangeType);
 
             StatusMessage = $"다음 작업이 실행 취소됨: ({command.CommandStatusMessage})";
@@ -153,16 +163,24 @@ namespace McStructureNbtEditor.Services
             if (!CanRedo)
                 return;
 
-            var command = _commandHistory[_currentIndex];
+            var command = _commandHistory[_currentHistoryIndex];
             command.Execute(this);
 
-            _currentIndex++;
+            _currentHistoryIndex++;
 
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(HasChanges));
             RaiseDocumentChanged(command.ChangeType);
 
             StatusMessage = $"다음 작업이 다시 실행됨: ({command.CommandStatusMessage})";
+        }
+
+        public void SetSavedHistoryIndex()
+        {
+            _savedHistoryIndex = _currentHistoryIndex;
+            _exceedMaxHistory = false;
+            OnPropertyChanged(nameof(HasChanges));
         }
 
         public void NotifySelectedBlockIndicesChanged()
