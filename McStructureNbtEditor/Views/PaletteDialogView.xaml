@@ -16,46 +16,46 @@
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="8"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <StackPanel Margin="0,0,0,0">
+            <TextBlock Text="{Binding PaletteToEditText}"
+                       Margin="0,0,0,4"
+                       Visibility="{Binding ShowHeader, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-        <TextBlock Grid.Row="0"
-                   VerticalAlignment="Center"
-                   Text="{Binding PaletteToEditText}"
-                   Visibility="{Binding ShowHeader, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <Grid Margin="0,4,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           VerticalAlignment="Center"
+                           Text="팔레트 블록 이름: "/>
+
+                <TextBox Grid.Column="2"
+                         MinWidth="220"
+                         Height="24"
+                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </StackPanel>
 
         <TextBlock Grid.Row="2" Grid.Column="0"
-                   VerticalAlignment="Center"
-                   Text="팔레트 블록 이름: "/>
-
-        <TextBox Grid.Row="2" Grid.Column="2"
-                 MinWidth="220"
-                 Height="24"
-                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-
-        <TextBlock Grid.Row="4" Grid.Column="0"
                    Grid.ColumnSpan="3"
                    FontWeight="Bold"
+                   Margin="0,4,0,4"
                    Text="Properties" />
 
-        <DataGrid Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
+        <DataGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
                   ItemsSource="{Binding Properties}"
                   SelectedItem="{Binding SelectedProperty}"
+                  Margin="0,4,0,4"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
@@ -71,7 +71,8 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3"
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                    Margin="0,4,0,4"
                     Orientation="Horizontal">
             <Button Content="속성 추가"
                     Width="96"
@@ -84,13 +85,14 @@
                     Command="{Binding RemovePropertyCommand}" />
         </StackPanel>
 
-        <TextBlock Grid.Row="10" Grid.Column="0"
+        <TextBlock Grid.Row="5" Grid.Column="0"
                    Grid.ColumnSpan="2"
                    VerticalAlignment="Center"
                    Foreground="IndianRed"
                    Text="{Binding ErrorMessage}" />
 
-        <StackPanel Grid.Row="10" Grid.Column="2"
+        <StackPanel Grid.Row="5" Grid.Column="2"
+                    Margin="0,4,0,0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
             <Button Content="확인"
