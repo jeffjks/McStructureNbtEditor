@@ -5,7 +5,7 @@ namespace McStructureNbtEditor.Services
 {
     public interface IDialogService
     {
-        AddPaletteDialogResult ShowAddPaletteDialog();
+        PaletteDialogResult ShowPaletteDialog();
         bool ShowCommonDialog(string title, string message);
         HasChangesDialogResult ShowHasChangesDialog();
     }

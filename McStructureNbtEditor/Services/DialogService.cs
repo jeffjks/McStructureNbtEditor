@@ -6,14 +6,14 @@ namespace McStructureNbtEditor.Services
 {
     public sealed class DialogService : IDialogService
     {
-        public AddPaletteDialogResult ShowAddPaletteDialog()
+        public PaletteDialogResult ShowPaletteDialog()
         {
-            var vm = new AddPaletteDialogViewModel();
-            var view = new AddPaletteDialogView(vm);
+            var vm = new PaletteDialogViewModel();
+            var view = new PaletteDialogView(vm);
 
             var result = view.ShowDialog();
 
-            return new AddPaletteDialogResult
+            return new PaletteDialogResult
             {
                 Confirmed = result == true,
                 Draft = vm.Result

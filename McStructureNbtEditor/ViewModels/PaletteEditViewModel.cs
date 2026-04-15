@@ -60,7 +60,7 @@ namespace McStructureNbtEditor.ViewModels
         private void AddPalette()
         {
             var structure = _session.CurrentStructure;
-            var result = _dialogService.ShowAddPaletteDialog();
+            var result = _dialogService.ShowPaletteDialog();
 
             if (!result.Confirmed || result.Draft == null || structure == null)
                 return;
