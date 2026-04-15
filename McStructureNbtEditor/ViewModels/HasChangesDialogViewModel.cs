@@ -6,7 +6,7 @@ namespace McStructureNbtEditor.ViewModels
     public enum HasChangesDialogResult
     {
         Save,
-        ExitWithoutSave,
+        Ignore,
         Cancel
     }
 
@@ -38,7 +38,7 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (window == null)
                 return;
-            Result = HasChangesDialogResult.ExitWithoutSave;
+            Result = HasChangesDialogResult.Ignore;
             Close(window, true);
         }
 

@@ -22,7 +22,7 @@ namespace McStructureNbtEditor.Services
 
         public bool CanUndo => _currentHistoryIndex > 0;
         public bool CanRedo => _currentHistoryIndex < _commandHistory.Count;
-        public bool HasChanges => (_currentHistoryIndex != _savedHistoryIndex) || _exceedMaxHistory;
+        public bool HasChanges => CurrentStructure != null && ((_currentHistoryIndex != _savedHistoryIndex) || _exceedMaxHistory);
 
 
         public event EventHandler<DocumentChangedEventArgs>? DocumentChanged;
@@ -31,20 +31,15 @@ namespace McStructureNbtEditor.Services
         public StructureFileModel? CurrentStructure
         {
             get => _currentStructure;
-            set
+            private set
             {
                 if (_currentStructure == value)
                     return;
-                _currentStructure = value;
-                _commandHistory.Clear();
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(HasStructure));
-                OnPropertyChanged(nameof(CanUndo));
-                OnPropertyChanged(nameof(CanRedo));
 
-                OnPropertyChanged(nameof(CurrentStructure));
-                SelectedPaletteEntry = CurrentStructure?.GetPaletteEntry(0);
-                RaiseDocumentChanged(ReloadScope.ReloadFile);
+                _currentStructure = value;
+
+                OnPropertyChanged();
+                OnCommandHistoryChanged(ReloadScope.ReloadFile);
             }
         }
         public bool HasStructure => CurrentStructure != null;
@@ -108,6 +103,18 @@ namespace McStructureNbtEditor.Services
             }
         }
 
+        public void LoadCurrentStructure(StructureFileModel structure)
+        {
+            _commandHistory.Clear();
+            _currentHistoryIndex = 0;
+            _savedHistoryIndex = 0;
+            _exceedMaxHistory = false;
+
+            CurrentStructure = structure;
+
+            SelectedPaletteEntry = CurrentStructure.GetPaletteEntry(0);
+        }
+
         public bool ExecuteCommand(IEditorCommand command)
         {
             if (!command.Execute(this))
@@ -133,10 +140,8 @@ namespace McStructureNbtEditor.Services
             _currentHistoryIndex++;
             StatusMessage = command.CommandStatusMessage;
 
-            OnPropertyChanged(nameof(CanUndo));
-            OnPropertyChanged(nameof(CanRedo));
-            OnPropertyChanged(nameof(HasChanges));
-            RaiseDocumentChanged(command.ChangeType);
+            OnCommandHistoryChanged(command.ChangeType);
+
             return true;
         }
 
@@ -150,10 +155,7 @@ namespace McStructureNbtEditor.Services
             var command = _commandHistory[_currentHistoryIndex];
             command.Undo(this);
 
-            OnPropertyChanged(nameof(CanUndo));
-            OnPropertyChanged(nameof(CanRedo));
-            OnPropertyChanged(nameof(HasChanges));
-            RaiseDocumentChanged(command.ChangeType);
+            OnCommandHistoryChanged(command.ChangeType);
 
             StatusMessage = $"다음 작업이 실행 취소됨: ({command.CommandStatusMessage})";
         }
@@ -168,12 +170,17 @@ namespace McStructureNbtEditor.Services
 
             _currentHistoryIndex++;
 
+            OnCommandHistoryChanged(command.ChangeType);
+
+            StatusMessage = $"다음 작업이 다시 실행됨: ({command.CommandStatusMessage})";
+        }
+
+        private void OnCommandHistoryChanged(ReloadScope scope)
+        {
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
             OnPropertyChanged(nameof(HasChanges));
-            RaiseDocumentChanged(command.ChangeType);
-
-            StatusMessage = $"다음 작업이 다시 실행됨: ({command.CommandStatusMessage})";
+            RaiseDocumentChanged(scope);
         }
 
         public void SetSavedHistoryIndex()

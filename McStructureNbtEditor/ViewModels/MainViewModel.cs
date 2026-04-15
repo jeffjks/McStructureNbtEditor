@@ -66,8 +66,8 @@ namespace McStructureNbtEditor.ViewModels
             BlockEdit = new BlockEditViewModel(Session);
 
             OpenFileCommand = new RelayCommand(OpenFile);
-            SaveFileCommand = new RelayCommand(() => SaveFile());
-            SaveAsFileCommand = new RelayCommand(() => SaveAsFile());
+            SaveFileCommand = new RelayCommand(() => TrySaveFile());
+            SaveAsFileCommand = new RelayCommand(() => TrySaveAsFile());
             ExitCommand = new RelayCommand(Exit);
 
             UndoCommand = new RelayCommand(Undo, () => Session.CanUndo);
@@ -79,44 +79,80 @@ namespace McStructureNbtEditor.ViewModels
 
         private void OpenFile()
         {
+            if (Session.HasChanges)
+            {
+                var result = _dialogService.ShowHasChangesDialog();
+
+                switch (result)
+                {
+                    case HasChangesDialogResult.Save:
+                        if (TrySaveFile() == false)
+                            return;
+                        break;
+
+                    case HasChangesDialogResult.Ignore:
+                        break;
+
+                    case HasChangesDialogResult.Cancel:
+                        return;
+                }
+            }
+
+            TryOpenFile();
+        }
+
+        private bool TryOpenFile()
+        {
             var dialog = new OpenFileDialog
             {
                 Filter = "NBT Files (*.nbt)|*.nbt|All Files (*.*)|*.*"
             };
 
             if (dialog.ShowDialog() != true)
-                return;
+                return false;
 
             try
             {
                 _currentFile = _nbtFileService.Load(dialog.FileName);
-                Session.CurrentStructure = _structureParser.ParseStructure(_currentFile, dialog.SafeFileName, dialog.FileName);
+                var newStructureFileModel = _structureParser.ParseStructure(_currentFile, dialog.SafeFileName, dialog.FileName);
+                Session.LoadCurrentStructure(newStructureFileModel);
                 Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
                 Session.StatusMessage = "파일 로드 완료";
             }
             catch (Exception ex)
             {
                 Session.StatusMessage = $"파일을 로드하는 중 오류가 발생했습니다: {ex.Message}";
+                return false;
             }
+            return true;
         }
 
-        private bool SaveFile()
+        private bool TrySaveFile()
         {
             if (_currentStructure == null)
                 return false;
 
-            if (_currentStructure.IsNewFile)
+            try
             {
-                return SaveAsFile();
-            }
+                if (_currentStructure.IsNewFile)
+                {
+                    return TrySaveAsFile();
+                }
 
-            var nbtFile = GetNbtFile();
-            _nbtFileService.Save(nbtFile, _currentFilePath);
-            Session.SetSavedHistoryIndex();
-            return true;
+                return SaveToFile(_currentFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"파일 저장 중 오류가 발생했습니다: {ex.Message}",
+                    "오류",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return false;
+            }
         }
 
-        private bool SaveAsFile()
+        private bool TrySaveAsFile()
         {
             if (_currentStructure == null)
                 return false;
@@ -132,12 +168,22 @@ namespace McStructureNbtEditor.ViewModels
             if (dialog.ShowDialog() != true)
                 return false;
 
-            var fileName = Path.GetFileName(dialog.FileName);
             var filePath = dialog.FileName;
 
-            _currentStructure.SetFileName(fileName, filePath);
+            return SaveToFile(filePath);
+        }
+
+        private bool SaveToFile(string filePath)
+        {
+            if (_currentStructure == null)
+                return false;
+
             var nbtFile = GetNbtFile();
             _nbtFileService.Save(nbtFile, filePath);
+
+            var fileName = Path.GetFileName(filePath);
+            _currentStructure.SetFileName(fileName, filePath);
+
             Session.SetSavedHistoryIndex();
             return true;
         }
@@ -151,11 +197,11 @@ namespace McStructureNbtEditor.ViewModels
                 switch (result)
                 {
                     case HasChangesDialogResult.Save:
-                        if (SaveFile() == false)
+                        if (TrySaveFile() == false)
                             return;
                         break;
 
-                    case HasChangesDialogResult.ExitWithoutSave:
+                    case HasChangesDialogResult.Ignore:
                         break;
 
                     case HasChangesDialogResult.Cancel:
