@@ -1,4 +1,5 @@
-﻿using McStructureNbtEditor.Services.DialogResults;
+﻿using McStructureNbtEditor.Models;
+using McStructureNbtEditor.Services.DialogResults;
 using McStructureNbtEditor.ViewModels;
 using McStructureNbtEditor.Views;
 
@@ -6,9 +7,9 @@ namespace McStructureNbtEditor.Services
 {
     public sealed class DialogService : IDialogService
     {
-        public PaletteDialogResult ShowPaletteDialog()
+        public PaletteDialogResult ShowPaletteDialog(PaletteMode mode, PaletteEntry? defaultPaletteEntry = null)
         {
-            var vm = new PaletteDialogViewModel();
+            var vm = new PaletteDialogViewModel(mode, defaultPaletteEntry);
             var view = new PaletteDialogView(vm);
 
             var result = view.ShowDialog();

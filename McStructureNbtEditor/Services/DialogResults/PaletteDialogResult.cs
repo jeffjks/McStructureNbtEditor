@@ -1,11 +1,8 @@
 ﻿using McStructureNbtEditor.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace McStructureNbtEditor.Services.DialogResults
 {
-    public sealed class AddPaletteDialogResult
+    public sealed class PaletteDialogResult
     {
         public bool Confirmed { get; init; }
         public PaletteEntryDraft? Draft { get; set; }

@@ -31,7 +31,7 @@ namespace McStructureNbtEditor.ViewModels
 
         public RelayCommand AddPaletteCommand { get; }
         public RelayCommand RemovePaletteCommand { get; }
-        public RelayCommand ModifyPaletteCommand { get; }
+        public RelayCommand EditPaletteCommand { get; }
         public RelayCommand DuplicatePaletteCommand { get; }
 
         public PaletteEditViewModel(EditorSession session, IDialogService dialogService)
@@ -43,7 +43,7 @@ namespace McStructureNbtEditor.ViewModels
 
             AddPaletteCommand = new RelayCommand(AddPalette, CanAddPalette);
             RemovePaletteCommand = new RelayCommand(RemovePalette, HasSelectedPaletteEntry);
-            ModifyPaletteCommand = new RelayCommand(ModifyPalette, () => { return false; }); // HasSelectedPaletteEntry
+            EditPaletteCommand = new RelayCommand(EditPalette, HasSelectedPaletteEntry);
             DuplicatePaletteCommand = new RelayCommand(DuplicatePalette, () => {return false; }); // HasSelectedPaletteEntry
         }
 
@@ -60,7 +60,7 @@ namespace McStructureNbtEditor.ViewModels
         private void AddPalette()
         {
             var structure = _session.CurrentStructure;
-            var result = _dialogService.ShowPaletteDialog();
+            var result = _dialogService.ShowPaletteDialog(PaletteMode.Add);
 
             if (!result.Confirmed || result.Draft == null || structure == null)
                 return;
@@ -76,7 +76,7 @@ namespace McStructureNbtEditor.ViewModels
             {
                 entry = PaletteEntryFactory.CreateFromDraft(
                     result.Draft,
-                    structure!.Palette.Count
+                    structure.Palette.Count
                 );
             }
             catch (Exception ex)
@@ -124,7 +124,51 @@ namespace McStructureNbtEditor.ViewModels
             }
         }
 
-        private void ModifyPalette() { }
+        private void EditPalette()
+        {
+            var structure = _session.CurrentStructure;
+
+            if (structure == null || SelectedPaletteEntry == null)
+                return;
+
+            int paletteIndex = SelectedPaletteEntry.Index;
+            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
+            {
+                _session.StatusMessage = "수정할 팔레트를 찾을 수 없습니다.";
+                return;
+            }
+
+            var result = _dialogService.ShowPaletteDialog(PaletteMode.Edit, SelectedPaletteEntry);
+
+            if (!result.Confirmed || result.Draft == null || structure == null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(result.Draft.Name))
+            {
+                _session.StatusMessage = "팔레트 이름이 비어 있습니다.";
+                return;
+            }
+
+            PaletteEntry entry;
+            try
+            {
+                entry = PaletteEntryFactory.CreateFromDraft(
+                    result.Draft,
+                    paletteIndex
+                );
+            }
+            catch (Exception ex)
+            {
+                _session.StatusMessage = $"팔레트 데이터가 올바르지 않습니다: {ex.Message}";
+                return;
+            }
+
+            var command = new EditPaletteEntryCommand(paletteIndex, entry);
+            if (!_session.ExecuteCommand(command))
+            {
+                _session.StatusMessage = "팔레트 수정에 실패했습니다.";
+            }
+        }
         private void DuplicatePalette() { }
 
         private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
@@ -148,7 +192,7 @@ namespace McStructureNbtEditor.ViewModels
             {
                 OnPropertyChanged(nameof(SelectedPaletteEntry));
                 RemovePaletteCommand.RaiseCanExecuteChanged();
-                ModifyPaletteCommand.RaiseCanExecuteChanged();
+                EditPaletteCommand.RaiseCanExecuteChanged();
                 DuplicatePaletteCommand.RaiseCanExecuteChanged();
             }
         }

@@ -6,14 +6,48 @@ using System.Windows.Input;
 
 namespace McStructureNbtEditor.ViewModels
 {
-    public class AddPaletteDialogViewModel : INotifyPropertyChanged
+    public enum PaletteMode { Add, Edit };
+
+    public class PaletteDialogViewModel : INotifyPropertyChanged
     {
+        private PaletteMode _mode { get; }
+
         private string _name = "";
         private PalettePropertiesItemDraft? _selectedProperty;
         private string _errorMessage = "";
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public bool ShowHeader => _paletteToEditText != "";
+
+        private string _paletteToEditText = "";
+        public string PaletteToEditText
+        {
+            get => _paletteToEditText;
+            private set
+            {
+                if (_paletteToEditText == value)
+                    return;
+
+                _paletteToEditText = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowHeader));
+            }
+        }
+
+        private string _title = "";
+        public string Title
+        {
+            get => _title;
+            private set
+            {
+                if (_title == value)
+                    return;
+
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
         public string Name
         {
             get => _name;
@@ -69,8 +103,20 @@ namespace McStructureNbtEditor.ViewModels
 
         public Action<bool?>? CloseAction { get; set; }
 
-        public AddPaletteDialogViewModel()
+        public PaletteDialogViewModel(PaletteMode mode, PaletteEntry? defaultPaletteEntry = null)
         {
+            _mode = mode;
+
+            if (_mode == PaletteMode.Add)
+            {
+                _title = "팔레트 추가";
+            }
+            else if (_mode == PaletteMode.Edit)
+            {
+                _title = "팔레트 수정";
+                _paletteToEditText = $"수정할 팔레트: [{defaultPaletteEntry?.Index}] {defaultPaletteEntry?.Name}";
+            }
+
             AddPropertyCommand = new RelayCommand(AddProperty);
             RemovePropertyCommand = new RelayCommand(RemoveProperty, () => SelectedProperty != null);
             ConfirmCommand = new RelayCommand(Confirm, () => CanConfirm);

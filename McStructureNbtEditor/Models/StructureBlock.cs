@@ -18,5 +18,14 @@ namespace McStructureNbtEditor.Models
             State = state;
             Nbt = nbt;
         }
+
+        public StructureBlock(StructureBlock other)
+        {
+            Index = other.Index;
+            BlockPos = other.BlockPos;
+            State = other.State;
+            if (other.Nbt != null)
+                Nbt = new NbtCompound(other.Nbt);
+        }
     }
 }

@@ -63,6 +63,16 @@ namespace McStructureNbtEditor.Models
             }
         }
 
+        public PaletteEntry() { }
+
+        public PaletteEntry(PaletteEntry other)
+        {
+            _index = other._index;
+            _name = other._name;
+
+            _properties = new Dictionary<string, string>(other._properties);
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)

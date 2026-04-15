@@ -26,7 +26,7 @@ namespace McStructureNbtEditor.Commands
             if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
                 return false;
 
-            _removedEntry = structure.Palette[_paletteIndex];
+            _removedEntry = new PaletteEntry(structure.Palette[_paletteIndex]);
 
             _removedBlocks = structure.Blocks
                 .Select((block, index) => (Block: block, Index: index))

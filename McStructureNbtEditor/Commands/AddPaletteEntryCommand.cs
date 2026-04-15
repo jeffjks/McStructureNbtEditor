@@ -1,5 +1,4 @@
-﻿using fNbt;
-using McStructureNbtEditor.Models;
+﻿using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services;
 
 namespace McStructureNbtEditor.Commands

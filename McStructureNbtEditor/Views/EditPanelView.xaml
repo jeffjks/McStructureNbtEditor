@@ -55,7 +55,7 @@
                         MinWidth="96"
                         MaxWidth="120"
                         Content="팔레트 수정"
-                        Command="{Binding PaletteEdit.ModifyPaletteCommand}" />
+                        Command="{Binding PaletteEdit.EditPaletteCommand}" />
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
