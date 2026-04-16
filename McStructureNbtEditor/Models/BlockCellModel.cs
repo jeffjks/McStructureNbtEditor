@@ -149,6 +149,9 @@ namespace McStructureNbtEditor.Models
 
         public string GetSnbtText()
         {
+            if (_isEmpty)
+                return string.Empty;
+
             _compoundState.Value = _state;
             _compoundPosX.Value = BlockPos.X;
             _compoundPosY.Value = BlockPos.Y;
