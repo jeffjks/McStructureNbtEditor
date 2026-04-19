@@ -11,6 +11,9 @@
     Title="Minecraft Structure NBT Editor"
     Width="1200" Height="800"
     MinWidth="1200" MinHeight="800"
+    AllowDrop="True"
+    Drop="Window_Drop"
+    DragOver="Window_DragOver"
     d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="Z" Command="{Binding UndoCommand}" />

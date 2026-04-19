@@ -80,6 +80,30 @@ namespace McStructureNbtEditor.ViewModels
             Session.PropertyChanged += OnSessionPropertyChanged;
         }
 
+        public void OpenFileFromPath(string filePath)
+        {
+            if (Session.HasChanges)
+            {
+                var result = _dialogService.ShowHasChangesDialog();
+
+                switch (result)
+                {
+                    case HasChangesDialogResult.Save:
+                        if (TrySaveFile() == false)
+                            return;
+                        break;
+
+                    case HasChangesDialogResult.Ignore:
+                        break;
+
+                    case HasChangesDialogResult.Cancel:
+                        return;
+                }
+            }
+
+            TryOpenFile(filePath);
+        }
+
         private void OpenFile()
         {
             if (Session.HasChanges)
@@ -104,22 +128,34 @@ namespace McStructureNbtEditor.ViewModels
             TryOpenFile();
         }
 
-        private bool TryOpenFile()
+        private bool TryOpenFile(string filePath = "")
         {
-            var dialog = new OpenFileDialog
-            {
-                Filter = "NBT Files (*.nbt)|*.nbt|All Files (*.*)|*.*"
-            };
+            string fileName;
 
-            if (dialog.ShowDialog() != true)
-                return false;
+            if (filePath == "")
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Filter = "NBT Files (*.nbt)|*.nbt|All Files (*.*)|*.*"
+                };
+
+                if (dialog.ShowDialog() != true)
+                    return false;
+
+                fileName = dialog.SafeFileName;
+                filePath = dialog.FileName;
+            }
+            else
+            {
+                fileName = Path.GetFileName(filePath);
+            }
 
             try
             {
-                _currentFile = _nbtFileService.Load(dialog.FileName);
-                var newStructureFileModel = _structureParser.ParseStructure(_currentFile, dialog.SafeFileName, dialog.FileName);
+                _currentFile = _nbtFileService.Load(filePath);
+                var newStructureFileModel = _structureParser.ParseStructure(_currentFile, fileName, filePath);
                 Session.LoadCurrentStructure(newStructureFileModel);
-                Summary = _structureParser.ParseSummary(_currentFile, dialog.FileName);
+                Summary = _structureParser.ParseSummary(_currentFile, filePath);
                 Session.StatusMessage = "파일 로드 완료";
             }
             catch (Exception ex)
