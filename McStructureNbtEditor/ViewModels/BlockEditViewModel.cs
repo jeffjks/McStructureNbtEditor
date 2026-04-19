@@ -53,7 +53,7 @@ namespace McStructureNbtEditor.ViewModels
                 return;
             }
 
-            var command = new FillBlockCommand(cells, paletteIndex);
+            var command = new FillBlockCommand(cells, SelectedPaletteEntry);
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "블록 채우기에 실패했습니다.";

@@ -5,16 +5,15 @@ namespace McStructureNbtEditor.Commands
 {
     public class RemovePaletteEntryCommand : IEditorCommand
     {
-        private readonly int _paletteIndex;
-        private PaletteEntry? _removedEntry;
+        private readonly PaletteEntry _removedEntry;
         private List<(StructureBlock Block, int Index)> _removedBlocks = new();
 
         public string CommandStatusMessage => $"팔레트 삭제: {_removedEntry?.Name}. 제거된 블록 {_removedBlocks.Count}개.";
         public ReloadScope ChangeType => ReloadScope.ReloadAll;
 
-        public RemovePaletteEntryCommand(int paletteIndex)
+        public RemovePaletteEntryCommand(PaletteEntry paletteEntry)
         {
-            _paletteIndex = paletteIndex;
+            _removedEntry = new PaletteEntry(paletteEntry);
         }
 
         public bool Execute(EditorSession session)
@@ -23,14 +22,14 @@ namespace McStructureNbtEditor.Commands
 
             if (structure == null)
                 return false;
-            if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
-                return false;
 
-            _removedEntry = new PaletteEntry(structure.Palette[_paletteIndex]);
+            var paletteIndex = _removedEntry.Index;
+            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
+                return false;
 
             _removedBlocks = structure.Blocks
                 .Select((block, index) => (Block: block, Index: index))
-                .Where(x => x.Block.State == _paletteIndex)
+                .Where(x => x.Block.State == paletteIndex)
                 .Select(x => (x.Block, x.Index))
                 .ToList();
 
@@ -39,12 +38,12 @@ namespace McStructureNbtEditor.Commands
                 structure.Blocks.RemoveAt(item.Index);
             }
 
-            structure.Palette.RemoveAt(_paletteIndex);
+            structure.Palette.RemoveAt(paletteIndex);
             structure.ReindexPalette();
 
             foreach (var block in structure.Blocks)
             {
-                if (block.State > _paletteIndex)
+                if (block.State > paletteIndex)
                     block.State--;
             }
             structure.ReindexBlocks();
@@ -52,7 +51,7 @@ namespace McStructureNbtEditor.Commands
             // 삭제 후 SelectedPaletteEntry 처리
             if (structure.Palette.Count > 0)
             {
-                int newIndex = Math.Min(_paletteIndex, structure.Palette.Count - 1);
+                int newIndex = Math.Min(paletteIndex, structure.Palette.Count - 1);
                 session.SelectedPaletteEntry = structure.Palette[newIndex];
             }
             else
@@ -69,9 +68,13 @@ namespace McStructureNbtEditor.Commands
             if (_removedEntry == null || structure == null)
                 return;
 
+            var paletteIndex = _removedEntry.Index;
+            if (paletteIndex < 0 || structure.Palette.Count < paletteIndex)
+                return;
+
             foreach (var block in structure.Blocks)
             {
-                if (block.State >= _paletteIndex)
+                if (block.State >= paletteIndex)
                     block.State++;
             }
             foreach (var item in _removedBlocks.OrderBy(x => x.Index))
@@ -80,7 +83,7 @@ namespace McStructureNbtEditor.Commands
             }
             structure.ReindexBlocks();
 
-            structure.Palette.Insert(_paletteIndex, _removedEntry);
+            structure.Palette.Insert(paletteIndex, _removedEntry);
             structure.ReindexPalette();
         }
     }

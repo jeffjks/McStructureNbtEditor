@@ -100,11 +100,6 @@ namespace McStructureNbtEditor.ViewModels
                 return;
 
             int paletteIndex = SelectedPaletteEntry.Index;
-            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
-            {
-                _session.StatusMessage = "삭제할 팔레트를 찾을 수 없습니다.";
-                return;
-            }
 
             int removedBlockCount = structure.Blocks.Count(b => b.State == paletteIndex);
 
@@ -117,7 +112,7 @@ namespace McStructureNbtEditor.ViewModels
             if (!confirmed)
                 return;
 
-            var command = new RemovePaletteEntryCommand(paletteIndex);
+            var command = new RemovePaletteEntryCommand(SelectedPaletteEntry);
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 삭제에 실패했습니다.";

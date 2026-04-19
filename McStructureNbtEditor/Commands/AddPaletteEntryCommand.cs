@@ -13,7 +13,7 @@ namespace McStructureNbtEditor.Commands
 
         public AddPaletteEntryCommand(PaletteEntry paletteEntry)
         {
-            _addedEntry = paletteEntry;
+            _addedEntry = new PaletteEntry(paletteEntry);
         }
 
         public bool Execute(EditorSession session)

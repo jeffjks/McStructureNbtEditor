@@ -8,6 +8,7 @@ namespace McStructureNbtEditor.Commands
     {
         private readonly IReadOnlySet<SelectedCell> _removedCells;
         private List<(StructureBlock Block, int Index)> _removedBlocks = new();
+        private bool _snapshotCaptured = false;
 
         public string CommandStatusMessage => $"블럭 {_removedCells.Count}개 삭제";
 
@@ -15,7 +16,7 @@ namespace McStructureNbtEditor.Commands
 
         public RemoveBlockCommand(IReadOnlySet<SelectedCell> cells)
         {
-            _removedCells = cells;
+            _removedCells = new HashSet<SelectedCell>(cells);
         }
 
         public bool Execute(EditorSession session)
@@ -32,16 +33,20 @@ namespace McStructureNbtEditor.Commands
                 .Select(cell => cell.BlockIndex!.Value)
                 .ToHashSet();
 
-            _removedBlocks = structure.Blocks
-                .Select((block, index) => (Block: block, Index: index))
-                .Where(x => removedBlockIndexSet.Contains(x.Index))
-                .ToList();
+            if (!_snapshotCaptured)
+            {
+                _removedBlocks = structure.Blocks
+                    .Select((block, index) => (Block: block, Index: index))
+                    .Where(x => removedBlockIndexSet.Contains(x.Index))
+                    .ToList();
+            }
 
             foreach (var index in removedBlockIndexSet.OrderByDescending(x => x))
             {
                 structure.Blocks.RemoveAt(index);
             }
             structure.ReindexBlocks();
+            _snapshotCaptured = true;
 
             return true;
         }

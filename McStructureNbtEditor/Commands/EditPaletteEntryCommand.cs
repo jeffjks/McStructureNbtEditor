@@ -28,7 +28,7 @@ namespace McStructureNbtEditor.Commands
             if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
                 return false;
 
-            _beforeEntry = new PaletteEntry(structure.Palette[_paletteIndex]);
+            _beforeEntry ??= new PaletteEntry(structure.Palette[_paletteIndex]);
 
             structure.Palette[_paletteIndex] = _afterEntry;
             session.SelectedPaletteEntry = _afterEntry;

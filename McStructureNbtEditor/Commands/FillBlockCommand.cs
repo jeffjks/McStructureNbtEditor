@@ -6,20 +6,19 @@ namespace McStructureNbtEditor.Commands
 {
     public sealed class FillBlockCommand : IEditorCommand
     {
-        private readonly int _paletteIndex;
-        private PaletteEntry? _paletteEntry;
-        private readonly Dictionary<int, StructureBlock> _previousBlocks = new();
+        private PaletteEntry _paletteEntry;
         private readonly IReadOnlySet<SelectedCell> _filledCells;
-        private readonly List<StructureBlock> _createdBlocks = new();
+        private readonly Dictionary<BlockPosition, StructureBlock?> _previousBlocks = new();
+        private bool _snapshotCaptured = false;
 
         public string CommandStatusMessage => $"블럭 채우기: {_paletteEntry?.Name}. 채워진 블록: {_filledCells.Count}개";
 
         public ReloadScope ChangeType => ReloadScope.ReloadBlock;
 
-        public FillBlockCommand(IReadOnlySet<SelectedCell> selectedCells, int paletteIndex)
+        public FillBlockCommand(IReadOnlySet<SelectedCell> selectedCells, PaletteEntry paletteEntry)
         {
-            _filledCells = selectedCells;
-            _paletteIndex = paletteIndex;
+            _filledCells = new HashSet<SelectedCell>(selectedCells);
+            _paletteEntry = new PaletteEntry(paletteEntry);
         }
 
         public bool Execute(EditorSession session)
@@ -28,7 +27,9 @@ namespace McStructureNbtEditor.Commands
 
             if (structure == null)
                 return false;
-            if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
+
+            var paletteIndex = _paletteEntry.Index;
+            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
                 return false;
 
             foreach (var cell in _filledCells)
@@ -38,27 +39,34 @@ namespace McStructureNbtEditor.Commands
                     int blockIndex = cell.BlockIndex!.Value;
                     if (blockIndex < 0 || blockIndex >= structure.Blocks.Count)
                         return false;
+                    if (!structure.Blocks[blockIndex].BlockPos.Equals(cell.Position))
+                        return false;
                 }
             }
-            _paletteEntry = structure.Palette[_paletteIndex];
 
             foreach (var cell in _filledCells)
             {
                 if (cell.HasBlock)
                 {
                     int blockIndex = cell.BlockIndex!.Value;
-                    _previousBlocks.TryAdd(blockIndex, structure.Blocks[blockIndex]);
-                    structure.Blocks[blockIndex] = new StructureBlock(blockIndex, cell.Position, _paletteIndex);
+                    if (!_snapshotCaptured)
+                        _previousBlocks.TryAdd(cell.Position, new StructureBlock(structure.Blocks[blockIndex]));
+                    structure.Blocks[blockIndex].SetState(paletteIndex);
                 }
                 else
                 {
                     var newBlockIndex = structure.Blocks.Count;
-                    var newBlock = new StructureBlock(newBlockIndex, cell.Position, _paletteIndex);
-                    _createdBlocks.Add(newBlock);
+                    var newBlock = new StructureBlock(newBlockIndex, cell.Position, paletteIndex);
+                    if (!_snapshotCaptured)
+                    {
+                        _previousBlocks.TryAdd(cell.Position, null);
+                    }
                     structure.Blocks.Add(newBlock);
                 }
-            }
+            }       
+            
             structure.ReindexBlocks();
+            _snapshotCaptured = true;
 
             return true;
         }
@@ -70,17 +78,34 @@ namespace McStructureNbtEditor.Commands
             if (structure == null)
                 return;
 
-            foreach (var (blockIndex, previousBlock) in _previousBlocks)
+            var currentBlockMap = new Dictionary<BlockPosition, StructureBlock>();
+            foreach (var block in structure.Blocks)
             {
-                if (blockIndex >= 0 && blockIndex < structure.Blocks.Count)
-                {
-                    structure.Blocks[blockIndex] = previousBlock;
-                }
+                currentBlockMap.TryAdd(block.BlockPos, block);
             }
 
-            foreach (var block in _createdBlocks)
+            foreach (var (blockPos, previousBlock) in _previousBlocks)
             {
-                structure.Blocks.Remove(block);
+                if (previousBlock == null)
+                {
+                    if (currentBlockMap.TryGetValue(blockPos, out var currentBlock))
+                    {
+                        structure.Blocks.Remove(currentBlock);
+                    }
+                }
+                else
+                {
+                    if (currentBlockMap.TryGetValue(blockPos, out var currentBlock))
+                    {
+                        currentBlock.SetState(previousBlock.State, previousBlock.Nbt);
+                    }
+                    else
+                    {
+                        var newBlockIndex = structure.Blocks.Count;
+                        var newBlock = new StructureBlock(newBlockIndex, previousBlock.BlockPos, previousBlock.State, previousBlock.Nbt);
+                        structure.Blocks.Add(newBlock);
+                    }
+                }
             }
 
             structure.ReindexBlocks();

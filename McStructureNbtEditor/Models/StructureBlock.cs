@@ -8,7 +8,6 @@ namespace McStructureNbtEditor.Models
         public BlockPosition BlockPos { get; set; }
 
         public int State { get; set; }
-        //public NbtTag? Tag { get; set; }
         public NbtCompound? Nbt { get; set; }
 
         public StructureBlock(int index, BlockPosition blockPos, int state, NbtCompound? nbt = null)
@@ -16,7 +15,7 @@ namespace McStructureNbtEditor.Models
             Index = index;
             BlockPos = blockPos;
             State = state;
-            Nbt = nbt;
+            Nbt = (nbt == null) ? null : new NbtCompound(nbt);
         }
 
         public StructureBlock(StructureBlock other)
@@ -24,8 +23,13 @@ namespace McStructureNbtEditor.Models
             Index = other.Index;
             BlockPos = other.BlockPos;
             State = other.State;
-            if (other.Nbt != null)
-                Nbt = new NbtCompound(other.Nbt);
+            Nbt = (other.Nbt == null) ? null : new NbtCompound(other.Nbt);
+        }
+
+        public void SetState(int state, NbtCompound? nbt = null)
+        {
+            State = state;
+            Nbt = (nbt == null) ? null : new NbtCompound(nbt);
         }
     }
 }
