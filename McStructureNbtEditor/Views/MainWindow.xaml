@@ -52,7 +52,7 @@
             </MenuItem>
 
             <MenuItem Header="도움말(_H)">
-                <MenuItem Header="정보" />
+                <MenuItem Header="정보" Command="{Binding AboutCommand}" />
             </MenuItem>
         </Menu>
 

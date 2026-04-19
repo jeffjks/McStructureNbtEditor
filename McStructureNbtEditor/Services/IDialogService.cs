@@ -7,7 +7,8 @@ namespace McStructureNbtEditor.Services
     public interface IDialogService
     {
         PaletteDialogResult ShowPaletteDialog(PaletteMode mode, PaletteEntry? defaultPaletteEntry = null);
-        bool ShowCommonDialog(string title, string message);
+        bool ShowCommonDialog(CommonDialogViewModel viewModel);
+        bool ShowCommonDialog(string title, string message, bool visibleCancel);
         HasChangesDialogResult ShowHasChangesDialog();
     }
 }

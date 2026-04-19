@@ -49,6 +49,7 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand ExitCommand { get; }
         public RelayCommand UndoCommand { get; }
         public RelayCommand RedoCommand { get; }
+        public RelayCommand AboutCommand { get; }
 
         public MainViewModel()
         {
@@ -72,6 +73,8 @@ namespace McStructureNbtEditor.ViewModels
 
             UndoCommand = new RelayCommand(Undo, () => Session.CanUndo);
             RedoCommand = new RelayCommand(Redo, () => Session.CanRedo);
+
+            AboutCommand = new RelayCommand(OpenAbout);
 
             NbtTree.TreeViewSelectionChanged += OnTreeSelectedNodeChanged;
             Session.PropertyChanged += OnSessionPropertyChanged;
@@ -220,6 +223,11 @@ namespace McStructureNbtEditor.ViewModels
         private void Redo()
         {
             Session.Redo();
+        }
+
+        private void OpenAbout()
+        {
+            _dialogService.ShowCommonDialog(CommonDialogViewModel.AboutDialog());
         }
 
         private NbtFile GetNbtFile()

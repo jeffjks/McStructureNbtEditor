@@ -108,7 +108,7 @@ namespace McStructureNbtEditor.ViewModels
                 $"팔레트 '{SelectedPaletteEntry.Name}' 을(를) 삭제하시겠습니까?\n" +
                 $"이 작업으로 해당 팔레트를 가진 블록 {removedBlockCount}개가 함께 삭제됩니다.";
 
-            bool confirmed = _dialogService.ShowCommonDialog(title, message);
+            bool confirmed = _dialogService.ShowCommonDialog(title, message, true);
             if (!confirmed)
                 return;
 
