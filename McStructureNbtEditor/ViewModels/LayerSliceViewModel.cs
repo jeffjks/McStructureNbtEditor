@@ -188,7 +188,6 @@ namespace McStructureNbtEditor.ViewModels
         public void Refresh()
         {
             UpdateSlice();
-            RaiseCommands();
         }
 
         public void ApplyYFromText()

@@ -18,6 +18,7 @@ namespace McStructureNbtEditor.ViewModels
         {
             _session = session;
             _session.PropertyChanged += OnSessionPropertyChanged;
+            _session.DocumentChanged += OnDocumentChanged;
             RefreshFromSelection();
         }
 
@@ -25,6 +26,11 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (e.PropertyName == nameof(_session.SelectedInspectable))
                 RefreshFromSelection();
+        }
+
+        private void OnDocumentChanged(object? sender, DocumentChangedEventArgs e)
+        {
+            RefreshFromSelection();
         }
 
         private void RefreshFromSelection()
