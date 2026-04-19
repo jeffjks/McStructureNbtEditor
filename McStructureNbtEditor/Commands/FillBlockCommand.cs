@@ -6,12 +6,12 @@ namespace McStructureNbtEditor.Commands
 {
     public sealed class FillBlockCommand : IEditorCommand
     {
-        private PaletteEntry _paletteEntry;
+        private readonly PaletteEntry _paletteEntry;
         private readonly IReadOnlySet<SelectedCell> _filledCells;
         private readonly Dictionary<BlockPosition, StructureBlock?> _previousBlocks = new();
         private bool _snapshotCaptured = false;
 
-        public string CommandStatusMessage => $"블럭 채우기: {_paletteEntry?.Name}. 채워진 블록: {_filledCells.Count}개";
+        public string CommandStatusMessage => $"블럭 채우기: {_paletteEntry.Name}. 채워진 블록: {_filledCells.Count}개";
 
         public ReloadScope ChangeType => ReloadScope.ReloadBlock;
 

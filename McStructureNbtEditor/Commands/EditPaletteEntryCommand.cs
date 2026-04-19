@@ -5,32 +5,30 @@ namespace McStructureNbtEditor.Commands
 {
     public sealed class EditPaletteEntryCommand : IEditorCommand
     {
-        private readonly int _paletteIndex;
-        private PaletteEntry? _beforeEntry;
+        private readonly PaletteEntry _beforeEntry;
         private readonly PaletteEntry _afterEntry;
 
-        public string CommandStatusMessage => $"팔레트 수정: {_beforeEntry?.Name} -> {_afterEntry?.Name}";
+        public string CommandStatusMessage => $"팔레트 수정: {_beforeEntry.Name} -> {_afterEntry.Name}";
 
         public ReloadScope ChangeType => ReloadScope.ReloadAll;
 
-        public EditPaletteEntryCommand(int paletteIndex, PaletteEntry afterEntry)
+        public EditPaletteEntryCommand(PaletteEntry beforeEntry, PaletteEntry afterEntry)
         {
-            _paletteIndex = paletteIndex;
+            _beforeEntry = beforeEntry;
             _afterEntry = new PaletteEntry(afterEntry);
         }
 
         public bool Execute(EditorSession session)
         {
             var structure = session.CurrentStructure;
+            var paletteIndex = _beforeEntry.Index;
 
             if (structure == null)
                 return false;
-            if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
+            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
                 return false;
 
-            _beforeEntry ??= new PaletteEntry(structure.Palette[_paletteIndex]);
-
-            structure.Palette[_paletteIndex] = _afterEntry;
+            structure.Palette[paletteIndex] = _afterEntry;
             session.SelectedPaletteEntry = _afterEntry;
 
             return true;
@@ -39,13 +37,14 @@ namespace McStructureNbtEditor.Commands
         public void Undo(EditorSession session)
         {
             var structure = session.CurrentStructure;
+            var paletteIndex = _beforeEntry.Index;
 
             if (structure == null || _beforeEntry == null)
                 return;
-            if (_paletteIndex < 0 || structure.Palette.Count <= _paletteIndex)
+            if (paletteIndex < 0 || structure.Palette.Count <= paletteIndex)
                 return;
 
-            structure.Palette[_paletteIndex] = _beforeEntry;
+            structure.Palette[paletteIndex] = _beforeEntry;
         }
     }
 }

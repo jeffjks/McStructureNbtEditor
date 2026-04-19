@@ -158,7 +158,7 @@ namespace McStructureNbtEditor.ViewModels
                 return;
             }
 
-            var command = new EditPaletteEntryCommand(paletteIndex, entry);
+            var command = new EditPaletteEntryCommand(SelectedPaletteEntry, entry);
             if (!_session.ExecuteCommand(command))
             {
                 _session.StatusMessage = "팔레트 수정에 실패했습니다.";
