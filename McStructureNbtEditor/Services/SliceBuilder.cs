@@ -6,6 +6,8 @@ namespace McStructureNbtEditor.Services
     public class SliceBuilder
     {
         private const string AIR_BLOCK = "minecraft:air";
+        private const string VANILLA_MOD = "minecraft";
+
         private readonly Dictionary<(int, int), StructureBlock> _structureBlockMap = new();
 
         public ObservableCollection<BlockCellModel> BuildSlice(StructureFileModel? structure, int y)
@@ -114,11 +116,23 @@ namespace McStructureNbtEditor.Services
             if (string.IsNullOrWhiteSpace(blockName) || blockName == AIR_BLOCK)
                 return "";
 
-            const string prefix = "minecraft:";
-            if (blockName.StartsWith(prefix))
-                blockName = blockName.Substring(prefix.Length);
+            var splittedBlockName = blockName.Split(':');
 
-            return GetRepresentativeString(blockName);
+            try
+            {
+                var modID = splittedBlockName[0];
+                var rawBlockName = splittedBlockName[1];
+                var representativeString = GetRepresentativeString(rawBlockName);
+
+                if (modID == VANILLA_MOD)
+                    return representativeString;
+                else
+                    return string.Format("{0}:{1}", modID[0], representativeString);
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         private string GetRepresentativeString(string rawBlockName)

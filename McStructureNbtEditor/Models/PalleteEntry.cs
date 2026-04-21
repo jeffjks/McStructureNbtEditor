@@ -19,7 +19,7 @@ namespace McStructureNbtEditor.Models
 
                 _index = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ItemTemplate));
+                OnPropertyChanged(nameof(DisplayName));
             }
         }
 
@@ -33,7 +33,7 @@ namespace McStructureNbtEditor.Models
 
                 _name = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ItemTemplate));
+                OnPropertyChanged(nameof(DisplayName));
             }
         }
 
@@ -50,18 +50,7 @@ namespace McStructureNbtEditor.Models
             }
         }
 
-        public string ItemTemplate => $"[{Index}] {Name}";
-
-        public string DisplayName
-        {
-            get
-            {
-                if (Properties.Count == 0)
-                    return Name;
-
-                return $"{Name} [{string.Join(", ", Properties.Select(kv => $"{kv.Key}={kv.Value}"))}]";
-            }
-        }
+        public string DisplayName => $"[{Index}] {Name}";
 
         public PaletteEntry() { }
 

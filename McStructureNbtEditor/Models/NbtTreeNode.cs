@@ -41,17 +41,6 @@ namespace McStructureNbtEditor.Models
             set { _isSelected = value; OnPropertyChanged(); }
         }
 
-        public string DisplayText
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(ValuePreview))
-                    return $"{Name} ({Type})";
-
-                return $"{Name} ({Type}) : {ValuePreview}";
-            }
-        }
-
 
         public string GetSnbtText()
         {
