@@ -1,4 +1,4 @@
-﻿using McStructureNbtEditor.ViewModels;
+﻿using McStructureNbtEditor.ViewModels.Dialog;
 using System.Windows;
 
 namespace McStructureNbtEditor.Views

@@ -1,6 +1,6 @@
 ﻿using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services.DialogResults;
-using McStructureNbtEditor.ViewModels;
+using McStructureNbtEditor.ViewModels.Dialog;
 using McStructureNbtEditor.Views;
 
 namespace McStructureNbtEditor.Services
@@ -44,9 +44,22 @@ namespace McStructureNbtEditor.Services
             var vm = new HasChangesDialogViewModel();
             var view = new HasChangesDialogView(vm);
 
-            var result = view.ShowDialog();
+            view.ShowDialog();
 
             return vm.Result;
+        }
+
+        public NewFileDialogResult? ShowNewFileDialog()
+        {
+            var vm = new NewFileDialogViewModel();
+            var view = new NewFileDialogView(vm);
+
+            var result = view.ShowDialog();
+
+            if (result == true)
+                return vm.Result;
+
+            return null;
         }
     }
 }

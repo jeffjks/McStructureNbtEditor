@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-namespace McStructureNbtEditor.ViewModels
+namespace McStructureNbtEditor.ViewModels.Dialog
 {
     public enum PaletteMode { Add, Edit };
 

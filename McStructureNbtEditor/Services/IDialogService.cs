@@ -1,6 +1,6 @@
 ﻿using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services.DialogResults;
-using McStructureNbtEditor.ViewModels;
+using McStructureNbtEditor.ViewModels.Dialog;
 
 namespace McStructureNbtEditor.Services
 {
@@ -10,5 +10,6 @@ namespace McStructureNbtEditor.Services
         bool ShowCommonDialog(CommonDialogViewModel viewModel);
         bool ShowCommonDialog(string title, string message, bool visibleCancel);
         HasChangesDialogResult ShowHasChangesDialog();
+        NewFileDialogResult? ShowNewFileDialog();
     }
 }

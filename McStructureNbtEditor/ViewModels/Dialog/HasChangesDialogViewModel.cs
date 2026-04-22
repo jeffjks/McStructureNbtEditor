@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace McStructureNbtEditor.ViewModels
+namespace McStructureNbtEditor.ViewModels.Dialog
 {
     public enum HasChangesDialogResult
     {

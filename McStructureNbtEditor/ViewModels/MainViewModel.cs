@@ -1,5 +1,6 @@
 ﻿using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services;
+using McStructureNbtEditor.ViewModels.Dialog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;

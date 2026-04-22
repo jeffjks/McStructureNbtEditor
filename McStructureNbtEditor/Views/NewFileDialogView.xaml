@@ -1,0 +1,88 @@
+﻿<Window x:Class="McStructureNbtEditor.Views.NewFileDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="새 파일 생성"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        MinWidth="280"
+        MinHeight="160"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Grid.Row="0"
+                       Text="구조물 크기는 1~48 사이의 정수만 입력이 가능합니다."
+                       Width="240"
+                       TextWrapping="Wrap"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+        </Grid>
+        <Grid Grid.Row="1" Width="120" Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="x축 크기 :"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Height="24"
+                     Text="{Binding SizeX, UpdateSourceTrigger=LostFocus}"
+                     Margin="5,5,0,5"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Text="y축 크기 :"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Height="24"
+                     Text="{Binding SizeY, UpdateSourceTrigger=LostFocus}"
+                     Margin="5,5,0,5"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                       Text="z축 크기 :"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Height="24"
+                     Text="{Binding SizeZ, UpdateSourceTrigger=LostFocus}"
+                     Margin="5,5,0,5"/>
+        </Grid>
+        <Grid Grid.Row="2" Width="180" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Data Version :"
+                       FontSize="14"
+                       VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" Height="24"
+                     Text="{Binding DataVersion, UpdateSourceTrigger=LostFocus}"
+                     Margin="5,5,0,5"/>
+        </Grid>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="생성"
+                    Width="96"
+                    Height="28"
+                    Margin="10,0,10,0"
+                    Command="{Binding ConfirmCommand}"/>
+            <Button Content="취소"
+                    Width="96"
+                    Height="28"
+                    Margin="10,0,10,0"
+                    Command="{Binding CancelCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

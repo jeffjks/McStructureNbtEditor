@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace McStructureNbtEditor.ViewModels
+namespace McStructureNbtEditor.ViewModels.Dialog
 {
     public class CommonDialogViewModel
     {

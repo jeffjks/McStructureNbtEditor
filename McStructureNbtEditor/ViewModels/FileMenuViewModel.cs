@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.IO;
+using McStructureNbtEditor.ViewModels.Dialog;
+using McStructureNbtEditor.Services.DialogResults;
 
 namespace McStructureNbtEditor.ViewModels
 {
@@ -46,7 +48,46 @@ namespace McStructureNbtEditor.ViewModels
 
         private void NewFile()
         {
-            throw new NotImplementedException();
+            if (_session.HasChanges)
+            {
+                var result = _dialogService.ShowHasChangesDialog();
+
+                switch (result)
+                {
+                    case HasChangesDialogResult.Save:
+                        if (TrySaveFile() == false)
+                            return;
+                        break;
+
+                    case HasChangesDialogResult.Ignore:
+                        break;
+
+                    case HasChangesDialogResult.Cancel:
+                        return;
+                }
+            }
+
+            var dialogResult = _dialogService.ShowNewFileDialog();
+
+            if (dialogResult is NewFileDialogResult newFileResult)
+                CreateNewFile(newFileResult);
+        }
+
+        private void CreateNewFile(NewFileDialogResult result)
+        {
+            try
+            {
+                var newStructureFileModel = StructureFileModel.CreateNew(result.StructureSize, result.DataVersion);
+                var nbtFile = _structureParser.CreateNewNbtFile(result.StructureSize, result.DataVersion);
+
+                _session.LoadCurrentStructure(newStructureFileModel);
+                _session.StructureInfo = _structureParser.ParseStructureInfo(nbtFile, "");
+                _session.StatusMessage = "파일 로드 완료";
+            }
+            catch (Exception ex)
+            {
+                _session.StatusMessage = $"새 파일 생성중 오류가 발생했습니다: {ex.Message}";
+            }
         }
 
         private void OpenFile()

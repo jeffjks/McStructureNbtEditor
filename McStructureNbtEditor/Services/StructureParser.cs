@@ -9,6 +9,22 @@ namespace McStructureNbtEditor.Services
 {
     public class StructureParser
     {
+        public NbtFile CreateNewNbtFile(StructureSize structureSize, int dataVersion)
+        {
+            var root = new NbtCompound("");
+
+            var sizeList = new NbtList("size", NbtTagType.Int) {
+                new NbtInt(structureSize.X),
+                new NbtInt(structureSize.Y),
+                new NbtInt(structureSize.Z)
+            };
+
+            root.Add(sizeList);
+            root.Add(new NbtInt("DataVersion", dataVersion));
+
+            return new NbtFile(root);
+        }
+
         public StructureInfo ParseStructureInfo(NbtFile file, string filePath)
         {
             int sizeX = 0;
@@ -59,7 +75,10 @@ namespace McStructureNbtEditor.Services
                 throw new InvalidDataException($"잘못된 NBT 파일입니다. (잘못된 Size 데이터)");
             }
 
-            var model = StructureFileModel.OpenFromFile(fileName, filePath, sizeX, sizeY, sizeZ);
+            var dataVersion = GetIntFromCompound(root, "DataVersion");
+            var structureSize = new StructureSize(sizeX, sizeY, sizeZ);
+
+            var model = StructureFileModel.OpenFromFile(fileName, filePath, structureSize, dataVersion);
 
             if (TryGetList(root, "entities", out var entityList))
             {
@@ -128,8 +147,6 @@ namespace McStructureNbtEditor.Services
                     model.Blocks.Add(block);
                 }
             }
-
-            model.DataVersion = GetIntFromCompound(root, "DataVersion");
 
             return model;
         }

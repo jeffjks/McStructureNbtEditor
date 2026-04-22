@@ -8,35 +8,36 @@ namespace McStructureNbtEditor.Models
         public string FileName { get; private set; } = "";
         public string FilePath { get; private set; } = "";
 
-        public int SizeX { get; set; }
-        public int SizeY { get; set; }
-        public int SizeZ { get; set; }
+        public int SizeX { get; private set; }
+        public int SizeY { get; private set; }
+        public int SizeZ { get; private set; }
 
-        public ObservableCollection<NbtTag> Entities { get; set; } = new();
-        public ObservableCollection<PaletteEntry> Palette { get; set; } = new();
-        public ObservableCollection<StructureBlock> Blocks { get; set; } = new();
+        public ObservableCollection<NbtTag> Entities { get; private set; } = new();
+        public ObservableCollection<PaletteEntry> Palette { get; private set; } = new();
+        public ObservableCollection<StructureBlock> Blocks { get; private set; } = new();
 
-        public int DataVersion { get; set; }
+        public int DataVersion { get; private set; }
 
         public bool IsNewFile => string.IsNullOrWhiteSpace(FilePath);
 
-        public static StructureFileModel CreateNew(int sizeX, int sizeY, int sizeZ)
+        public static StructureFileModel CreateNew(StructureSize size, int dataVersion)
         {
-            return new StructureFileModel("", "", sizeX, sizeY, sizeZ);
+            return new StructureFileModel("", "", size, dataVersion);
         }
 
-        public static StructureFileModel OpenFromFile(string fileName, string filePath, int sizeX, int sizeY, int sizeZ)
+        public static StructureFileModel OpenFromFile(string fileName, string filePath, StructureSize size, int dataVersion)
         {
-            return new StructureFileModel(fileName, filePath, sizeX, sizeY, sizeZ);
+            return new StructureFileModel(fileName, filePath, size, dataVersion);
         }
 
-        private StructureFileModel(string fileName, string filePath, int sizeX, int sizeY, int sizeZ)
+        private StructureFileModel(string fileName, string filePath, StructureSize size, int dataVersion)
         {
             FileName = fileName;
             FilePath = filePath;
-            SizeX = sizeX;
-            SizeY = sizeY;
-            SizeZ = sizeZ;
+            SizeX = size.X;
+            SizeY = size.Y;
+            SizeZ = size.Z;
+            DataVersion = dataVersion;
         }
 
         public void SetFileName(string fileName, string filePath)
