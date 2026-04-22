@@ -48,9 +48,9 @@ namespace McStructureNbtEditor.Views
             if (nbtFile == null)
                 return;
 
-            if (DataContext is MainViewModel vm)
+            if (DataContext is FileMenuViewModel vm)
             {
-                vm.OpenFileFromPath(nbtFile);
+                vm.OpenFile(nbtFile);
             }
         }
     }

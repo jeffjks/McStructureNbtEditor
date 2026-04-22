@@ -58,6 +58,8 @@ namespace McStructureNbtEditor.Commands
             {
                 session.SelectedPaletteEntry = null;
             }
+
+            session.StructureInfo?.SetPaletteCount(structure.Palette.Count);
             return true;
         }
 
@@ -85,6 +87,8 @@ namespace McStructureNbtEditor.Commands
 
             structure.Palette.Insert(paletteIndex, _removedEntry);
             structure.ReindexPalette();
+
+            session.StructureInfo?.SetPaletteCount(structure.Palette.Count);
         }
     }
 }

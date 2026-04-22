@@ -28,7 +28,7 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Background="White">
             <MenuItem Header="파일(_F)">
-                <MenuItem Header="열기(_O)" Command="{Binding OpenFileCommand}">
+                <MenuItem Header="열기(_O)" Command="{Binding FileMenu.OpenFileCommand}">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets"
                             VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -36,13 +36,13 @@
                 </MenuItem>
 
                 <Separator />
-                <MenuItem Header="저장(_S)" Command="{Binding SaveFileCommand}">
+                <MenuItem Header="저장(_S)" Command="{Binding FileMenu.SaveFileCommand}">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets"
                             VerticalAlignment="Center" HorizontalAlignment="Center" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="다른 이름으로 저장(_A)..." Command="{Binding SaveAsFileCommand}">
+                <MenuItem Header="다른 이름으로 저장(_A)..." Command="{Binding FileMenu.SaveAsFileCommand}">
                     <MenuItem.Icon>
                         <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets"
                             VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -51,7 +51,7 @@
 
                 <Separator />
 
-                <MenuItem Header="종료(_X)" Command="{Binding ExitCommand}" />
+                <MenuItem Header="종료(_X)" Command="{Binding FileMenu.ExitCommand}" />
             </MenuItem>
 
             <MenuItem Header="도움말(_H)">
@@ -100,7 +100,7 @@
                     </DockPanel>
                     <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1">
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="4,0,0,0">
-                            <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" Padding="0,0,4,0" FontSize="14" />
+                            <TextBlock Text="{Binding Session.StructureSummary}" TextWrapping="Wrap" Padding="0,0,4,0" FontSize="14" />
                         </ScrollViewer>
                     </Border>
                 </Grid>

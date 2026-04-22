@@ -66,6 +66,7 @@ namespace McStructureNbtEditor.Commands
             }       
             
             structure.ReindexBlocks();
+            session.StructureInfo?.SetBlocksCount(structure.Blocks.Count);
             _snapshotCaptured = true;
 
             return true;
@@ -109,6 +110,7 @@ namespace McStructureNbtEditor.Commands
             }
 
             structure.ReindexBlocks();
+            session.StructureInfo?.SetBlocksCount(structure.Blocks.Count);
         }
     }
 }

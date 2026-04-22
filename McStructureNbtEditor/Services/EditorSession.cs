@@ -13,7 +13,7 @@ namespace McStructureNbtEditor.Services
 
     public sealed class EditorSession : INotifyPropertyChanged
     {
-        private readonly List<IEditorCommand> _commandHistory = new(MaxHistory);
+        private readonly List<IEditorCommand> _commandHistory;
         private int _currentHistoryIndex = 0;
         private int _savedHistoryIndex = 0;
         private bool _exceedMaxHistory = false;
@@ -103,6 +103,33 @@ namespace McStructureNbtEditor.Services
             }
         }
 
+        private StructureInfo? _structureInfo;
+        public StructureInfo? StructureInfo
+        {
+            get => _structureInfo;
+            set
+            {
+                if (_structureInfo == value)
+                    return;
+
+                if (_structureInfo != null)
+                    _structureInfo.PropertyChanged -= OnStructureInfoPropertyChanged;
+
+                _structureInfo = value;
+
+                if (_structureInfo != null)
+                    _structureInfo.PropertyChanged += OnStructureInfoPropertyChanged;
+
+                OnPropertyChanged(nameof(StructureSummary));
+            }
+        }
+        public string StructureSummary => StructureInfo?.DisplayText ?? "구조물 정보 없음";
+
+        public EditorSession()
+        {
+            _commandHistory = new List<IEditorCommand>(MaxHistory);
+        }
+
         public void LoadCurrentStructure(StructureFileModel structure)
         {
             _commandHistory.Clear();
@@ -113,6 +140,14 @@ namespace McStructureNbtEditor.Services
             CurrentStructure = structure;
 
             SelectedPaletteEntry = CurrentStructure.GetPaletteEntry(0);
+        }
+
+        private void OnStructureInfoPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(StructureInfo.DisplayText))
+            {
+                OnPropertyChanged(nameof(StructureSummary));
+            }
         }
 
         public bool ExecuteCommand(IEditorCommand command)

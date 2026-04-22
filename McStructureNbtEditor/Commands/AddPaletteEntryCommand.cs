@@ -27,6 +27,7 @@ namespace McStructureNbtEditor.Commands
                 return false;
 
             structure.Palette.Add(_addedEntry);
+            session.StructureInfo?.SetPaletteCount(structure.Palette.Count);
 
             return true;
         }
@@ -39,6 +40,7 @@ namespace McStructureNbtEditor.Commands
                 return;
 
             structure.Palette.Remove(_addedEntry);
+            session.StructureInfo?.SetPaletteCount(structure.Palette.Count);
         }
     }
 }

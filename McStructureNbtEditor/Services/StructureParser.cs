@@ -9,33 +9,37 @@ namespace McStructureNbtEditor.Services
 {
     public class StructureParser
     {
-        public StructureSummary ParseSummary(NbtFile file, string filePath)
+        public StructureInfo ParseStructureInfo(NbtFile file, string filePath)
         {
-            var summary = new StructureSummary
-            {
-                FilePath = filePath
-            };
+            int sizeX = 0;
+            int sizeY = 0;
+            int sizeZ = 0;
+            int paletteCount = 0;
+            int blocksCount = 0;
+            int entitiesCount = 0;
 
             if (file.RootTag is not NbtCompound root)
-                return summary;
+                throw new InvalidDataException("정상적인 nbt 파일이 아닙니다.");
 
             if (TryGetList(root, "size", out var sizeList) && sizeList.Count >= 3)
             {
-                summary.SizeX = GetIntTagValue(sizeList[0]);
-                summary.SizeY = GetIntTagValue(sizeList[1]);
-                summary.SizeZ = GetIntTagValue(sizeList[2]);
+                sizeX = GetIntTagValue(sizeList[0]);
+                sizeY = GetIntTagValue(sizeList[1]);
+                sizeZ = GetIntTagValue(sizeList[2]);
             }
 
             if (TryGetList(root, "palette", out var paletteList))
-                summary.PaletteCount = paletteList.Count;
+                paletteCount = paletteList.Count;
 
             if (TryGetList(root, "blocks", out var blocksList))
-                summary.BlocksCount = blocksList.Count;
+                blocksCount = blocksList.Count;
 
             if (TryGetList(root, "entities", out var entitiesList))
-                summary.EntitiesCount = entitiesList.Count;
+                entitiesCount = entitiesList.Count;
 
-            return summary;
+            var structureSize = new StructureSize(sizeX, sizeY, sizeZ);
+            var structureInfoData = new StructureInfoData(filePath, structureSize, entitiesCount, blocksCount, paletteCount);
+            return new StructureInfo(structureInfoData);
         }
 
         public StructureFileModel ParseStructure(NbtFile file, string fileName, string filePath)
