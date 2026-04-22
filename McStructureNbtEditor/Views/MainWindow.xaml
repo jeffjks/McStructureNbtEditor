@@ -14,6 +14,7 @@
     AllowDrop="True"
     Drop="Window_Drop"
     DragOver="Window_DragOver"
+    Closing="Window_Closing"
     d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="Z" Command="{Binding UndoCommand}" />
@@ -51,7 +52,7 @@
 
                 <Separator />
 
-                <MenuItem Header="종료(_X)" Command="{Binding FileMenu.ExitCommand}" />
+                <MenuItem Header="종료(_X)" Command="{Binding ExitCommand}" />
             </MenuItem>
 
             <MenuItem Header="도움말(_H)">

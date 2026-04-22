@@ -23,6 +23,9 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand UndoCommand { get; }
         public RelayCommand RedoCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand ExitCommand { get; }
+
+        public bool IsClosingApproved { get; private set; }
 
         public MainViewModel()
         {
@@ -43,6 +46,8 @@ namespace McStructureNbtEditor.ViewModels
             RedoCommand = new RelayCommand(Redo, () => Session.CanRedo);
 
             AboutCommand = new RelayCommand(OpenAbout);
+
+            ExitCommand = new RelayCommand(Exit);
 
             NbtTree.TreeViewSelectionChanged += OnTreeSelectedNodeChanged;
             Session.PropertyChanged += OnSessionPropertyChanged;
@@ -78,6 +83,38 @@ namespace McStructureNbtEditor.ViewModels
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(dict);
         }
+
+        private void Exit()
+        {
+            if (TryCloseApplication())
+                Application.Current.Shutdown();
+        }
+
+        public bool TryCloseApplication()
+        {
+            if (Session.HasChanges)
+            {
+                var result = _dialogService.ShowHasChangesDialog();
+
+                switch (result)
+                {
+                    case HasChangesDialogResult.Save:
+                        if (FileMenu.RequestSave() == false)
+                            return false;
+                        break;
+
+                    case HasChangesDialogResult.Ignore:
+                        break;
+
+                    case HasChangesDialogResult.Cancel:
+                        return false;
+                }
+            }
+
+            IsClosingApproved = true;
+            return true;
+        }
+
 
         private void OnTreeSelectedNodeChanged()
         {

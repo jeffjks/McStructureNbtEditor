@@ -1,4 +1,5 @@
-﻿using McStructureNbtEditor.Models;
+﻿using fNbt;
+using McStructureNbtEditor.Models;
 using McStructureNbtEditor.ViewModels;
 using System.Windows;
 
@@ -51,6 +52,17 @@ namespace McStructureNbtEditor.Views
             if (DataContext is FileMenuViewModel vm)
             {
                 vm.OpenFile(nbtFile);
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                if (vm.IsClosingApproved)
+                    return;
+                if (vm.TryCloseApplication() == false)
+                    e.Cancel = true;
             }
         }
     }

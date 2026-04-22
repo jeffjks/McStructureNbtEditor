@@ -23,11 +23,12 @@ namespace McStructureNbtEditor.ViewModels
         private string _currentFileName => _session.CurrentStructure?.FileName ?? "";
         private string _currentFilePath => _session.CurrentStructure?.FilePath ?? "";
 
+        public bool RequestSave() => TrySaveFile();
+
         public RelayCommand NewFileCommand { get; }
         public RelayCommand OpenFileCommand { get; }
         public RelayCommand SaveFileCommand { get; }
         public RelayCommand SaveAsFileCommand { get; }
-        public RelayCommand ExitCommand { get; }
 
         public FileMenuViewModel(EditorSession session, NbtTreeViewModel nbtTree, IDialogService dialogService)
         {
@@ -41,7 +42,6 @@ namespace McStructureNbtEditor.ViewModels
             OpenFileCommand = new RelayCommand(OpenFile);
             SaveFileCommand = new RelayCommand(() => TrySaveFile());
             SaveAsFileCommand = new RelayCommand(() => TrySaveAsFile());
-            ExitCommand = new RelayCommand(Exit);
         }
 
         private void NewFile()
@@ -194,30 +194,6 @@ namespace McStructureNbtEditor.ViewModels
 
             _session.SetSavedHistoryIndex();
             return true;
-        }
-
-        private void Exit()
-        {
-            if (_session.HasChanges)
-            {
-                var result = _dialogService.ShowHasChangesDialog();
-
-                switch (result)
-                {
-                    case HasChangesDialogResult.Save:
-                        if (TrySaveFile() == false)
-                            return;
-                        break;
-
-                    case HasChangesDialogResult.Ignore:
-                        break;
-
-                    case HasChangesDialogResult.Cancel:
-                        return;
-                }
-            }
-
-            Application.Current.Shutdown();
         }
 
         private NbtFile GetNbtFile()

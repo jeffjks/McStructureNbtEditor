@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="변경 내용이 있습니다. 해당 내용을 저장하시겠습니까?"
+        <TextBlock Grid.Row="0" Text="변경 내용이 있습니다. 해당 내용을 저장하고 종료하시겠습니까?"
                    TextWrapping="Wrap"
                    VerticalAlignment="Center"
                    FontSize="14"
