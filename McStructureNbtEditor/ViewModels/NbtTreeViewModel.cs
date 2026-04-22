@@ -123,10 +123,13 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (_session.CurrentStructure == null)
             {
-                return "<noname.nbt>";
+                return "<null>";
             }
 
-            var fileName = _session.CurrentStructure.FileName;
+            var rawFileName = _session.CurrentStructure.FileName;
+            var fileName = string.IsNullOrWhiteSpace(rawFileName)
+                           ? "<noname.nbt>"
+                           : rawFileName;
             return _session.HasChanges ? "* " + fileName : fileName;
         }
 

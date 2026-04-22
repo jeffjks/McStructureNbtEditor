@@ -70,12 +70,21 @@ namespace McStructureNbtEditor.Models
             OnPropertyChanged(nameof(DisplayText));
         }
 
-        public string DisplayText =>
-            $"Structure Size: {_size.X} x {_size.Y} x {_size.Z}\n" +
-            $"Total Palettes: {_paletteCount}\n" +
-            $"Total Blocks: {_blocksCount}\n" +
-            $"Total Entities: {_entitiesCount}\n" +
-            $"File: {_filePath}";
+        public string DisplayText
+        {
+            get
+            {
+                var displayFilePath = string.IsNullOrEmpty(_filePath)
+                   ? "<noname.nbt>"
+                   : _filePath;
+                return
+                    $"Structure Size: {_size.X} x {_size.Y} x {_size.Z}\n" +
+                    $"Total Palettes: {_paletteCount}\n" +
+                    $"Total Blocks: {_blocksCount}\n" +
+                    $"Total Entities: {_entitiesCount}\n" +
+                    $"File: {displayFilePath}";
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
