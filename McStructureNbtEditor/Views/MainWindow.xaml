@@ -63,6 +63,13 @@
             </MenuItem>
 
             <MenuItem Header="도움말(_H)">
+                <MenuItem Header="언어">
+                    <MenuItem Header="한국어" Command="{Binding ChangeLanguageCommand}"
+                              CommandParameter="{x:Static models:AppLanguage.Korean}" />
+                    <MenuItem Header="English" Command="{Binding ChangeLanguageCommand}"
+                              CommandParameter="{x:Static models:AppLanguage.English}" />
+                </MenuItem>
+
                 <MenuItem Header="정보" Command="{Binding AboutCommand}" />
             </MenuItem>
         </Menu>
@@ -87,6 +94,7 @@
                             Margin="0,5,0,20"
                             Padding="20,5"
                             HorizontalAlignment="Center"
+                            Width="128"
                             Command="{Binding NbtTree.JumpToTreeSelectedBlockCommand}"/>
                         <TreeView Grid.Row="0" ItemsSource="{Binding NbtTree.RootNodes}" SelectedItemChanged="TreeView_SelectedItemChanged">
                             <TreeView.ItemContainerStyle>
@@ -141,9 +149,9 @@
                     <Border Grid.Row="2" Padding="0,8,0,0">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="12,0,4,0">
-                                <Button Content="블록 채우기" Command="{Binding BlockEdit.FillBlockCommand}" MinWidth="96" Height="28" Margin="5"/>
-                                <Button Content="블록 회전" Command="{Binding BlockEdit.RotateBlockCommand}" MinWidth="96" Height="28" Margin="5"/>
-                                <Button Content="블록 삭제" Command="{Binding BlockEdit.RemoveBlockCommand}" MinWidth="96" Height="28" Margin="5"/>
+                                <Button Content="블록 채우기" Command="{Binding BlockEdit.FillBlockCommand}" Width="96" Height="28" Margin="5"/>
+                                <Button Content="블록 회전" Command="{Binding BlockEdit.RotateBlockCommand}" Width="96" Height="28" Margin="5"/>
+                                <Button Content="블록 삭제" Command="{Binding BlockEdit.RemoveBlockCommand}" Width="96" Height="28" Margin="5"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

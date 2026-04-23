@@ -9,7 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Page Remove="Resources\Lang\en-US.xaml" />
+    <Page Remove="Resources\Lang\ko-KR.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="fNbt" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Lang\en-US.xaml" />
+    <Resource Include="Resources\Lang\ko-KR.xaml" />
   </ItemGroup>
 
 </Project>

@@ -24,6 +24,7 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand UndoCommand { get; }
         public RelayCommand RedoCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand<AppLanguage> ChangeLanguageCommand { get; }
         public RelayCommand ExitCommand { get; }
 
         public bool IsClosingApproved { get; private set; }
@@ -47,6 +48,7 @@ namespace McStructureNbtEditor.ViewModels
             RedoCommand = new RelayCommand(Redo, () => Session.CanRedo);
 
             AboutCommand = new RelayCommand(OpenAbout);
+            ChangeLanguageCommand = new RelayCommand<AppLanguage>(ChangeLanguage);
 
             ExitCommand = new RelayCommand(Exit);
 
@@ -73,13 +75,13 @@ namespace McStructureNbtEditor.ViewModels
         {
             string fileName = lang switch
             {
-                AppLanguage.English => "en_US",
+                AppLanguage.English => "en-US",
                 AppLanguage.Korean => "ko-KR",
-                _ => "en_US.xaml"
+                _ => "en-US"
             };
 
             var dict = new ResourceDictionary();
-            dict.Source = new Uri($"Lang/{fileName}.xaml", UriKind.Relative);
+            dict.Source = new Uri($"Resources/Lang/{fileName}.xaml", UriKind.Relative);
 
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(dict);

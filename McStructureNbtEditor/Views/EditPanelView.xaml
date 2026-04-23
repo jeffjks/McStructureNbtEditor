@@ -36,15 +36,13 @@
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        MinWidth="96"
-                        MaxWidth="120"
+                        Width="96"
                         Content="팔레트 추가"
                         Command="{Binding PaletteEdit.AddPaletteCommand}" />
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        MinWidth="96"
-                        MaxWidth="120"
+                        Width="96"
                         Content="팔레트 삭제"
                         Command="{Binding PaletteEdit.RemovePaletteCommand}" />
                 </StackPanel>
@@ -52,15 +50,13 @@
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        MinWidth="96"
-                        MaxWidth="120"
+                        Width="96"
                         Content="팔레트 수정"
                         Command="{Binding PaletteEdit.EditPaletteCommand}" />
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        MinWidth="96"
-                        MaxWidth="120"
+                        Width="96"
                         Content="팔레트 복제"
                         Command="{Binding PaletteEdit.DuplicatePaletteCommand}" />
                 </StackPanel>
@@ -138,7 +134,7 @@
                 <Button Grid.Row="4"
                     Margin="0,8,0,0"
                     Height="28"
-                    MaxWidth="120"
+                    Width="120"
                     Content="Y 적용"
                     Command="{Binding LayerSlice.ApplyYTextCommand}" />
             </Grid>
