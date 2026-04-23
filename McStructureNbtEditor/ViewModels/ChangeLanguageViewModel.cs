@@ -19,6 +19,8 @@ namespace McStructureNbtEditor.ViewModels
             _settingService = settingService;
 
             ChangeLanguageCommand = new RelayCommand<AppLanguage>(ChangeLanguage);
+
+            ChangeLanguage(_settingService.CurrentLanguage);
         }
 
         private void ChangeLanguage(AppLanguage lang)
