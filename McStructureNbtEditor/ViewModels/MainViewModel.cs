@@ -12,9 +12,11 @@ namespace McStructureNbtEditor.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         private readonly IDialogService _dialogService = new DialogService();
+        private readonly ISettingsService _settingService = new SettingsService();
 
         public EditorSession Session { get; }
         public FileMenuViewModel FileMenu { get; }
+        public ChangeLanguageViewModel ChangeLanguageMenu { get; }
         public LayerSliceViewModel LayerSlice { get; }
         public NbtTreeViewModel NbtTree { get; }
         public SnbtFieldViewModel SnbtField { get; }
@@ -24,7 +26,6 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand UndoCommand { get; }
         public RelayCommand RedoCommand { get; }
         public RelayCommand AboutCommand { get; }
-        public RelayCommand<AppLanguage> ChangeLanguageCommand { get; }
         public RelayCommand ExitCommand { get; }
 
         public bool IsClosingApproved { get; private set; }
@@ -42,13 +43,13 @@ namespace McStructureNbtEditor.ViewModels
             PaletteEdit = new PaletteEditViewModel(Session, _dialogService);
             BlockEdit = new BlockEditViewModel(Session);
 
-            FileMenu = new FileMenuViewModel(Session, NbtTree, _dialogService);
+            FileMenu = new FileMenuViewModel(Session, NbtTree, _dialogService, _settingService);
+            ChangeLanguageMenu = new ChangeLanguageViewModel(_settingService);
 
             UndoCommand = new RelayCommand(Undo, () => Session.CanUndo);
             RedoCommand = new RelayCommand(Redo, () => Session.CanRedo);
 
             AboutCommand = new RelayCommand(OpenAbout);
-            ChangeLanguageCommand = new RelayCommand<AppLanguage>(ChangeLanguage);
 
             ExitCommand = new RelayCommand(Exit);
 
@@ -69,22 +70,6 @@ namespace McStructureNbtEditor.ViewModels
         private void OpenAbout()
         {
             _dialogService.ShowCommonDialog(CommonDialogViewModel.AboutDialog());
-        }
-
-        private void ChangeLanguage(AppLanguage lang)
-        {
-            string fileName = lang switch
-            {
-                AppLanguage.English => "en-US",
-                AppLanguage.Korean => "ko-KR",
-                _ => "en-US"
-            };
-
-            var dict = new ResourceDictionary();
-            dict.Source = new Uri($"Resources/Lang/{fileName}.xaml", UriKind.Relative);
-
-            Application.Current.Resources.MergedDictionaries.Clear();
-            Application.Current.Resources.MergedDictionaries.Add(dict);
         }
 
         private void Exit()

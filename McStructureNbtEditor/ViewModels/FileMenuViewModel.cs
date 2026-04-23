@@ -32,13 +32,13 @@ namespace McStructureNbtEditor.ViewModels
         public RelayCommand SaveFileCommand { get; }
         public RelayCommand SaveAsFileCommand { get; }
 
-        public FileMenuViewModel(EditorSession session, NbtTreeViewModel nbtTree, IDialogService dialogService)
+        public FileMenuViewModel(EditorSession session, NbtTreeViewModel nbtTree, IDialogService dialogService, ISettingsService settingService)
         {
             _session = session;
             _nbtTree = nbtTree;
             _dialogService = dialogService;
 
-            _nbtFileService = new NbtFileService(new SettingsService());
+            _nbtFileService = new NbtFileService(settingService);
 
             NewFileCommand = new RelayCommand(NewFile);
             OpenFileCommand = new RelayCommand(OpenFile);

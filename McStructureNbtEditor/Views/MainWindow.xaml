@@ -64,10 +64,12 @@
 
             <MenuItem Header="도움말(_H)">
                 <MenuItem Header="언어">
-                    <MenuItem Header="한국어" Command="{Binding ChangeLanguageCommand}"
-                              CommandParameter="{x:Static models:AppLanguage.Korean}" />
-                    <MenuItem Header="English" Command="{Binding ChangeLanguageCommand}"
-                              CommandParameter="{x:Static models:AppLanguage.English}" />
+                    <MenuItem Header="한국어" Command="{Binding ChangeLanguageMenu.ChangeLanguageCommand}"
+                              CommandParameter="{x:Static models:AppLanguage.Korean}"
+                              IsCheckable="True" IsChecked="{Binding ChangeLanguageMenu.IsKoreanSelected, Mode=OneWay}" />
+                    <MenuItem Header="English" Command="{Binding ChangeLanguageMenu.ChangeLanguageCommand}"
+                              CommandParameter="{x:Static models:AppLanguage.English}"
+                              IsCheckable="True" IsChecked="{Binding ChangeLanguageMenu.IsEnglishSelected, Mode=OneWay}" />
                 </MenuItem>
 
                 <MenuItem Header="정보" Command="{Binding AboutCommand}" />
