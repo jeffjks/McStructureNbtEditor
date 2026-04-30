@@ -1,4 +1,5 @@
 ﻿using McStructureNbtEditor.Models;
+using McStructureNbtEditor.ViewModels.Helpers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -109,12 +110,12 @@ namespace McStructureNbtEditor.ViewModels.Dialog
 
             if (_mode == PaletteMode.Add)
             {
-                _title = "팔레트 추가";
+                _title = Translator.GetTranslation("L_PaletteDialog_TitleAddPalette");
             }
             else if (_mode == PaletteMode.Edit)
             {
-                _title = "팔레트 수정";
-                _paletteToEditText = $"수정할 팔레트: [{defaultPaletteEntry?.Index}] {defaultPaletteEntry?.Name}";
+                _title = Translator.GetTranslation("L_PaletteDialog_TitleEditPalette");
+                _paletteToEditText = Translator.GetTranslation("L_PaletteDialog_PaletteToEdit", defaultPaletteEntry?.Index, defaultPaletteEntry?.Name);
             }
 
             AddPropertyCommand = new RelayCommand(AddProperty);

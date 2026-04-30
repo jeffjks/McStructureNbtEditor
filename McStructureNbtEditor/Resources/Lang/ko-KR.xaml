@@ -4,11 +4,23 @@
 
     <system:String x:Key="L_NotImplemented">미구현</system:String>
 
+    <system:String x:Key="L_Menu_File">파일(_F)</system:String>
+    <system:String x:Key="L_Menu_New">새 파일(_N)</system:String>
+    <system:String x:Key="L_Menu_Save">저장(_S)</system:String>
+    <system:String x:Key="L_Menu_SaveAs">다른 이름으로 저장...(_A)</system:String>
+    <system:String x:Key="L_Menu_Exit">종료(_X)</system:String>
+    <system:String x:Key="L_Menu_Open">열기(_O)</system:String>
+    <system:String x:Key="L_Menu_Help">도움말(_H)</system:String>
+    <system:String x:Key="L_Menu_Edit">편집(_E)</system:String>
+    <system:String x:Key="L_Menu_Language">언어</system:String>
+    <system:String x:Key="L_Menu_Information">정보</system:String>
+
     <system:String x:Key="L_FillBlock">블록 채우기</system:String>
     <system:String x:Key="L_RotateBlock">블록 회전</system:String>
     <system:String x:Key="L_ClearBlock">블록 지우기</system:String>
     
     <system:String x:Key="L_JumpToBlock">블록 위치로</system:String>
+    <system:String x:Key="L_NoStructureInfo">구조물 정보 없음</system:String>
     <system:String x:Key="L_CurrentPalette">현재 팔레트 블록</system:String>
     <system:String x:Key="L_AddPalette">팔레트 추가</system:String>
     <system:String x:Key="L_RemovePalette">팔레트 삭제</system:String>
@@ -18,6 +30,7 @@
     <system:String x:Key="L_ApplyY">Y층 적용</system:String>
 
     <system:String x:Key="L_Dialog_ButtonCancel">취소</system:String>
+    <system:String x:Key="L_Dialog_ButtonCreate">생성</system:String>
     <system:String x:Key="L_Dialog_ButtonDontSave">저장하지 않음</system:String>
     <system:String x:Key="L_Dialog_ButtonOk">확인</system:String>
     <system:String x:Key="L_Dialog_ButtonSave">저장</system:String>
@@ -25,8 +38,17 @@
     <system:String x:Key="L_Dialog_MessageSaveModifiedOpen">저장되지 않은 변경 사항이 있습니다. 다른 파일을 열기 전에 저장하시겠습니까?</system:String>
     <system:String x:Key="L_Dialog_TitleSaveModified">변경 사항 저장</system:String>
 
+    <system:String x:Key="L_NewFileDialog_Title">새 파일 생성</system:String>
+    <system:String x:Key="L_NewFileDialog_Message">구조물 크기는 1~48 사이의 정수만 입력이 가능합니다.</system:String>
+    <system:String x:Key="L_NewFileDialog_SizeX">X축 크기 :</system:String>
+    <system:String x:Key="L_NewFileDialog_SizeY">Y축 크기 :</system:String>
+    <system:String x:Key="L_NewFileDialog_SizeZ">Z축 크기 :</system:String>
+
     <system:String x:Key="L_PaletteDialog_PaletteBlockName">팔레트 블록 이름 :</system:String>
     <system:String x:Key="L_PaletteDialog_AddProperty">속성 추가</system:String>
     <system:String x:Key="L_PaletteDialog_RemoveProperties">선택 삭제</system:String>
+    <system:String x:Key="L_PaletteDialog_TitleAddPalette">팔레트 추가</system:String>
+    <system:String x:Key="L_PaletteDialog_TitleEditPalette">팔레트 수정</system:String>
+    <system:String x:Key="L_PaletteDialog_PaletteToEdit">수정할 팔레트: [{0}] {1}</system:String>
 
 </ResourceDictionary>

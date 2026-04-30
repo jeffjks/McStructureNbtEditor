@@ -123,7 +123,7 @@ namespace McStructureNbtEditor.Services
                 OnPropertyChanged(nameof(StructureSummary));
             }
         }
-        public string StructureSummary => StructureInfo?.DisplayText ?? "구조물 정보 없음";
+        public string? StructureSummary => StructureInfo?.DisplayText;
 
         public EditorSession()
         {

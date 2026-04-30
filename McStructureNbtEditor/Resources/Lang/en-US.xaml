@@ -4,11 +4,23 @@
 
 	<system:String x:Key="L_NotImplemented">Not Implemented</system:String>
 	
+	<system:String x:Key="L_Menu_File">File(_F)</system:String>
+	<system:String x:Key="L_Menu_New">New File(_N)</system:String>
+	<system:String x:Key="L_Menu_Save">Save(_S)</system:String>
+	<system:String x:Key="L_Menu_SaveAs">Save As...(_A)</system:String>
+	<system:String x:Key="L_Menu_Exit">Exit(_X)</system:String>
+	<system:String x:Key="L_Menu_Open">Open(_O)</system:String>
+	<system:String x:Key="L_Menu_Help">Help(_H)</system:String>
+	<system:String x:Key="L_Menu_Edit">Edit(_E)</system:String>
+	<system:String x:Key="L_Menu_Language">Language</system:String>
+	<system:String x:Key="L_Menu_Information">Information</system:String>
+	
 	<system:String x:Key="L_FillBlock">Fill Block</system:String>
 	<system:String x:Key="L_RotateBlock">Rotate Block</system:String>
 	<system:String x:Key="L_ClearBlock">Clear Block</system:String>
 	
 	<system:String x:Key="L_JumpToBlock">Jump to Block</system:String>
+	<system:String x:Key="L_NoStructureInfo">No Structure Data</system:String>
 	<system:String x:Key="L_CurrentPalette">Current Palette Block</system:String>
 	<system:String x:Key="L_AddPalette">Add Palette</system:String>
 	<system:String x:Key="L_RemovePalette">Remove Palette</system:String>
@@ -18,6 +30,7 @@
 	<system:String x:Key="L_ApplyY">Apply Y</system:String>
 
 	<system:String x:Key="L_Dialog_ButtonCancel">Cancel</system:String>
+	<system:String x:Key="L_Dialog_ButtonCreate">Create</system:String>
 	<system:String x:Key="L_Dialog_ButtonDontSave">Don't Save</system:String>
 	<system:String x:Key="L_Dialog_ButtonOk">Ok</system:String>
 	<system:String x:Key="L_Dialog_ButtonSave">Save</system:String>
@@ -25,8 +38,17 @@
 	<system:String x:Key="L_Dialog_MessageSaveModifiedOpen">You have unsaved changes. Would you like to save them before opening another file?</system:String>
 	<system:String x:Key="L_Dialog_TitleSaveModified">Unsaved changes</system:String>
 
+	<system:String x:Key="L_NewFileDialog_Title">Create New File</system:String>
+	<system:String x:Key="L_NewFileDialog_Message">The structure size must be an integer between 1 and 48</system:String>
+	<system:String x:Key="L_NewFileDialog_SizeX">X Size :</system:String>
+	<system:String x:Key="L_NewFileDialog_SizeY">Y Size :</system:String>
+	<system:String x:Key="L_NewFileDialog_SizeZ">Z Size :</system:String>
+	
 	<system:String x:Key="L_PaletteDialog_PaletteBlockName">Palette Block Name :</system:String>
 	<system:String x:Key="L_PaletteDialog_AddProperty">Add Property</system:String>
 	<system:String x:Key="L_PaletteDialog_RemoveProperties">Remove Selection</system:String>
+	<system:String x:Key="L_PaletteDialog_TitleAddPalette">Add Palette</system:String>
+	<system:String x:Key="L_PaletteDialog_TitleEditPalette">Edit Palette</system:String>
+	<system:String x:Key="L_PaletteDialog_PaletteToEdit">Palette to Edit: [{0}] {1}</system:String>
 
 </ResourceDictionary>

@@ -5,7 +5,6 @@ using McStructureNbtEditor.ViewModels.Dialog;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace McStructureNbtEditor.ViewModels
 {
