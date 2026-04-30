@@ -82,7 +82,7 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (Session.HasChanges)
             {
-                var result = _dialogService.ShowHasChangesDialog();
+                var result = _dialogService.ShowHasChangesDialog("L_Dialog_MessageSaveModifiedExit");
 
                 switch (result)
                 {

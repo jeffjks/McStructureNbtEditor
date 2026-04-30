@@ -2,6 +2,31 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
+    <system:String x:Key="L_NotImplemented">미구현</system:String>
+
+    <system:String x:Key="L_FillBlock">블록 채우기</system:String>
+    <system:String x:Key="L_RotateBlock">블록 회전</system:String>
+    <system:String x:Key="L_ClearBlock">블록 지우기</system:String>
+    
     <system:String x:Key="L_JumpToBlock">블록 위치로</system:String>
+    <system:String x:Key="L_CurrentPalette">현재 팔레트 블록</system:String>
+    <system:String x:Key="L_AddPalette">팔레트 추가</system:String>
+    <system:String x:Key="L_RemovePalette">팔레트 삭제</system:String>
+    <system:String x:Key="L_EditPalette">팔레트 수정</system:String>
+    <system:String x:Key="L_DuplicatePalette">팔레트 복제</system:String>
+    <system:String x:Key="L_LevelY">Y 높이</system:String>
+    <system:String x:Key="L_ApplyY">Y층 적용</system:String>
+
+    <system:String x:Key="L_Dialog_ButtonCancel">취소</system:String>
+    <system:String x:Key="L_Dialog_ButtonDontSave">저장하지 않음</system:String>
+    <system:String x:Key="L_Dialog_ButtonOk">확인</system:String>
+    <system:String x:Key="L_Dialog_ButtonSave">저장</system:String>
+    <system:String x:Key="L_Dialog_MessageSaveModifiedExit">저장되지 않은 변경 사항이 있습니다. 해당 내용을 저장하고 종료하시겠습니까?</system:String>
+    <system:String x:Key="L_Dialog_MessageSaveModifiedOpen">저장되지 않은 변경 사항이 있습니다. 다른 파일을 열기 전에 저장하시겠습니까?</system:String>
+    <system:String x:Key="L_Dialog_TitleSaveModified">변경 사항 저장</system:String>
+
+    <system:String x:Key="L_PaletteDialog_PaletteBlockName">팔레트 블록 이름 :</system:String>
+    <system:String x:Key="L_PaletteDialog_AddProperty">속성 추가</system:String>
+    <system:String x:Key="L_PaletteDialog_RemoveProperties">선택 삭제</system:String>
 
 </ResourceDictionary>

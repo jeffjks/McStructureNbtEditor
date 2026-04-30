@@ -1,6 +1,7 @@
 ﻿using McStructureNbtEditor.Models;
 using McStructureNbtEditor.Services.DialogResults;
 using McStructureNbtEditor.ViewModels.Dialog;
+using McStructureNbtEditor.ViewModels.Helpers;
 using McStructureNbtEditor.Views;
 
 namespace McStructureNbtEditor.Services
@@ -39,9 +40,10 @@ namespace McStructureNbtEditor.Services
             return result ?? false;
         }
 
-        public HasChangesDialogResult ShowHasChangesDialog()
+        public HasChangesDialogResult ShowHasChangesDialog(string messageKey)
         {
-            var vm = new HasChangesDialogViewModel();
+            var translatedMessage = Translator.GetTranslation(messageKey);
+            var vm = new HasChangesDialogViewModel(translatedMessage);
             var view = new HasChangesDialogView(vm);
 
             view.ShowDialog();

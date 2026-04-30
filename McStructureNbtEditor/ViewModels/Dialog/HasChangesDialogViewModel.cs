@@ -12,6 +12,8 @@ namespace McStructureNbtEditor.ViewModels.Dialog
 
     public class HasChangesDialogViewModel
     {
+        public string Message { get; }
+
         public ICommand SaveCommand { get; }
         public ICommand ExitCommand { get; }
         public ICommand CancelCommand { get; }
@@ -19,8 +21,9 @@ namespace McStructureNbtEditor.ViewModels.Dialog
         public HasChangesDialogResult Result { get; private set; } = HasChangesDialogResult.Cancel;
 
 
-        public HasChangesDialogViewModel()
+        public HasChangesDialogViewModel(string message)
         {
+            Message = message;
             SaveCommand = new RelayCommand<Window>(OnSave);
             ExitCommand = new RelayCommand<Window>(OnExit);
             CancelCommand = new RelayCommand<Window>(OnCancel);

@@ -37,7 +37,7 @@
 
                 <TextBlock Grid.Column="0"
                            VerticalAlignment="Center"
-                           Text="팔레트 블록 이름: "/>
+                           Text="{DynamicResource L_PaletteDialog_PaletteBlockName}"/>
 
                 <TextBox Grid.Column="2"
                          MinWidth="220"
@@ -74,13 +74,13 @@
         <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
                     Margin="0,4,0,4"
                     Orientation="Horizontal">
-            <Button Content="속성 추가"
-                    Width="96"
+            <Button Content="{DynamicResource L_PaletteDialog_AddProperty}"
+                    Width="112"
                     Height="24"
                     Margin="0,0,8,0"
                     Command="{Binding AddPropertyCommand}" />
-            <Button Content="선택 삭제"
-                    Width="96"
+            <Button Content="{DynamicResource L_PaletteDialog_RemoveProperties}"
+                    Width="112"
                     Height="24"
                     Command="{Binding RemovePropertyCommand}" />
         </StackPanel>
@@ -95,13 +95,13 @@
                     Margin="0,4,0,0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
-            <Button Content="확인"
+            <Button Content="{DynamicResource L_Dialog_ButtonOk}"
                     Width="96"
                     Height="24"
                     Margin="0,0,8,0"
                     IsDefault="True"
                     Command="{Binding ConfirmCommand}" />
-            <Button Content="취소"
+            <Button Content="{DynamicResource L_Dialog_ButtonCancel}"
                     Width="96"
                     Height="24"
                     IsCancel="True"

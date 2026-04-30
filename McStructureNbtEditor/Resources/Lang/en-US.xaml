@@ -2,6 +2,31 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <system:String x:Key="L_JumpToBlock">Jump to Block</system:String>
+	<system:String x:Key="L_NotImplemented">Not Implemented</system:String>
+	
+	<system:String x:Key="L_FillBlock">Fill Block</system:String>
+	<system:String x:Key="L_RotateBlock">Rotate Block</system:String>
+	<system:String x:Key="L_ClearBlock">Clear Block</system:String>
+	
+	<system:String x:Key="L_JumpToBlock">Jump to Block</system:String>
+	<system:String x:Key="L_CurrentPalette">Current Palette Block</system:String>
+	<system:String x:Key="L_AddPalette">Add Palette</system:String>
+	<system:String x:Key="L_RemovePalette">Remove Palette</system:String>
+	<system:String x:Key="L_EditPalette">Edit Palette</system:String>
+	<system:String x:Key="L_DuplicatePalette">Duplicate Palette</system:String>
+	<system:String x:Key="L_LevelY">Y Level</system:String>
+	<system:String x:Key="L_ApplyY">Apply Y</system:String>
+
+	<system:String x:Key="L_Dialog_ButtonCancel">Cancel</system:String>
+	<system:String x:Key="L_Dialog_ButtonDontSave">Don't Save</system:String>
+	<system:String x:Key="L_Dialog_ButtonOk">Ok</system:String>
+	<system:String x:Key="L_Dialog_ButtonSave">Save</system:String>
+	<system:String x:Key="L_Dialog_MessageSaveModifiedExit">You have unsaved changes. Would you like to save them before exiting?</system:String>
+	<system:String x:Key="L_Dialog_MessageSaveModifiedOpen">You have unsaved changes. Would you like to save them before opening another file?</system:String>
+	<system:String x:Key="L_Dialog_TitleSaveModified">Unsaved changes</system:String>
+
+	<system:String x:Key="L_PaletteDialog_PaletteBlockName">Palette Block Name :</system:String>
+	<system:String x:Key="L_PaletteDialog_AddProperty">Add Property</system:String>
+	<system:String x:Key="L_PaletteDialog_RemoveProperties">Remove Selection</system:String>
 
 </ResourceDictionary>

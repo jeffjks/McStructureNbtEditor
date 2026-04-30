@@ -50,7 +50,7 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (_session.HasChanges)
             {
-                var result = _dialogService.ShowHasChangesDialog();
+                var result = _dialogService.ShowHasChangesDialog("L_Dialog_MessageSaveModifiedOpen");
 
                 switch (result)
                 {
@@ -94,7 +94,7 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (_session.HasChanges)
             {
-                var result = _dialogService.ShowHasChangesDialog();
+                var result = _dialogService.ShowHasChangesDialog("L_Dialog_MessageSaveModifiedOpen");
 
                 switch (result)
                 {
@@ -118,7 +118,7 @@ namespace McStructureNbtEditor.ViewModels
         {
             if (_session.HasChanges)
             {
-                var result = _dialogService.ShowHasChangesDialog();
+                var result = _dialogService.ShowHasChangesDialog("L_Dialog_MessageSaveModifiedOpen");
 
                 switch (result)
                 {

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:McStructureNbtEditor.Views"
+             xmlns:helpers="clr-namespace:McStructureNbtEditor.ViewModels.Helpers"
              mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -26,7 +27,7 @@
 
         <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,1,0,0" Padding="0,8,0,8">
             <StackPanel Orientation="Vertical" Margin="4,4,4,8">
-                <TextBlock Text="현재 팔레트 블록" FontSize="14" Margin="4,4,4,4"/>
+                <TextBlock Text="{DynamicResource L_CurrentPalette}" FontSize="14" Margin="4,4,4,4"/>
                 <ComboBox Width="256" Height="28" Margin="0,0,0,4"
                           VerticalContentAlignment="Center"
                           ItemsSource="{Binding PaletteEdit.PaletteEntries}"
@@ -36,29 +37,31 @@
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        Width="96"
-                        Content="팔레트 추가"
+                        Width="112"
+                        Content="{DynamicResource L_AddPalette}"
                         Command="{Binding PaletteEdit.AddPaletteCommand}" />
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        Width="96"
-                        Content="팔레트 삭제"
+                        Width="112"
+                        Content="{DynamicResource L_RemovePalette}"
                         Command="{Binding PaletteEdit.RemovePaletteCommand}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,0,4,2">
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        Width="96"
-                        Content="팔레트 수정"
+                        Width="112"
+                        Content="{DynamicResource L_EditPalette}"
                         Command="{Binding PaletteEdit.EditPaletteCommand}" />
                     <Button
                         Margin="6,8,6,0"
                         Height="28"
-                        Width="96"
-                        Content="팔레트 복제"
-                        Command="{Binding PaletteEdit.DuplicatePaletteCommand}" />
+                        Width="112"
+                        Content="{DynamicResource L_DuplicatePalette}"
+                        Command="{Binding PaletteEdit.DuplicatePaletteCommand}"
+                        ToolTip="{DynamicResource L_NotImplemented}"
+                        ToolTipService.ShowOnDisabled="True" />
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -74,13 +77,14 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                    Text="Y 높이"
+                    Text="{DynamicResource L_LevelY}"
                     FontSize="14"
                     HorizontalAlignment="Center"
                     FontWeight="SemiBold"
                     Margin="0,0,0,8" />
 
                 <Slider Grid.Row="1"
+                    helpers:SliderHelper.EnableMouseWheel="True"
                     Minimum="{Binding LayerSlice.MinY}"
                     Maximum="{Binding LayerSlice.MaxY}"
                     Value="{Binding LayerSlice.CurrentY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -135,7 +139,7 @@
                     Margin="0,8,0,0"
                     Height="28"
                     Width="120"
-                    Content="Y 적용"
+                    Content="{DynamicResource L_ApplyY}"
                     Command="{Binding LayerSlice.ApplyYTextCommand}" />
             </Grid>
         </Border>
