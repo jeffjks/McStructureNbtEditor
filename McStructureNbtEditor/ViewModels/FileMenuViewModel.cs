@@ -8,6 +8,7 @@ using System.Windows;
 using System.IO;
 using McStructureNbtEditor.ViewModels.Dialog;
 using McStructureNbtEditor.Services.DialogResults;
+using McStructureNbtEditor.ViewModels.Helpers;
 
 namespace McStructureNbtEditor.ViewModels
 {
@@ -82,11 +83,16 @@ namespace McStructureNbtEditor.ViewModels
 
                 _session.LoadCurrentStructure(newStructureFileModel);
                 _session.StructureInfo = _structureParser.ParseStructureInfo(nbtFile, "");
-                _session.StatusMessage = "파일 로드 완료";
+                _session.StatusMessage = Translator.GetTranslation("L_Status_FileCreated");
             }
             catch (Exception ex)
             {
-                _session.StatusMessage = $"새 파일 생성중 오류가 발생했습니다: {ex.Message}";
+                MessageBox.Show(
+                    Translator.GetTranslation("L_MessageBox_NewFileErrorText", ex.Message),
+                    Translator.GetTranslation("L_MessageBox_ErrorCaption"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
             }
         }
 
@@ -166,11 +172,15 @@ namespace McStructureNbtEditor.ViewModels
                 var newStructureFileModel = _structureParser.ParseStructure(_currentFile, fileName, filePath);
                 _session.LoadCurrentStructure(newStructureFileModel);
                 _session.StructureInfo = _structureParser.ParseStructureInfo(_currentFile, filePath);
-                _session.StatusMessage = "파일 로드 완료";
+                _session.StatusMessage = Translator.GetTranslation("L_Status_FileLoaded");
             }
             catch (Exception ex)
             {
-                _session.StatusMessage = $"파일을 로드하는 중 오류가 발생했습니다: {ex.Message}";
+                MessageBox.Show(
+                    Translator.GetTranslation("L_MessageBox_LoadErrorText", ex.Message),
+                    Translator.GetTranslation("L_MessageBox_ErrorCaption"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return false;
             }
             return true;
@@ -193,8 +203,8 @@ namespace McStructureNbtEditor.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    $"파일 저장 중 오류가 발생했습니다: {ex.Message}",
-                    "오류",
+                    Translator.GetTranslation("L_MessageBox_SaveErrorText", ex.Message),
+                    Translator.GetTranslation("L_MessageBox_ErrorCaption"),
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 return false;
@@ -232,6 +242,8 @@ namespace McStructureNbtEditor.ViewModels
 
             var fileName = Path.GetFileName(filePath);
             _currentStructure.SetFileName(fileName, filePath);
+
+            _session.StatusMessage = Translator.GetTranslation("L_Status_FileSaved");
 
             _session.SetSavedHistoryIndex();
             return true;

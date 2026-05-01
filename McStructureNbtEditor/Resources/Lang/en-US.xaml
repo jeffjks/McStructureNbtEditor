@@ -29,6 +29,11 @@
 	<system:String x:Key="L_LevelY">Y Level</system:String>
 	<system:String x:Key="L_ApplyY">Apply Y</system:String>
 
+    <system:String x:Key="L_MessageBox_ErrorCaption">Error</system:String>
+    <system:String x:Key="L_MessageBox_NewFileErrorText">An error occurred while creating a new file: {0}</system:String>
+    <system:String x:Key="L_MessageBox_LoadErrorText">An error occurred while loading the file: {0}</system:String>
+    <system:String x:Key="L_MessageBox_SaveErrorText">An error occurred while saving the file: {0}</system:String>
+    
 	<system:String x:Key="L_Dialog_ButtonCancel">Cancel</system:String>
 	<system:String x:Key="L_Dialog_ButtonCreate">Create</system:String>
 	<system:String x:Key="L_Dialog_ButtonDontSave">Don't Save</system:String>
@@ -49,6 +54,12 @@
 	<system:String x:Key="L_PaletteDialog_RemoveProperties">Remove Selection</system:String>
 	<system:String x:Key="L_PaletteDialog_TitleAddPalette">Add Palette</system:String>
 	<system:String x:Key="L_PaletteDialog_TitleEditPalette">Edit Palette</system:String>
-	<system:String x:Key="L_PaletteDialog_PaletteToEdit">Palette to Edit: [{0}] {1}</system:String>
+    <system:String x:Key="L_PaletteDialog_PaletteToEdit">Palette to Edit: [{0}] {1}</system:String>
+    <system:String x:Key="L_PaletteDialog_ErrorEmpty">Enter Block Name.</system:String>
+    <system:String x:Key="L_PaletteDialog_ErrorKeyAlreadyExists">Property key already exists: {0}</system:String>
+
+    <system:String x:Key="L_Status_FileCreated">File Created.</system:String>
+    <system:String x:Key="L_Status_FileLoaded">File Loaded.</system:String>
+    <system:String x:Key="L_Status_FileSaved">File Created.</system:String>
 
 </ResourceDictionary>

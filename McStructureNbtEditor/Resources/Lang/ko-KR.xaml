@@ -29,6 +29,11 @@
     <system:String x:Key="L_LevelY">Y 높이</system:String>
     <system:String x:Key="L_ApplyY">Y층 적용</system:String>
 
+    <system:String x:Key="L_MessageBox_ErrorCaption">오류</system:String>
+    <system:String x:Key="L_MessageBox_NewFileErrorText">새 파일을 만드는 중 오류가 발생했습니다: {0}</system:String>
+    <system:String x:Key="L_MessageBox_LoadErrorText">파일을 불러오는 중 오류가 발생했습니다: {0}</system:String>
+    <system:String x:Key="L_MessageBox_SaveErrorText">파일을 저장하는 중 오류가 발생했습니다: {0}</system:String>
+
     <system:String x:Key="L_Dialog_ButtonCancel">취소</system:String>
     <system:String x:Key="L_Dialog_ButtonCreate">생성</system:String>
     <system:String x:Key="L_Dialog_ButtonDontSave">저장하지 않음</system:String>
@@ -50,5 +55,11 @@
     <system:String x:Key="L_PaletteDialog_TitleAddPalette">팔레트 추가</system:String>
     <system:String x:Key="L_PaletteDialog_TitleEditPalette">팔레트 수정</system:String>
     <system:String x:Key="L_PaletteDialog_PaletteToEdit">수정할 팔레트: [{0}] {1}</system:String>
+    <system:String x:Key="L_PaletteDialog_ErrorEmpty">블록 이름을 입력하세요.</system:String>
+    <system:String x:Key="L_PaletteDialog_ErrorKeyAlreadyExists">중복된 속성 키가 있습니다: {0}</system:String>
+
+    <system:String x:Key="L_Status_FileCreated">파일 생성 완료.</system:String>
+    <system:String x:Key="L_Status_FileLoaded">파일 로드 완료.</system:String>
+    <system:String x:Key="L_Status_FileSaved">파일 저장 완료.</system:String>
 
 </ResourceDictionary>

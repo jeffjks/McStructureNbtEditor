@@ -42,6 +42,7 @@
                 <TextBox Grid.Column="2"
                          MinWidth="220"
                          Height="24"
+                         VerticalContentAlignment="Center"
                          Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </StackPanel>
@@ -89,6 +90,7 @@
                    Grid.ColumnSpan="2"
                    VerticalAlignment="Center"
                    Foreground="IndianRed"
+                   FontWeight="Bold"
                    Text="{Binding ErrorMessage}" />
 
         <StackPanel Grid.Row="5" Grid.Column="2"

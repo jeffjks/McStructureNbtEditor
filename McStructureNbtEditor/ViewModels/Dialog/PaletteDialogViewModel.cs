@@ -149,7 +149,7 @@ namespace McStructureNbtEditor.ViewModels.Dialog
             string trimmedName = Name.Trim();
             if (string.IsNullOrWhiteSpace(trimmedName))
             {
-                ErrorMessage = "블록 이름을 입력하세요.";
+                ErrorMessage = Translator.GetTranslation("L_PaletteDialog_ErrorEmpty");
                 return;
             }
 
@@ -160,7 +160,7 @@ namespace McStructureNbtEditor.ViewModels.Dialog
 
             if (duplicateKey != null)
             {
-                ErrorMessage = $"중복된 속성 키가 있습니다: {duplicateKey.Key}";
+                ErrorMessage = Translator.GetTranslation("L_PaletteDialog_ErrorKeyAlreadyExists", duplicateKey.Key);
                 return;
             }
 
